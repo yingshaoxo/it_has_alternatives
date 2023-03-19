@@ -1,0 +1,62 @@
+syntax = "proto3";
+package it_has_alternatives;
+
+service it_has_alternatives {
+    rpc search_alternatives (Search_Alternative_Request) returns (Search_Alternative_Response);
+    rpc add_alternative (Add_Object_Request) returns (Add_Object_Response);
+    rpc update_alternative (Update_Object_Request) returns (Update_Object_Response);
+    rpc delete_alternative (Delete_Object_Request) returns (Delete_Object_Response);
+}
+
+enum Sort_By {
+    like = 0;
+    dislike = 1;
+}
+
+message An_Object {
+    string id = 1;
+    string name = 2;
+    string description = 3;
+    int64 likes = 4; 
+    int64 dislikes = 5; 
+    repeated string alternative_id_list = 6;
+}
+
+message Search_Alternative_Request {
+    string key_words = 1;
+    Sort_By sort_by = 2;
+    int64 page_size = 3;
+    int64 page_number = 4;
+}
+
+message Search_Alternative_Response {
+    optional string error = 1;
+    repeated An_Object alternative_object_list = 2;
+}
+
+message Add_Object_Request {
+    An_Object an_object = 1;
+}
+
+message Add_Object_Response {
+    optional string error = 1;
+    bool success = 2;
+}
+
+message Update_Object_Request {
+    An_Object an_object = 1;
+}
+
+message Update_Object_Response {
+    optional string error = 1;
+    bool success = 2;
+}
+
+message Delete_Object_Request {
+    An_Object an_object = 1;
+}
+
+message Delete_Object_Response {
+    optional string error = 1;
+    bool success = 2;
+}

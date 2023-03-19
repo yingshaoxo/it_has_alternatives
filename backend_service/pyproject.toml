@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "backend_service"
+version = "0.1.0"
+description = ""
+authors = ["yingshaoxo <yingshaoxo@gmail.com>"]
+readme = "README.md"
+packages = [{include = "backend_service"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+auto-everything = {path = "/Users/yingshaoxo/CS/auto_everything", develop = true}
+fastapi = "^0.94.1"
+uvicorn = "^0.21.1"
+pymongo = "^4.3.3"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+app = "backend_service.main: main" #it will run the main function in backend_service/main.py file

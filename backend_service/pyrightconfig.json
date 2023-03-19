@@ -1,0 +1,7 @@
+{
+    "reportUnusedVariable": false,
+    "reportUnusedFunction": false,
+    "reportPrivateUsage": false,
+    "reportMissingTypeStubs": false,
+    "reportUnknownMemberType": false
+}
