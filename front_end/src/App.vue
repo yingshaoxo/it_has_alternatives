@@ -3,6 +3,8 @@ import { reactive } from 'vue';
 import * as it_has_alternatives_objects from './generated_yrpc/it_has_alternatives_objects'
 import * as it_has_alternatives_rpc from './generated_yrpc/it_has_alternatives_rpc'
 
+import a_table from './components/a_table.vue';
+
 var dict = reactive({
   client: new it_has_alternatives_rpc.Client_it_has_alternatives("http://127.0.0.1:80"),
   name: "yingshaoxo",
@@ -46,7 +48,9 @@ var dict = reactive({
 </script>
 
 <template>
-  <input  @input="event => dict.name = event?.target?.value ?? ''" >
+  <a_table></a_table>
+
+  <!-- <input  @input="event => dict.name = event?.target?.value ?? ''" >
   <button @click="dict.on_add_button_click">Add</button>
   <button @click="dict.refresh_list">Refresh</button>
 
@@ -59,7 +63,7 @@ var dict = reactive({
   <li v-for="object in dict.a_list_of_objects">
     {{ object.name }}
     <button @click="dict.on_delete_button_click(object)">Delete</button>
-  </li>
+  </li> -->
 </template>
 
 <style scoped>

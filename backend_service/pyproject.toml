@@ -18,4 +18,4 @@ requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.scripts]
-app = "backend_service.main: main" #it will run the main function in backend_service/main.py file
+service = "backend_service.main: main" #it will run the main function in backend_service/main.py file

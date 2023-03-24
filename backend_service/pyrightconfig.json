@@ -3,5 +3,6 @@
     "reportUnusedFunction": false,
     "reportPrivateUsage": false,
     "reportMissingTypeStubs": false,
-    "reportUnknownMemberType": false
+    "reportUnknownMemberType": false,
+    "reportUnknownVariableType": false
 }

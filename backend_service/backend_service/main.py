@@ -37,6 +37,17 @@ class My_Service_test_protobuff_code(it_has_alternatives_rpc.Service_test_protob
             )
             # print(item.an_object.to_dict()) #type: ignore
             the_object_id = str(result.inserted_id)
+            object_collection.update_one(
+                filter={
+                    it_has_alternatives_objects.An_Object()._key_string_dict.name: item.an_object.name,
+                }, 
+                update={
+                    "$set": {
+                        **item.an_object.to_dict(),
+                        "id": the_object_id
+                    }
+                }
+            )
         except Exception as e:
             default_response.error = str(e)
             default_response.success = False
@@ -45,6 +56,7 @@ class My_Service_test_protobuff_code(it_has_alternatives_rpc.Service_test_protob
     async def update_alternative(self, item: it_has_alternatives_objects.Update_Object_Request) -> it_has_alternatives_objects.Update_Object_Response:
         default_response = it_has_alternatives_objects.Update_Object_Response(error=None, success=True)
 
+        print(item)
         if (item.an_object == None or item.an_object.name == None):
             default_response.error = "You should give me a name for that object"
             default_response.success = False
@@ -53,7 +65,7 @@ class My_Service_test_protobuff_code(it_has_alternatives_rpc.Service_test_protob
         try:
             object_collection.update_one(
                 filter={
-                    it_has_alternatives_objects.An_Object()._key_string_dict.name: item.an_object.name,
+                    it_has_alternatives_objects.An_Object()._key_string_dict.id: item.an_object.id,
                 }, 
                 update={
                     "$set": {
