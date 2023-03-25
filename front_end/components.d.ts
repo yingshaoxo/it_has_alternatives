@@ -13,6 +13,7 @@ declare module '@vue/runtime-core' {
     AButton: typeof import('ant-design-vue/es')['Button']
     ACard: typeof import('ant-design-vue/es')['Card']
     ACol: typeof import('ant-design-vue/es')['Col']
+    ADivider: typeof import('ant-design-vue/es')['Divider']
     AForm: typeof import('ant-design-vue/es')['Form']
     AFormItem: typeof import('ant-design-vue/es')['FormItem']
     AInput: typeof import('ant-design-vue/es')['Input']
@@ -23,5 +24,8 @@ declare module '@vue/runtime-core' {
     ATable: typeof import('ant-design-vue/es')['Table']
     copy: typeof import('./src/components/HelloWorld copy.vue')['default']
     HelloWorld: typeof import('./src/components/HelloWorld.vue')['default']
+    Main_search_page: typeof import('./src/components/main_search_page.vue')['default']
+    RouterLink: typeof import('vue-router')['RouterLink']
+    RouterView: typeof import('vue-router')['RouterView']
   }
 }

@@ -132,7 +132,8 @@ export class An_Object {
     }
 
     _clone(): An_Object {
-        return structuredClone(this)
+        let clone = Object.assign(Object.create(Object.getPrototypeOf(this)), this)
+        return clone
     }
 
     from_dict(item: _An_Object): An_Object {
@@ -184,7 +185,8 @@ export class Search_Alternative_Request {
     }
 
     _clone(): Search_Alternative_Request {
-        return structuredClone(this)
+        let clone = Object.assign(Object.create(Object.getPrototypeOf(this)), this)
+        return clone
     }
 
     from_dict(item: _Search_Alternative_Request): Search_Alternative_Request {
@@ -228,7 +230,8 @@ export class Search_Alternative_Response {
     }
 
     _clone(): Search_Alternative_Response {
-        return structuredClone(this)
+        let clone = Object.assign(Object.create(Object.getPrototypeOf(this)), this)
+        return clone
     }
 
     from_dict(item: _Search_Alternative_Response): Search_Alternative_Response {
@@ -268,7 +271,8 @@ export class Add_Object_Request {
     }
 
     _clone(): Add_Object_Request {
-        return structuredClone(this)
+        let clone = Object.assign(Object.create(Object.getPrototypeOf(this)), this)
+        return clone
     }
 
     from_dict(item: _Add_Object_Request): Add_Object_Request {
@@ -312,7 +316,8 @@ export class Add_Object_Response {
     }
 
     _clone(): Add_Object_Response {
-        return structuredClone(this)
+        let clone = Object.assign(Object.create(Object.getPrototypeOf(this)), this)
+        return clone
     }
 
     from_dict(item: _Add_Object_Response): Add_Object_Response {
@@ -352,7 +357,8 @@ export class Update_Object_Request {
     }
 
     _clone(): Update_Object_Request {
-        return structuredClone(this)
+        let clone = Object.assign(Object.create(Object.getPrototypeOf(this)), this)
+        return clone
     }
 
     from_dict(item: _Update_Object_Request): Update_Object_Request {
@@ -396,7 +402,8 @@ export class Update_Object_Response {
     }
 
     _clone(): Update_Object_Response {
-        return structuredClone(this)
+        let clone = Object.assign(Object.create(Object.getPrototypeOf(this)), this)
+        return clone
     }
 
     from_dict(item: _Update_Object_Response): Update_Object_Response {
@@ -436,7 +443,8 @@ export class Delete_Object_Request {
     }
 
     _clone(): Delete_Object_Request {
-        return structuredClone(this)
+        let clone = Object.assign(Object.create(Object.getPrototypeOf(this)), this)
+        return clone
     }
 
     from_dict(item: _Delete_Object_Request): Delete_Object_Request {
@@ -480,7 +488,8 @@ export class Delete_Object_Response {
     }
 
     _clone(): Delete_Object_Response {
-        return structuredClone(this)
+        let clone = Object.assign(Object.create(Object.getPrototypeOf(this)), this)
+        return clone
     }
 
     from_dict(item: _Delete_Object_Response): Delete_Object_Response {

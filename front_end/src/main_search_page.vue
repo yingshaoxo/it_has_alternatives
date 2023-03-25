@@ -2,8 +2,8 @@
 import { onMounted, reactive, ref, UnwrapRef } from 'vue';
 import { PlusOutlined, SearchOutlined, CheckOutlined, EditOutlined } from '@ant-design/icons-vue';
 
-import * as it_has_alternatives_objects from '../generated_yrpc/it_has_alternatives_objects'
-import * as it_has_alternatives_rpc from '../generated_yrpc/it_has_alternatives_rpc'
+import * as it_has_alternatives_objects from './generated_yrpc/it_has_alternatives_objects'
+import * as it_has_alternatives_rpc from './generated_yrpc/it_has_alternatives_rpc'
 
 var clone_object = (obj: any) =>  JSON.parse(JSON.stringify(obj));
 
@@ -103,6 +103,16 @@ const functions = {
       request
     )
   },
+  on_row_click: async (record: it_has_alternatives_objects.An_Object) => {
+    setTimeout(()=>{
+      // to prevent page jump when doing the editing
+      //@ts-ignore
+      if (dict.editable_data[record.id]) { 
+      } else {
+        console.log(record.name)
+      }
+    }, 300)
+  },
   on_cell_edit_button: async (dataIndex: string, id: string) => {
     dict.what_column_is_in_editing_now = dataIndex
     dict.editable_data![id] = clone_object(dict.data_source.filter(item => id === item.id)[0])
@@ -135,8 +145,8 @@ onMounted(async () => {
       style="top: 20px"
       @ok="async ()=>{
         await functions.add_an_object(
-          // dict.temprary_object_for_edit._clone()
-          new it_has_alternatives_objects.An_Object().from_dict(dict.temprary_object_for_edit.to_dict())
+          dict.temprary_object_for_edit._clone()
+          // new it_has_alternatives_objects.An_Object().from_dict(dict.temprary_object_for_edit.to_dict())
         )
 
         dict.dialog_visible=false
@@ -149,6 +159,8 @@ onMounted(async () => {
       <a-input :placeholder="dict.temprary_object_for_edit._key_string_dict.description" v-model:value="dict.temprary_object_for_edit.description" />
     </div>
   </a-modal>
+
+  <div class="h-[50px]"></div>
 
   <div class="w-full flex flex-col justify-start px-[100px]">
     <a-form
@@ -204,17 +216,27 @@ onMounted(async () => {
     </a-form>
 
     <div class="w-full flex flex-row justify-center">
-      <a-table class="mb-[24px]" bordered :data-source="dict.data_source" :columns="dict.column_name" :pagination="false">
+      <a-table class="mb-[24px]" bordered :data-source="dict.data_source" :columns="dict.column_name" :pagination="false"
+        :customRow="(record: any) => {
+          return {
+              onClick: (event: PointerEvent) => {
+                  functions.on_row_click(record)
+              }
+          }
+        }"
+      >
         <template #bodyCell="{ column, text, record }">
           <template v-if="['name', 'description'].includes(column.dataIndex)">
             <div class="editable-cell">
               <div v-if="dict.editable_data && dict.editable_data[record.id] && column.dataIndex==dict.what_column_is_in_editing_now" class="editable-cell-input-wrapper">
-                <a-input v-model:value="dict.editable_data[record.id][column.dataIndex]" @pressEnter="functions.on_cell_save_action(record.id)" />
-                <check-outlined class="editable-cell-icon-check" @click="functions.on_cell_save_action(record.id)" />
+                <a-input v-model:value="
+                  //@ts-ignore 
+                  dict.editable_data[record.id][column.dataIndex]" @pressEnter="functions.on_cell_save_action(record.id)" />
+                <check-outlined class="editable-cell-icon-check" @click.stop="functions.on_cell_save_action(record.id)" />
               </div>
               <div v-else class="editable-cell-text-wrapper">
                 {{ text || ' ' }}
-                <edit-outlined class="editable-cell-icon" @click="functions.on_cell_edit_button(column.dataIndex, record.id)" />
+                <edit-outlined class="editable-cell-icon" @click.stop="functions.on_cell_edit_button(column.dataIndex, record.id)" />
               </div>
             </div>
           </template>
@@ -245,6 +267,8 @@ onMounted(async () => {
       />
     </div>
   </div>
+
+  <div class="h-[200px]"></div>
 </template>
 
 <style scoped lang="less">
