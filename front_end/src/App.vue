@@ -10,7 +10,7 @@ var dict = reactive({
 </script>
 
 <template>
-  <div class="h-[200px]"></div>
+  <div class="h-[50px]"></div>
   <a_table></a_table>
   <div class="h-[200px]"></div>
 </template>

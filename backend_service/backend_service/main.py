@@ -18,8 +18,21 @@ object_collection = mongoDB.get_database(object_database_name).get_collection(ob
 class My_Service_test_protobuff_code(it_has_alternatives_rpc.Service_test_protobuff_code):
     async def search_alternatives(self, item: it_has_alternatives_objects.Search_Alternative_Request) -> it_has_alternatives_objects.Search_Alternative_Response:
         default_response = it_has_alternatives_objects.Search_Alternative_Response(error=None, alternative_object_list=[])
+        key_words = item.key_words
+        if key_words == None:
+            key_words = ""
+
         try:
-            result = object_collection.find().skip(item.page_number*item.page_size).limit(item.page_size) # type: ignore
+            result = object_collection.find(
+                {
+                    it_has_alternatives_objects.An_Object()._key_string_dict.name: 
+                        {
+                            '$regex':f'(.*){key_words}(.*)',
+                            "$options": "i"
+                        }
+                }
+            ).skip(item.page_number*item.page_size).limit(item.page_size) # type: ignore
+
             object_list = []
             for one in result: #type: ignore
                 # print(one) #type: ignore

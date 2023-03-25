@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted, reactive, ref, UnwrapRef } from 'vue';
-import { CheckOutlined, EditOutlined } from '@ant-design/icons-vue';
+import { PlusOutlined, SearchOutlined, CheckOutlined, EditOutlined } from '@ant-design/icons-vue';
 
 import * as it_has_alternatives_objects from '../generated_yrpc/it_has_alternatives_objects'
 import * as it_has_alternatives_rpc from '../generated_yrpc/it_has_alternatives_rpc'
@@ -57,13 +57,21 @@ const dict = reactive({
   },
   dialog_visible: false,
   temprary_object_for_edit: new it_has_alternatives_objects.An_Object(),
+  temprary_object_for_search: new it_has_alternatives_objects.An_Object(),
   what_column_is_in_editing_now: "",
 })
 
 const functions = {
+  reset_search_bar: async () => {
+    dict.temprary_object_for_search = new it_has_alternatives_objects.An_Object()
+    await functions.refresh_list()
+  },
+  on_search: async (values: any) => {
+    await functions.refresh_list()
+  },
   refresh_list: async () => {
     var request = new it_has_alternatives_objects.Search_Alternative_Request()
-    request.key_words = "yi"
+    request.key_words = dict.temprary_object_for_search.name
     request.page_number = dict.pagination.current - 1
     request.page_size = dict.pagination.size
     var result = await dict.client.search_alternatives(
@@ -115,7 +123,6 @@ const functions = {
   }
 }
 
-
 onMounted(async () => {
   await functions.refresh_list()
 })
@@ -144,9 +151,57 @@ onMounted(async () => {
   </a-modal>
 
   <div class="w-full flex flex-col justify-start px-[100px]">
-    <div class="flex flex-row justify-end">
-      <a-button type="primary" class="mb-[16px]" @click="()=>{dict.dialog_visible=true}">Add</a-button>
-    </div>
+    <a-form
+      ref="formRef"
+      name="advanced_search"
+      class="ant-advanced-search-form"
+      :model="dict.temprary_object_for_search"
+      @finish="functions.on_search"
+    >
+      <a-card>
+        <a-row :gutter="24">
+          <a-col :span="24">
+            <a-form-item
+              :name="`Name`"
+              :label="`Name`"
+              :rules="[{ required: false, message: 'input something' }]"
+            >
+              <a-input v-model:value="dict.temprary_object_for_search.name"></a-input>
+            </a-form-item>
+          </a-col>
+          <!-- <template v-for="(key, index) in Object.keys(dict.temprary_object_for_search)" :key="key">
+            <a-col v-if="index<3 && (!key.startsWith('_'))" :span="8">
+              <a-form-item
+                :name="`${key}`"
+                :label="`${key.toUpperCase()}`"
+                :rules="[{ required: false, message: 'input something' }]"
+              >
+                <a-input v-model:value="dict.temprary_object_for_search[key]"></a-input>
+              </a-form-item>
+            </a-col>
+          </template> -->
+        </a-row>
+        <div class="w-full flex flex-row justify-between">
+          <div>
+            <a-button @click="()=>{dict.dialog_visible=true}">
+              <div class="flex flex-row justify-center align-middle content-center place-content-center place-items-center">
+                <PlusOutlined class="mr-[8px]"></PlusOutlined>
+                Add
+              </div>
+            </a-button>
+          </div>
+          <div>
+            <a-button type="primary" html-type="submit">
+              <div class="flex flex-row justify-center align-middle content-center place-content-center place-items-center">
+                <SearchOutlined class="mr-[8px]" />
+                Search
+              </div>  
+            </a-button>
+            <a-button style="margin: 0 8px" @click="() => functions.reset_search_bar()">Clear</a-button>
+          </div>
+        </div>
+      </a-card>
+    </a-form>
 
     <div class="w-full flex flex-row justify-center">
       <a-table class="mb-[24px]" bordered :data-source="dict.data_source" :columns="dict.column_name" :pagination="false">
@@ -193,6 +248,11 @@ onMounted(async () => {
 </template>
 
 <style scoped lang="less">
+.ant-card-bordered {
+  border: 1px solid #f0f0f0;
+  margin-bottom: 100px;
+}
+
 .editable-cell {
   position: relative;
   .editable-cell-input-wrapper,
