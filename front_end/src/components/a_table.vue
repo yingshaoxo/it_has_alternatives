@@ -14,56 +14,64 @@ const dict = reactive({
       title: 'Name',
       dataIndex: 'name',
       key: 'name',
+      align: 'center',
+      width: 220,
+      ellipsis: true
     },
     {
       title: 'Description',
       dataIndex: 'description',
       key: 'description',
+      align: 'center',
+      ellipsis: true
     },
     {
-      title: 'Likes',
+      title: 'Like',
       dataIndex: 'likes',
       key: 'likes',
+      align: 'center',
+      width: 80 
     },
     {
-      title: 'Dislikes',
+      title: 'Dislike',
       dataIndex: 'dislikes',
       key: 'dislikes',
+      align: 'center',
+      width: 80 
     },
     {
       title: 'Operations',
       dataIndex: 'operations',
       key: 'operations',
+      align: 'center',
+      width: 120
     },
   ],
   data_source: [
   ] as it_has_alternatives_objects.An_Object[],
   editable_data: {} as UnwrapRef<Record<string, it_has_alternatives_objects.An_Object>>,
+  pagination: {
+    current: 1,
+    size: 10,
+    total: 1000,
+  },
   dialog_visible: false,
   temprary_object_for_edit: new it_has_alternatives_objects.An_Object(),
+  what_column_is_in_editing_now: "",
 })
 
 const functions = {
   refresh_list: async () => {
     var request = new it_has_alternatives_objects.Search_Alternative_Request()
     request.key_words = "yi"
-    request.page_number = 0
-    request.page_size = 20
+    request.page_number = dict.pagination.current - 1
+    request.page_size = dict.pagination.size
     var result = await dict.client.search_alternatives(
       request
     )
     dict.data_source = result?.alternative_object_list ?? []
   },
   add_an_object: async (the_object: it_has_alternatives_objects.An_Object) => {
-    // var an_object = new it_has_alternatives_objects.An_Object()
-    // an_object.from_dict({
-    //   name: "",
-    //   id: "1",
-    //   description: null,
-    //   likes: 3,
-    //   dislikes: 4,
-    //   alternative_id_list: ["1", "2"]
-    // })
     var request = new it_has_alternatives_objects.Add_Object_Request()
     request.an_object = the_object
     var result = await dict.client.add_alternative(
@@ -87,25 +95,26 @@ const functions = {
       request
     )
   },
-}
+  on_cell_edit_button: async (dataIndex: string, id: string) => {
+    dict.what_column_is_in_editing_now = dataIndex
+    dict.editable_data![id] = clone_object(dict.data_source.filter(item => id === item.id)[0])
+  },
+  on_cell_save_action: async (id: string) => {
+    if ((dict.editable_data) && (dict.data_source)) {
+      Object.assign(dict.data_source.filter(item => id === item.id)[0], dict.editable_data[id]);
 
-const edit = async (name: string) => {
-  dict.editable_data![name] = clone_object(dict.data_source.filter(item => name === item.name)[0])
-  console.log(dict.editable_data![name])
-}
+      dict.what_column_is_in_editing_now = ""
 
-const save = async (name: string) => {
-  if ((dict.editable_data) && (dict.data_source)) {
-    Object.assign(dict.data_source.filter(item => name === item.name)[0], dict.editable_data[name]);
+      var an_object = new it_has_alternatives_objects.An_Object()
+      await functions.update_an_object(an_object.from_dict(dict.editable_data[id])) 
 
-    var an_object = new it_has_alternatives_objects.An_Object()
-    await functions.update_an_object(an_object.from_dict(dict.editable_data[name])) 
+      delete dict.editable_data[id];
 
-    delete dict.editable_data[name];
-
-    await functions.refresh_list()
+      await functions.refresh_list()
+    }
   }
-};
+}
+
 
 onMounted(async () => {
   await functions.refresh_list()
@@ -113,10 +122,6 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="w-full flex justify-end">
-    <a-button type="primary" class="mb-[16px]" @click="()=>{dict.dialog_visible=true}">Add</a-button>
-  </div>
-
   <a-modal
       v-model:visible="dict.dialog_visible"
       title="Add"
@@ -132,38 +137,62 @@ onMounted(async () => {
         await functions.refresh_list()
       }"
     >
+    <div class="space-y-[16px]">
       <a-input :placeholder="dict.temprary_object_for_edit._key_string_dict.name" v-model:value="dict.temprary_object_for_edit.name" />
       <a-input :placeholder="dict.temprary_object_for_edit._key_string_dict.description" v-model:value="dict.temprary_object_for_edit.description" />
+    </div>
   </a-modal>
 
-  <a-table class="w-screen" bordered :data-source="dict.data_source" :columns="dict.column_name">
-    <template #bodyCell="{ column, text, record }">
-      <template v-if="column.dataIndex === 'name'">
-        <div class="editable-cell">
-          <div v-if="dict.editable_data && dict.editable_data[record.name]" class="editable-cell-input-wrapper">
-            <a-input v-model:value="dict.editable_data[record.name].name" @pressEnter="save(record.name)" />
-            <check-outlined class="editable-cell-icon-check" @click="save(record.name)" />
-          </div>
-          <div v-else class="editable-cell-text-wrapper">
-            {{ text || ' ' }}
-            <edit-outlined class="editable-cell-icon" @click="edit(record.name)" />
-          </div>
-        </div>
-      </template>
-      <template v-else-if="column.dataIndex === 'operations'">
-        <a-popconfirm
-          v-if="dict.data_source.length"
-          title="Sure to delete?"
-          @confirm="functions.delete_an_object(record)"
-        >
-          <a-button>Delete</a-button>
-        </a-popconfirm>
-      </template>
-    </template>
-  </a-table>
+  <div class="w-full flex flex-col justify-start px-[100px]">
+    <div class="flex flex-row justify-end">
+      <a-button type="primary" class="mb-[16px]" @click="()=>{dict.dialog_visible=true}">Add</a-button>
+    </div>
+
+    <div class="w-full flex flex-row justify-center">
+      <a-table class="mb-[24px]" bordered :data-source="dict.data_source" :columns="dict.column_name" :pagination="false">
+        <template #bodyCell="{ column, text, record }">
+          <template v-if="['name', 'description'].includes(column.dataIndex)">
+            <div class="editable-cell">
+              <div v-if="dict.editable_data && dict.editable_data[record.id] && column.dataIndex==dict.what_column_is_in_editing_now" class="editable-cell-input-wrapper">
+                <a-input v-model:value="dict.editable_data[record.id][column.dataIndex]" @pressEnter="functions.on_cell_save_action(record.id)" />
+                <check-outlined class="editable-cell-icon-check" @click="functions.on_cell_save_action(record.id)" />
+              </div>
+              <div v-else class="editable-cell-text-wrapper">
+                {{ text || ' ' }}
+                <edit-outlined class="editable-cell-icon" @click="functions.on_cell_edit_button(column.dataIndex, record.id)" />
+              </div>
+            </div>
+          </template>
+          <template v-else-if="column.dataIndex === 'operations'">
+            <a-popconfirm
+              v-if="dict.data_source.length"
+              title="Sure to delete?"
+              @confirm="functions.delete_an_object(record)"
+            >
+              <a-button>Delete</a-button>
+            </a-popconfirm>
+          </template>
+        </template>
+      </a-table>
+    </div>
+    
+    <div class="w-full flex flex-row justify-end">
+      <a-pagination
+        v-model:current="dict.pagination.current"
+        v-model:pageSize="dict.pagination.size"
+        show-size-changer
+        :total="dict.pagination.total"
+        @change="async (page: number, pageSize: number) => {
+          dict.pagination.current = page
+          dict.pagination.size = pageSize
+          await functions.refresh_list()
+        }"
+      />
+    </div>
+  </div>
 </template>
 
-<style lang="less">
+<style scoped lang="less">
 .editable-cell {
   position: relative;
   .editable-cell-input-wrapper,

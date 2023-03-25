@@ -19,7 +19,7 @@ class My_Service_test_protobuff_code(it_has_alternatives_rpc.Service_test_protob
     async def search_alternatives(self, item: it_has_alternatives_objects.Search_Alternative_Request) -> it_has_alternatives_objects.Search_Alternative_Response:
         default_response = it_has_alternatives_objects.Search_Alternative_Response(error=None, alternative_object_list=[])
         try:
-            result = object_collection.find() # type: ignore
+            result = object_collection.find().skip(item.page_number*item.page_size).limit(item.page_size) # type: ignore
             object_list = []
             for one in result: #type: ignore
                 # print(one) #type: ignore
@@ -56,7 +56,6 @@ class My_Service_test_protobuff_code(it_has_alternatives_rpc.Service_test_protob
     async def update_alternative(self, item: it_has_alternatives_objects.Update_Object_Request) -> it_has_alternatives_objects.Update_Object_Response:
         default_response = it_has_alternatives_objects.Update_Object_Response(error=None, success=True)
 
-        print(item)
         if (item.an_object == None or item.an_object.name == None):
             default_response.error = "You should give me a name for that object"
             default_response.success = False
