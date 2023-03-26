@@ -8,9 +8,9 @@ import * as it_has_alternatives_objects from './generated_yrpc/it_has_alternativ
 import * as it_has_alternatives_rpc from './generated_yrpc/it_has_alternatives_rpc'
 
 import add_alternatives_to_an_object_component from './components/add_alternatives_to_an_object_component.vue'
+import { global_dict, global_functions } from './store'
 
 var route = useRoute()
-var router = useRouter()
 
 var clone_object = (obj: any) =>  JSON.parse(JSON.stringify(obj));
 
@@ -158,8 +158,7 @@ onMounted(async () => {
         <template #title>
           <div class="sub_item_title_css"
             @click="async ()=>{
-              await router.push(`/${dict.alternative_dict[an_id]?.name}`)
-              functions.refresh_page()
+              await global_dict.router.push(`/${dict.alternative_dict[an_id]?.name}`)
             }"
           >
               {{ dict.alternative_dict[an_id]?.name }}

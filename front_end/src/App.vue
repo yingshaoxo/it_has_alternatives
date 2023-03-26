@@ -1,7 +1,12 @@
 <script setup lang="ts">
-import { reactive } from 'vue';
+import { onMounted, reactive } from 'vue';
+import { global_functions } from './store';
 
 var dict = reactive({
+})
+
+onMounted(()=>{
+  global_functions.reload_when_url_change()
 })
 </script>
 

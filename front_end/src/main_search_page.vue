@@ -4,9 +4,8 @@ import { PlusOutlined, SearchOutlined, CheckOutlined, EditOutlined } from '@ant-
 
 import * as it_has_alternatives_objects from './generated_yrpc/it_has_alternatives_objects'
 import * as it_has_alternatives_rpc from './generated_yrpc/it_has_alternatives_rpc'
-import { useRouter } from 'vue-router';
 
-var router = useRouter()
+import { global_dict, global_functions } from './store'
 
 var clone_object = (obj: any) =>  JSON.parse(JSON.stringify(obj));
 
@@ -113,7 +112,7 @@ const functions = {
       if (dict.editable_data[record.id]) { 
       } else {
         console.log(record.name)
-        await router.push(`/${record.name}`)
+        await global_dict.router.push(`/${record.name}`)
       }
     }, 300)
   },
