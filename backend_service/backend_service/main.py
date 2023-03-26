@@ -42,6 +42,29 @@ class My_Service_test_protobuff_code(it_has_alternatives_rpc.Service_test_protob
             default_response.error = str(e)
         return default_response
 
+    async def get_an_object(self, item: it_has_alternatives_objects.Get_an_object_Request) -> it_has_alternatives_objects.Get_an_object_Response:
+        default_response = it_has_alternatives_objects.Get_an_object_Response()
+        try:
+            result = object_collection.find(
+                {
+                    it_has_alternatives_objects.An_Object()._key_string_dict.id: 
+                        {
+                            '$regex':f'^{item.id}$',
+                            "$options": "i"
+                        }
+                }
+            )
+
+            object_list = []
+            for one in result: #type: ignore
+                object_list.append(it_has_alternatives_objects.An_Object().from_dict(one)) #type: ignore
+            
+            if (len(object_list) > 0):
+                default_response.an_object = object_list[0]
+        except Exception as e:
+            default_response.error = str(e)
+        return default_response
+
     async def add_alternative(self, item: it_has_alternatives_objects.Add_Object_Request) -> it_has_alternatives_objects.Add_Object_Response:
         default_response = it_has_alternatives_objects.Add_Object_Response(error=None, success=True)
         try:

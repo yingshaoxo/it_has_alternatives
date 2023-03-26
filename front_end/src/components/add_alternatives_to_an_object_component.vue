@@ -2,11 +2,10 @@
 import { onMounted, reactive, ref, UnwrapRef } from 'vue';
 import { PlusOutlined, SearchOutlined, CheckOutlined, EditOutlined } from '@ant-design/icons-vue';
 
-import * as it_has_alternatives_objects from './generated_yrpc/it_has_alternatives_objects'
-import * as it_has_alternatives_rpc from './generated_yrpc/it_has_alternatives_rpc'
-import { useRouter } from 'vue-router';
+import * as it_has_alternatives_objects from '../generated_yrpc/it_has_alternatives_objects'
+import * as it_has_alternatives_rpc from '../generated_yrpc/it_has_alternatives_rpc'
 
-var router = useRouter()
+var properties = defineProps<{ master_object: it_has_alternatives_objects.An_Object }>()
 
 var clone_object = (obj: any) =>  JSON.parse(JSON.stringify(obj));
 
@@ -52,7 +51,7 @@ const dict = reactive({
   ],
   data_source: [
   ] as it_has_alternatives_objects.An_Object[],
-  editable_data: {} as UnwrapRef<Record<string, it_has_alternatives_objects.An_Object>>,
+  selected_row_keys: [] as string[],
   pagination: {
     current: 1,
     size: 10,
@@ -82,6 +81,26 @@ const functions = {
     )
     dict.data_source = result?.alternative_object_list ?? []
   },
+  on_select_change: (selected_row_keys: string[]) => {
+      dict.selected_row_keys = selected_row_keys
+  },
+  add_as_an_alternative_to_the_topest_object: async (object_id_list: string[]) => {
+    var the_master_object = clone_object(properties.master_object)
+
+    if (the_master_object.alternative_id_list == null) {
+      the_master_object.alternative_id_list = []
+    }
+    
+    for (var new_id of object_id_list) {
+      if (!the_master_object.alternative_id_list.includes(new_id)) {
+        the_master_object.alternative_id_list.push(new_id)
+      }
+    }
+
+    await functions.update_an_object(the_master_object)
+
+    dict.selected_row_keys = []
+  },
   add_an_object: async (the_object: it_has_alternatives_objects.An_Object) => {
     var request = new it_has_alternatives_objects.Add_Object_Request()
     request.an_object = the_object
@@ -106,35 +125,6 @@ const functions = {
       request
     )
   },
-  on_row_click: async (record: it_has_alternatives_objects.An_Object) => {
-    setTimeout(async ()=>{
-      // to prevent page jump when doing the editing
-      //@ts-ignore
-      if (dict.editable_data[record.id]) { 
-      } else {
-        console.log(record.name)
-        await router.push(`/${record.name}`)
-      }
-    }, 300)
-  },
-  on_cell_edit_button: async (dataIndex: string, id: string) => {
-    dict.what_column_is_in_editing_now = dataIndex
-    dict.editable_data![id] = clone_object(dict.data_source.filter(item => id === item.id)[0])
-  },
-  on_cell_save_action: async (id: string) => {
-    if ((dict.editable_data) && (dict.data_source)) {
-      Object.assign(dict.data_source.filter(item => id === item.id)[0], dict.editable_data[id]);
-
-      dict.what_column_is_in_editing_now = ""
-
-      var an_object = new it_has_alternatives_objects.An_Object()
-      await functions.update_an_object(an_object.from_dict(dict.editable_data[id])) 
-
-      delete dict.editable_data[id];
-
-      await functions.refresh_list()
-    }
-  }
 }
 
 onMounted(async () => {
@@ -164,9 +154,7 @@ onMounted(async () => {
     </div>
   </a-modal>
 
-  <div class="h-[50px]"></div>
-
-  <div class="w-full flex flex-col justify-start px-[100px]">
+  <div class="w-full flex flex-col justify-start">
     <a-form
       ref="formRef"
       name="advanced_search"
@@ -199,16 +187,24 @@ onMounted(async () => {
         </a-row>
         <div class="w-full flex flex-row justify-between">
           <div>
-            <a-button @click="()=>{dict.dialog_visible=true}">
-              <div class="flex flex-row justify-center align-middle content-center place-content-center place-items-center">
+            <a-button class="mr-[10px]" @click="()=>{dict.dialog_visible=true}">
+              <div class="flex flex-row place-content-center place-items-center">
                 <PlusOutlined class="mr-[8px]"></PlusOutlined>
                 Add
+              </div>
+            </a-button>
+            <a-button type="primary" @click="async ()=>{
+              await functions.add_as_an_alternative_to_the_topest_object(dict.selected_row_keys)
+            }">
+              <div class="flex flex-row place-content-center place-items-center">
+                <PlusOutlined class="mr-[8px]"></PlusOutlined>
+                Add as an alternative to the topest object
               </div>
             </a-button>
           </div>
           <div>
             <a-button type="primary" html-type="submit">
-              <div class="flex flex-row justify-center align-middle content-center place-content-center place-items-center">
+              <div class="flex flex-row place-content-center place-items-center">
                 <SearchOutlined class="mr-[8px]" />
                 Search
               </div>  
@@ -220,56 +216,53 @@ onMounted(async () => {
     </a-form>
 
     <div class="w-full flex flex-row justify-center">
-      <a-table class="mb-[24px]" bordered :data-source="dict.data_source" :columns="dict.column_name" :pagination="false"
-        :customRow="(record: any) => {
+      <a-table bordered :data-source="dict.data_source" :columns="dict.column_name" :pagination="false"
+        :rowKey="(record: it_has_alternatives_objects.An_Object)=>record.id"
+        :row-selection="{ selectedRowKeys: dict.selected_row_keys, onChange: functions.on_select_change }"
+        :customRow="(record: it_has_alternatives_objects.An_Object) => {
           return {
               onClick: (event: PointerEvent) => {
-                  functions.on_row_click(record)
+                if (!dict.selected_row_keys.includes(record?.id??'')) {
+                  dict.selected_row_keys.push(record?.id??'')
+                } else {
+                  dict.selected_row_keys = dict.selected_row_keys.filter(an_id => an_id != record.id)
+                }
               }
           }
         }"
       >
         <template #bodyCell="{ column, text, record }">
-          <template v-if="['name', 'description'].includes(column.dataIndex)">
-            <div class="editable-cell">
-              <div v-if="dict.editable_data && dict.editable_data[record.id] && column.dataIndex==dict.what_column_is_in_editing_now" class="editable-cell-input-wrapper">
-                <a-input v-model:value="
-                  //@ts-ignore 
-                  dict.editable_data[record.id][column.dataIndex]" @pressEnter="functions.on_cell_save_action(record.id)" />
-                <check-outlined class="editable-cell-icon-check" @click.stop="functions.on_cell_save_action(record.id)" />
-              </div>
-              <div v-else class="editable-cell-text-wrapper">
-                {{ text || ' ' }}
-                <edit-outlined class="editable-cell-icon" @click.stop="functions.on_cell_edit_button(column.dataIndex, record.id)" />
-              </div>
-            </div>
-          </template>
-          <template v-else-if="column.dataIndex === 'operations'">
-            <a-popconfirm
-              v-if="dict.data_source.length"
-              title="Sure to delete?"
-              @confirm="functions.delete_an_object(record)"
-            >
-              <a-button>Delete</a-button>
-            </a-popconfirm>
+          <template v-if="column.dataIndex === 'operations'">
+              <a-popconfirm
+                v-if="dict.data_source.length"
+                title="Sure to delete?"
+                @confirm="(e: any)=>{
+                  functions.delete_an_object(record)}"
+              >
+                <a-button @click.stop="()=>{}">Delete</a-button>
+              </a-popconfirm>
           </template>
         </template>
       </a-table>
     </div>
     
-    <div class="w-full flex flex-row justify-end">
-      <a-pagination
-        v-model:current="dict.pagination.current"
-        v-model:pageSize="dict.pagination.size"
-        show-size-changer
-        :total="dict.pagination.total"
-        @change="async (page: number, pageSize: number) => {
-          dict.pagination.current = page
-          dict.pagination.size = pageSize
-          await functions.refresh_list()
-        }"
-      />
-    </div>
+    <a-card :bordered="false"
+      style="border-top: 0.001px solid rgba(0, 0, 0, 0.02); border-left: 0.01px solid rgba(0, 0, 0, 0.1); border-right: 0.01px solid rgba(0, 0, 0, 0.1); border-bottom: 0.01px solid rgba(0, 0, 0, 0.2);"
+    >
+      <div class="w-full flex flex-row justify-end">
+        <a-pagination
+          v-model:current="dict.pagination.current"
+          v-model:pageSize="dict.pagination.size"
+          show-size-changer
+          :total="dict.pagination.total"
+          @change="async (page: number, pageSize: number) => {
+            dict.pagination.current = page
+            dict.pagination.size = pageSize
+            await functions.refresh_list()
+          }"
+        />
+      </div>
+      </a-card>
   </div>
 
   <div class="h-[200px]"></div>
@@ -278,7 +271,6 @@ onMounted(async () => {
 <style scoped lang="less">
 .ant-card-bordered {
   border: 1px solid #f0f0f0;
-  margin-bottom: 100px;
 }
 
 .editable-cell {

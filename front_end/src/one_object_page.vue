@@ -1,20 +1,64 @@
 <script setup lang="ts">
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 
-import { onMounted, reactive, ref, UnwrapRef } from 'vue';
+import { onActivated, onMounted, reactive, ref, UnwrapRef } from 'vue';
 import { PlusOutlined, SearchOutlined, CheckOutlined, EditOutlined } from '@ant-design/icons-vue';
 
 import * as it_has_alternatives_objects from './generated_yrpc/it_has_alternatives_objects'
 import * as it_has_alternatives_rpc from './generated_yrpc/it_has_alternatives_rpc'
 
+import add_alternatives_to_an_object_component from './components/add_alternatives_to_an_object_component.vue'
+
 var route = useRoute()
+var router = useRouter()
 
 var clone_object = (obj: any) =>  JSON.parse(JSON.stringify(obj));
 
 const dict = reactive({
   client: new it_has_alternatives_rpc.Client_it_has_alternatives("http://127.0.0.1:80"),
   object_name: "",
-  object: new it_has_alternatives_objects.An_Object()
+  object: new it_has_alternatives_objects.An_Object(),
+  alternative_dict: {} as Record<string, it_has_alternatives_objects.An_Object>,
+  column_name: [
+    {
+      title: 'Name',
+      dataIndex: 'name',
+      key: 'name',
+      align: 'center',
+      width: 220,
+      ellipsis: true
+    },
+    {
+      title: 'Description',
+      dataIndex: 'description',
+      key: 'description',
+      align: 'center',
+      ellipsis: true
+    },
+    {
+      title: 'Like',
+      dataIndex: 'likes',
+      key: 'likes',
+      align: 'center',
+      width: 80 
+    },
+    {
+      title: 'Dislike',
+      dataIndex: 'dislikes',
+      key: 'dislikes',
+      align: 'center',
+      width: 80 
+    },
+    {
+      title: 'Operations',
+      dataIndex: 'operations',
+      key: 'operations',
+      align: 'center',
+      width: 120
+    },
+  ],
+  dialog_visible: false,
+  temprary_object_for_adding: new it_has_alternatives_objects.An_Object(),
 })
 
 const functions = {
@@ -33,6 +77,42 @@ const functions = {
       return null
     }
   },
+  refresh_list: async () => {
+    dict.object = await functions.get_one_object(dict.object_name)?? new it_has_alternatives_objects.An_Object()
+    console.log(dict.object)
+    for (var an_id of dict.object.alternative_id_list??[]) {
+      console.log(an_id)
+      var request = new it_has_alternatives_objects.Get_an_object_Request()
+      request.id = an_id
+      var response = await dict.client.get_an_object(request)
+      if (response?.an_object != null) {
+        dict.alternative_dict[an_id] = response.an_object
+      } else {
+        var new_object = new it_has_alternatives_objects.An_Object()
+        new_object.id = an_id
+        dict.alternative_dict[an_id] = new_object
+      }
+    }
+  },
+  update_an_object: async (the_object: it_has_alternatives_objects.An_Object) => {
+    var request = new it_has_alternatives_objects.Update_Object_Request()
+    request.an_object = the_object
+    var result = await dict.client.update_alternative(
+      request
+    )
+
+    await functions.refresh_list()
+  },
+  delete_an_object_from_alternative_list: async (the_object: it_has_alternatives_objects.An_Object) => {
+    dict.object.alternative_id_list = dict.object.alternative_id_list?.filter((id) => id != the_object.id) ?? []
+
+    await functions.update_an_object(dict.object)
+
+    await functions.refresh_list()
+  },
+  refresh_page: () => {
+    location.reload();
+  }
 }
 
 onMounted(async () => {
@@ -42,12 +122,12 @@ onMounted(async () => {
     dict.object_name = route.params?.name??""
   }
 
-  dict.object = await functions.get_one_object(dict.object_name)?? new it_has_alternatives_objects.An_Object()
+  await functions.refresh_list()
 })
 </script>
 
 <template>
-  <div class="flex flex-row justify-center">
+  <div class="flex flex-col place-content-center place-items-center">
     <div class="container_css max-w-[1366px]">
       <div class="px-[0px]">
         <div class="flex flex-row justify-start mb-[20px]">
@@ -57,8 +137,8 @@ onMounted(async () => {
                 {{ dict.object_name }}
             </div>
             <div class="text-lg flex flex-row justify-start mb-[5px] ml-[2px]">
-              <div class="mr-[40px]">Like: 999</div>
-              <div class="">Dislike: 0</div>
+              <div class="mr-[40px]">Like: {{ dict.object.likes }}</div>
+              <div class="">Dislike: {{ dict.object.dislikes }}</div>
             </div>
           </div>
         </div>
@@ -71,12 +151,18 @@ onMounted(async () => {
 
       <a-divider style="height: 0.5px; background-color: rgba(124, 179, 5, 0.5)" />
 
-      <a-card :bordered="true" style="width: 100%; text-align: left;">
-        <!-- bodyStyle="padding-left: 24px; padding-right: 24px"
-        headStyle="padding-left: 24px; padding-right: 24px" -->
+      <a-card :bordered="true" style="width: 100%; text-align: left;"
+        v-for="an_id in dict.object?.alternative_id_list??[]"
+        v-show="dict.alternative_dict[an_id]?.name"
+      >
         <template #title>
-          <div class="sub_item_title_css">
-              {{ "super yingshaoxo" }}
+          <div class="sub_item_title_css"
+            @click="async ()=>{
+              await router.push(`/${dict.alternative_dict[an_id]?.name}`)
+              functions.refresh_page()
+            }"
+          >
+              {{ dict.alternative_dict[an_id]?.name }}
           </div>
         </template>
         <div class="flex flex-row justify-start mb-[20px]">
@@ -84,16 +170,70 @@ onMounted(async () => {
           <div class="w-full h-full ml-[20px] flex flex-col justify-start">
             <div class="w-full h-full flex flex-col justify-between">
               <div class="text-lg mb-[20px]">
-                The super version of yingshaoxo.
+                {{ dict.alternative_dict[an_id]?.description }}
               </div>
               <div class="text-xs flex flex-row justify-start ml-[2px]">
-                <div class="mr-[40px]">Like: 999</div>
-                <div class="">Dislike: 0</div>
+                <div class="mr-[40px]">Like: {{ dict.alternative_dict[an_id]?.likes }}</div>
+                <div class="">Dislike: {{ dict.alternative_dict[an_id]?.dislikes }}</div>
               </div>
             </div>
           </div>
         </div>
       </a-card>
+
+      <a-modal
+        v-model:visible="dict.dialog_visible"
+        title="Edit"
+        style="top: 20px"
+        @ok="async ()=>{
+          await functions.update_an_object(
+            dict.temprary_object_for_adding
+          )
+
+          dict.dialog_visible=false
+
+          await functions.refresh_list()
+        }"
+      >
+        <div class="space-y-[16px]">
+          <a-input :placeholder="dict.temprary_object_for_adding._key_string_dict.name" v-model:value="dict.temprary_object_for_adding.name" />
+          <a-input :placeholder="dict.temprary_object_for_adding._key_string_dict.description" v-model:value="dict.temprary_object_for_adding.description" />
+        </div>
+      </a-modal>
+
+      <div class="h-[50px]"></div>
+
+      <a-table class="mb-[24px]" bordered :data-source="dict.object.alternative_id_list?.map((an_id: string) => dict.alternative_dict[an_id])" :columns="dict.column_name" :pagination="false">
+        <template #bodyCell="{ column, text, record }">
+          <template v-if="['name', 'description'].includes(column.dataIndex)">
+            <div class="editable-cell">
+              <div class="editable-cell-text-wrapper">
+                {{ text || ' ' }}
+              </div>
+            </div>
+          </template>
+          <template v-else-if="column.dataIndex === 'operations'">
+            <a-button class="w-[80px] mb-[12px]" @click="()=>{
+              dict.temprary_object_for_adding = record
+              dict.dialog_visible=true
+            }">
+                Edit 
+            </a-button>
+            <a-popconfirm
+              title="Sure to delete?"
+              @confirm="functions.delete_an_object_from_alternative_list(record)"
+            >
+              <a-button class="w-[80px]">Delete</a-button>
+            </a-popconfirm>
+          </template>
+        </template>
+      </a-table>
+
+      <div class="h-[50px]"></div>
+
+      <add_alternatives_to_an_object_component 
+        :master_object="dict.object"
+      ></add_alternatives_to_an_object_component>
     </div>
   </div>
 </template>
@@ -182,16 +322,6 @@ onMounted(async () => {
     -webkit-box-orient: vertical;
     overflow: hidden;
     overflow-wrap: anywhere;
-}
-.green_text_css {
-    -webkit-text-size-adjust: 100%;
-    font-family: Arial;
-    font-weight: normal;
-    -webkit-font-smoothing: antialiased;
-    color: #006665;
-    font-size: 1rem;
-    line-height: 1;
-    box-sizing: inherit;
 }
 .description_css {
   width: 100%;

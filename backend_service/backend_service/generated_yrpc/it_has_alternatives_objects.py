@@ -130,12 +130,16 @@ class An_Object(YRPC_OBJECT_BASE_CLASS):
 @dataclass()
 class Search_Alternative_Request(YRPC_OBJECT_BASE_CLASS):
     key_words: str | None = None
+    keywords_of_name: str | None = None
+    keywords_of_description: str | None = None
     sort_by: Sort_By | None = None
     page_size: int | None = None
     page_number: int | None = None
 
     _property_name_to_its_type_dict = {
         "key_words": str,
+        "keywords_of_name": str,
+        "keywords_of_description": str,
         "sort_by": Sort_By,
         "page_size": int,
         "page_number": int,
@@ -144,6 +148,8 @@ class Search_Alternative_Request(YRPC_OBJECT_BASE_CLASS):
     @dataclass()
     class _key_string_dict:
         key_words: str = "key_words"
+        keywords_of_name: str = "keywords_of_name"
+        keywords_of_description: str = "keywords_of_description"
         sort_by: str = "sort_by"
         page_size: str = "page_size"
         page_number: str = "page_number"
@@ -170,6 +176,46 @@ class Search_Alternative_Response(YRPC_OBJECT_BASE_CLASS):
 
     def from_dict(self, dict: dict[str, Any]):
         new_variable: Search_Alternative_Response = super().from_dict(dict)
+        return new_variable
+
+
+@dataclass()
+class Get_an_object_Request(YRPC_OBJECT_BASE_CLASS):
+    id: str | None = None
+    name: str | None = None
+
+    _property_name_to_its_type_dict = {
+        "id": str,
+        "name": str,
+    }
+
+    @dataclass()
+    class _key_string_dict:
+        id: str = "id"
+        name: str = "name"
+
+    def from_dict(self, dict: dict[str, Any]):
+        new_variable: Get_an_object_Request = super().from_dict(dict)
+        return new_variable
+
+
+@dataclass()
+class Get_an_object_Response(YRPC_OBJECT_BASE_CLASS):
+    error: str | None = None
+    an_object: An_Object | None = None
+
+    _property_name_to_its_type_dict = {
+        "error": str,
+        "an_object": An_Object,
+    }
+
+    @dataclass()
+    class _key_string_dict:
+        error: str = "error"
+        an_object: str = "an_object"
+
+    def from_dict(self, dict: dict[str, Any]):
+        new_variable: Get_an_object_Response = super().from_dict(dict)
         return new_variable
 
 

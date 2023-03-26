@@ -13,6 +13,9 @@ class Service_test_protobuff_code:
     async def search_alternatives(self, item: Search_Alternative_Request) -> Search_Alternative_Response:
         return Search_Alternative_Response()
 
+    async def get_an_object(self, item: Get_an_object_Request) -> Get_an_object_Response:
+        return Get_an_object_Response()
+
     async def add_alternative(self, item: Add_Object_Request) -> Add_Object_Response:
         return Add_Object_Response()
 
@@ -28,6 +31,11 @@ def init(service_instance: Any):
     async def search_alternatives(item: Search_Alternative_Request) -> Search_Alternative_Response:
         item = Search_Alternative_Request().from_dict(item.to_dict())
         return (await service_instance.search_alternatives(item)).to_dict()
+
+    @router.post("/get_an_object/", tags=["it_has_alternatives"])
+    async def get_an_object(item: Get_an_object_Request) -> Get_an_object_Response:
+        item = Get_an_object_Request().from_dict(item.to_dict())
+        return (await service_instance.get_an_object(item)).to_dict()
 
     @router.post("/add_alternative/", tags=["it_has_alternatives"])
     async def add_alternative(item: Add_Object_Request) -> Add_Object_Response:

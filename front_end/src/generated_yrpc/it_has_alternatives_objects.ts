@@ -155,6 +155,8 @@ export class An_Object {
 
 export interface _Search_Alternative_Request {
     key_words: string | null;
+    keywords_of_name: string | null;
+    keywords_of_description: string | null;
     sort_by: Sort_By | null;
     page_size: number | null;
     page_number: number | null;
@@ -162,12 +164,16 @@ export interface _Search_Alternative_Request {
 
 export class Search_Alternative_Request {
     key_words: string | null = null;
+    keywords_of_name: string | null = null;
+    keywords_of_description: string | null = null;
     sort_by: Sort_By | null = null;
     page_size: number | null = null;
     page_number: number | null = null;
 
     _property_name_to_its_type_dict = {
             key_words: "string",
+            keywords_of_name: "string",
+            keywords_of_description: "string",
             sort_by: Sort_By,
             page_size: "number",
             page_number: "number",
@@ -175,6 +181,8 @@ export class Search_Alternative_Request {
 
     _key_string_dict = {
         key_words: "key_words",
+        keywords_of_name: "keywords_of_name",
+        keywords_of_description: "keywords_of_description",
         sort_by: "sort_by",
         page_size: "page_size",
         page_number: "page_number",
@@ -236,6 +244,96 @@ export class Search_Alternative_Response {
 
     from_dict(item: _Search_Alternative_Response): Search_Alternative_Response {
         let an_item = new Search_Alternative_Response()
+        let new_dict = _general_from_dict_function(an_item, item)
+
+        for (const key of Object.keys(new_dict)) {
+            let value = new_dict[key]
+            //@ts-ignore
+            this[key] = value
+            //@ts-ignore
+            an_item[key] = value
+        }
+
+        return an_item
+    }
+}
+
+
+export interface _Get_an_object_Request {
+    id: string | null;
+    name: string | null;
+}
+
+export class Get_an_object_Request {
+    id: string | null = null;
+    name: string | null = null;
+
+    _property_name_to_its_type_dict = {
+            id: "string",
+            name: "string",
+    };
+
+    _key_string_dict = {
+        id: "id",
+        name: "name",
+    };
+
+    to_dict(): _Get_an_object_Request {
+        return _general_to_dict_function(this);
+    }
+
+    _clone(): Get_an_object_Request {
+        let clone = Object.assign(Object.create(Object.getPrototypeOf(this)), this)
+        return clone
+    }
+
+    from_dict(item: _Get_an_object_Request): Get_an_object_Request {
+        let an_item = new Get_an_object_Request()
+        let new_dict = _general_from_dict_function(an_item, item)
+
+        for (const key of Object.keys(new_dict)) {
+            let value = new_dict[key]
+            //@ts-ignore
+            this[key] = value
+            //@ts-ignore
+            an_item[key] = value
+        }
+
+        return an_item
+    }
+}
+
+
+export interface _Get_an_object_Response {
+    error: string | null;
+    an_object: An_Object | null;
+}
+
+export class Get_an_object_Response {
+    error: string | null = null;
+    an_object: An_Object | null = null;
+
+    _property_name_to_its_type_dict = {
+            error: "string",
+            an_object: An_Object,
+    };
+
+    _key_string_dict = {
+        error: "error",
+        an_object: "an_object",
+    };
+
+    to_dict(): _Get_an_object_Response {
+        return _general_to_dict_function(this);
+    }
+
+    _clone(): Get_an_object_Response {
+        let clone = Object.assign(Object.create(Object.getPrototypeOf(this)), this)
+        return clone
+    }
+
+    from_dict(item: _Get_an_object_Response): Get_an_object_Response {
+        let an_item = new Get_an_object_Response()
         let new_dict = _general_from_dict_function(an_item, item)
 
         for (const key of Object.keys(new_dict)) {

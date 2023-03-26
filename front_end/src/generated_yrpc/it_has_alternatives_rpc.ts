@@ -56,6 +56,18 @@ export class Client_it_has_alternatives {
         }
     }
 
+    async get_an_object(item: it_has_alternatives_objects.Get_an_object_Request, ignore_error?: boolean): Promise<it_has_alternatives_objects.Get_an_object_Response | null> {
+        let result = await this._get_reponse_or_error_by_url_path_and_input("get_an_object", item.to_dict())
+        if (Object.keys(result).includes(this._special_error_key)) {
+            if ((ignore_error != null) && (!ignore_error)) {
+                this._error_handle_function(result[this._special_error_key])
+            }
+            return null
+        } else {
+            return new it_has_alternatives_objects.Get_an_object_Response().from_dict(result)
+        }
+    }
+
     async add_alternative(item: it_has_alternatives_objects.Add_Object_Request, ignore_error?: boolean): Promise<it_has_alternatives_objects.Add_Object_Response | null> {
         let result = await this._get_reponse_or_error_by_url_path_and_input("add_alternative", item.to_dict())
         if (Object.keys(result).includes(this._special_error_key)) {
