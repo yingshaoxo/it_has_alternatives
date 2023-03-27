@@ -158,7 +158,7 @@ onMounted(async () => {
         <template #title>
           <div class="sub_item_title_css"
             @click="async ()=>{
-              await global_dict.router.push(`/${dict.alternative_dict[an_id]?.name}`)
+              await global_dict.router.push(`/object/${dict.alternative_dict[an_id]?.name}`)
             }"
           >
               {{ dict.alternative_dict[an_id]?.name }}

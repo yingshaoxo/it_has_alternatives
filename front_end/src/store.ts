@@ -2,10 +2,12 @@ import { reactive } from 'vue'
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 import main_search_pageVue from './main_search_page.vue'
 import one_object_pageVue from './one_object_page.vue'
+import contribution_pageVue from './contribution_page.vue'
 
 const routes: RouteRecordRaw[] = [
   { path: '/', component: main_search_pageVue },
-  { path: '/:name', component: one_object_pageVue },
+  { path: '/object/:name', component: one_object_pageVue },
+  { path: '/contribution/', component: contribution_pageVue },
 ]
 
 const router = createRouter({
@@ -45,7 +47,14 @@ export var global_functions = {
         window.addEventListener('popstate', function (event) {
             check_url_change_function()
         });
-    }
+    },
+    is_en_broswer: ():boolean => {
+        let language = window.navigator.language;
+        if (language.startsWith("en-")) {
+            return true;
+        }
+        return false;
+    },
 }
 
 export default {
