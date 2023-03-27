@@ -2,7 +2,7 @@
 import { useRoute, useRouter } from 'vue-router';
 
 import { onActivated, onMounted, reactive, ref, UnwrapRef } from 'vue';
-import { PlusOutlined, SearchOutlined, CheckOutlined, EditOutlined } from '@ant-design/icons-vue';
+import { LikeOutlined, DislikeOutlined, PlusOutlined, SearchOutlined, CheckOutlined, EditOutlined } from '@ant-design/icons-vue';
 
 import * as it_has_alternatives_objects from './generated_yrpc/it_has_alternatives_objects'
 import * as it_has_alternatives_rpc from './generated_yrpc/it_has_alternatives_rpc'
@@ -103,6 +103,27 @@ const functions = {
 
     await functions.refresh_list()
   },
+  vote_an_object: async (the_object: it_has_alternatives_objects.An_Object, up: boolean) => {
+    if (the_object?.likes == null) {
+      the_object.likes = 0
+    }
+    if (the_object?.dislikes == null) {
+      the_object.dislikes = 0
+    }
+    if (up) {
+      the_object.likes += 1
+    } else {
+      the_object.dislikes += 1
+    }
+
+    var request = new it_has_alternatives_objects.Update_Object_Request()
+    request.an_object = the_object
+    var result = await dict.client.update_alternative(
+      request
+    )
+
+    await functions.refresh_list()
+  },
   delete_an_object_from_alternative_list: async (the_object: it_has_alternatives_objects.An_Object) => {
     dict.object.alternative_id_list = dict.object.alternative_id_list?.filter((id) => id != the_object.id) ?? []
 
@@ -136,9 +157,9 @@ onMounted(async () => {
             <div class="main_item_title_css">
                 {{ dict.object_name }}
             </div>
-            <div class="text-lg flex flex-row justify-start mb-[5px] ml-[2px]">
-              <div class="mr-[40px]">Like: {{ dict.object.likes }}</div>
-              <div class="">Dislike: {{ dict.object.dislikes }}</div>
+            <div class="text-lg flex flex-row justify-start mb-[5px] ml-[2px] text-gray-500">
+              <div class="mr-[40px]">Like: {{ dict?.object?.likes??'0' }}</div>
+              <div class="">Dislike: {{ dict?.object?.dislikes??'0' }}</div>
             </div>
           </div>
         </div>
@@ -151,34 +172,38 @@ onMounted(async () => {
 
       <a-divider style="height: 0.5px; background-color: rgba(124, 179, 5, 0.5)" />
 
-      <a-card :bordered="true" style="width: 100%; text-align: left;"
-        v-for="an_id in dict.object?.alternative_id_list??[]"
-        v-show="dict.alternative_dict[an_id]?.name"
-      >
-        <template #title>
-          <div class="sub_item_title_css"
-            @click="async ()=>{
-              await global_dict.router.push(`/object/${dict.alternative_dict[an_id]?.name}`)
-            }"
-          >
-              {{ dict.alternative_dict[an_id]?.name }}
-          </div>
-        </template>
-        <div class="flex flex-row justify-start mb-[20px]">
-          <div class="main_item_icon_css w-[148px] h-[148px]" style="background-color: rgba(124, 179, 5, 0.5);"></div>
-          <div class="w-full h-full ml-[20px] flex flex-col justify-start">
-            <div class="w-full h-full flex flex-col justify-between">
-              <div class="text-lg mb-[20px]">
-                {{ dict.alternative_dict[an_id]?.description }}
-              </div>
-              <div class="text-xs flex flex-row justify-start ml-[2px]">
-                <div class="mr-[40px]">Like: {{ dict.alternative_dict[an_id]?.likes }}</div>
-                <div class="">Dislike: {{ dict.alternative_dict[an_id]?.dislikes }}</div>
+      <div class="space-y-[24px]">
+        <a-card :bordered="true" style="width: 100%; text-align: left;"
+          v-for="an_id in dict.object?.alternative_id_list??[]"
+          v-show="dict.alternative_dict[an_id]?.name"
+        >
+          <template #title>
+            <div class="sub_item_title_css" 
+              @click="async ()=>{
+                await global_dict.router.push(`/object/${dict.alternative_dict[an_id]?.name}`)
+              }"
+            >
+                {{ dict.alternative_dict[an_id]?.name }}
+            </div>
+          </template>
+          <div class="flex flex-row justify-start mb-[20px]">
+            <div class="main_item_icon_css w-[148px] h-[148px]" style="background-color: rgba(124, 179, 5, 0.5);"></div>
+            <div class="w-full h-full ml-[20px] flex flex-col justify-start">
+              <div class="w-full h-full flex flex-col justify-between">
+                <div class="text-lg mb-[20px]">
+                  {{ dict.alternative_dict[an_id]?.description }}
+                </div>
+                <div class="text-sm flex flex-row justify-start ml-[2px] text-gray-400">
+                  <div class="mr-[40px]">Like: {{ dict.alternative_dict[an_id]?.likes??'0' }}</div>
+                  <div class="">Dislike: {{ dict.alternative_dict[an_id]?.dislikes??'0' }}</div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </a-card>
+        </a-card>
+      </div>
+
+      <div class="h-[100px]"></div>
 
       <a-modal
         v-model:visible="dict.dialog_visible"
@@ -200,15 +225,33 @@ onMounted(async () => {
         </div>
       </a-modal>
 
-      <div class="h-[50px]"></div>
-
-      <a-table class="mb-[24px]" bordered :data-source="dict.object.alternative_id_list?.map((an_id: string) => dict.alternative_dict[an_id])" :columns="dict.column_name" :pagination="false">
+      <a-table bordered :data-source="dict.object.alternative_id_list?.map((an_id: string) => dict.alternative_dict[an_id])" :columns="dict.column_name" :pagination="false">
         <template #bodyCell="{ column, text, record }">
           <template v-if="['name', 'description'].includes(column.dataIndex)">
             <div class="editable-cell">
               <div class="editable-cell-text-wrapper">
                 {{ text || ' ' }}
               </div>
+            </div>
+          </template>
+          <template v-else-if="column.dataIndex === 'likes'">
+            <div class="flex flex-row place-content-center place-items-center unselectable">
+              <div class="mr-[4px]">
+                {{ record?.likes??'0' }}
+              </div>
+              <LikeOutlined class="hover:text-red-400" 
+                @click.stop="functions.vote_an_object(record, true)"
+              />
+            </div>
+          </template>
+          <template v-else-if="column.dataIndex === 'dislikes'">
+            <div class="flex flex-row place-content-center place-items-center unselectable">
+              <div class="mr-[4px]">
+                {{ record?.dislikes??'0' }}
+              </div>
+              <DislikeOutlined class="hover:text-red-400" 
+                @click.stop="functions.vote_an_object(record, false)"
+              />
             </div>
           </template>
           <template v-else-if="column.dataIndex === 'operations'">
@@ -228,7 +271,7 @@ onMounted(async () => {
         </template>
       </a-table>
 
-      <div class="h-[50px]"></div>
+      <div class="h-[100px]"></div>
 
       <add_alternatives_to_an_object_component 
         :master_object="dict.object"
@@ -297,7 +340,6 @@ onMounted(async () => {
     box-sizing: inherit;
     font-family: Arial;
     font-style: normal;
-    color: rgb(0, 194, 194);
     text-rendering: optimizeLegibility;
     line-height: 1.4;
     font-weight: 700;

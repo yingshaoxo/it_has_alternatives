@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted, reactive, ref, UnwrapRef } from 'vue';
-import { PlusOutlined, SearchOutlined, CheckOutlined, EditOutlined } from '@ant-design/icons-vue';
+import { LikeOutlined, DislikeOutlined, PlusOutlined, SearchOutlined, CheckOutlined, EditOutlined } from '@ant-design/icons-vue';
 
 import * as it_has_alternatives_objects from '../generated_yrpc/it_has_alternatives_objects'
 import * as it_has_alternatives_rpc from '../generated_yrpc/it_has_alternatives_rpc'
@@ -125,6 +125,27 @@ const functions = {
       request
     )
   },
+  vote_an_object: async (the_object: it_has_alternatives_objects.An_Object, up: boolean) => {
+    if (the_object?.likes == null) {
+      the_object.likes = 0
+    }
+    if (the_object?.dislikes == null) {
+      the_object.dislikes = 0
+    }
+    if (up) {
+      the_object.likes += 1
+    } else {
+      the_object.dislikes += 1
+    }
+
+    var request = new it_has_alternatives_objects.Update_Object_Request()
+    request.an_object = the_object
+    var result = await dict.client.update_alternative(
+      request
+    )
+
+    await functions.refresh_list()
+  },
 }
 
 onMounted(async () => {
@@ -241,6 +262,26 @@ onMounted(async () => {
               >
                 <a-button @click.stop="()=>{}">Delete</a-button>
               </a-popconfirm>
+          </template>
+          <template v-else-if="column.dataIndex === 'likes'">
+            <div class="flex flex-row place-content-center place-items-center unselectable">
+              <div class="mr-[4px]">
+                {{ record?.likes??'0' }}
+              </div>
+              <LikeOutlined class="hover:text-red-400" 
+                @click.stop="functions.vote_an_object(record, true)"
+              />
+            </div>
+          </template>
+          <template v-else-if="column.dataIndex === 'dislikes'">
+            <div class="flex flex-row place-content-center place-items-center unselectable">
+              <div class="mr-[4px]">
+                {{ record?.dislikes??'0' }}
+              </div>
+              <DislikeOutlined class="hover:text-red-400" 
+                @click.stop="functions.vote_an_object(record, false)"
+              />
+            </div>
           </template>
         </template>
       </a-table>
