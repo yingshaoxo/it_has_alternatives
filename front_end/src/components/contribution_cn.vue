@@ -57,12 +57,12 @@ import wechat_pay from '../assets/wechat_pay.png'
 
                 <div>
                     <a-typography-title :level="4">微信</a-typography-title>
-                    <a-image :width="250" :src="wechat_pay" />
+                    <a-image :width="250" :preview="false" :src="wechat_pay" />
                 </div>
 
                 <div>
                     <a-typography-title :level="4">支付宝</a-typography-title>
-                    <a-image :width="250" :src="aili_pay" />
+                    <a-image :width="250" :preview="false" :src="aili_pay" />
                 </div>
             </div>
         </a-typography-paragraph>
