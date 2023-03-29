@@ -1,4 +1,3 @@
-#!/usr/bin/env /opt/homebrew/opt/python@3.10/bin/python3.10
 #!/usr/bin/env /usr/bin/python3
 import os
 
@@ -52,6 +51,15 @@ git reset --hard origin/master
         rm -fr ../backend_service/backend_service/vue/*
         mkdir -p ../backend_service/backend_service/vue
         cp -fr dist/* ../backend_service/backend_service/vue/
+        """)
+    
+    def rebuild_docker_image(self):
+        self.build_front_end()
+        t.run(f"""
+        cd {self.project_root_folder}
+        docker-compose -f docker-compose.service.yaml down
+        docker rmi yingshaoxo/it_has_alternatives
+        docker-compose -f docker-compose.service.yaml up -d
         """)
 
     def run(self):

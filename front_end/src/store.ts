@@ -32,7 +32,7 @@ const router = createRouter({
 export var global_dict = reactive({
     router,
     visitor_client: new it_has_alternatives_rpc.Client_it_has_alternatives(
-            "http://alternatives.domain.local", 
+            "https://alternatives.ai-tools-online.xyz", 
             {
             }, 
             (error_string: string)=>{
@@ -49,7 +49,7 @@ export var global_dict = reactive({
     ),
     admin_client: computed(() => {
         var a_client = new it_has_alternatives_rpc.Client_it_has_alternatives(
-            "http://admin_alternatives.domain.local", 
+            "https://admin_alternatives.ai-tools-online.xyz", 
             {
                 "jwt": localStorage.getItem("jwt")??""
             }, 
