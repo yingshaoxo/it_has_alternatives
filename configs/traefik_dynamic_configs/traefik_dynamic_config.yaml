@@ -1,13 +1,38 @@
 ## in /etc/hosts
 # 127.0.0.1 alternatives.domain.local admin_alternatives.domain.local
 
+# tcp:
+#   routers:
+#     next_traefik_router:
+#       entryPoints:
+#         - web
+#       # rule: "HostSNI(`*`)"
+#       # rule: "!HostSNI(`alternatives.ai-tools-online.xyz`)"
+#       rule: "HostSNI(`auth.weloveparty.ai-tools-online.xyz`)"
+#       service: next_traefik_service
+#       tls:
+#          passthrough: true
+#   services:
+#     next_traefik_service:
+#       loadBalancer:
+#         servers:
+#           - address: 144.202.109.163:810
+#           # - address: 127.0.0.1:810
+
 http:
   routers:
+    next_traefik_router:
+      entryPoints:
+        - web
+        - websecure
+      # rule: "!Host(`alternatives.ai-tools-online.xyz`)"
+      rule: "HostRegexp(`(.*)weloveparty(.*)`)"
+      service: next_traefik_service
     its_alternative_router_for_visitor_operations:
       entryPoints:
         - web
         - websecure
-      # rule: "(Host(`alternatives.ai-tools-online.xyz`) || Host(`alternatives.domain.local`)) && (PathPrefix(`/it_has_alternatives/get_special_jwt/`) || PathPrefix(`/it_has_alternatives/search_alternatives/`) || PathPrefix(`/it_has_alternatives/get_an_object/`) || PathPrefix(`/it_has_alternatives/is_jwt_ok/`))"
+      # rule: "(Host(`alternatives.ai-tools-online.xyz`) || Host(`alternatives.domain.local`)) && PathPrefix(`/it_has_alternatives/`)"
       rule: "Host(`alternatives.ai-tools-online.xyz`) || Host(`alternatives.domain.local`)"
       middlewares:
         - cros_allow_all
@@ -16,18 +41,11 @@ http:
       entryPoints:
         - web
         - websecure
-      # rule: "(Host(`admin_alternatives.ai-tools-online.xyz`) || Host(`admin_alternatives.domain.local`)) || (PathPrefix(`/it_has_alternatives/`))"
       rule: "Host(`admin_alternatives.ai-tools-online.xyz`) || Host(`admin_alternatives.domain.local`)"
       middlewares:
         - cros_allow_all
         - my_admin_jwt_auth
       service: backend_service_for_admin
-    for_other_requests_router:
-      entryPoints:
-        - web
-        - websecure
-      rule: "Host(`*`)"
-      service: next_traefik_service
 
   middlewares:
     cros_allow_all:
@@ -55,6 +73,10 @@ http:
               - "email" # jwt_auth_gateway will put this header to the original request
 
   services:
+    next_traefik_service:
+      loadBalancer:
+        servers:
+          - url: http://127.0.0.1:810
     backend_service_for_visitor:
       loadBalancer:
         servers:
@@ -66,9 +88,4 @@ http:
         servers:
           # - url: http://it_has_alternatives:5552
           - url: http://127.0.0.1:5552
-        passHostHeader: true
-    next_traefik_service:
-      loadBalancer:
-        servers:
-          - url: h2c://127.0.0.1:810
         passHostHeader: true
