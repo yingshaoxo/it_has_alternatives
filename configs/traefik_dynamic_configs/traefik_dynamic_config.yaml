@@ -43,12 +43,14 @@ http:
           - "*"
     my_jwt_auth:
         forwardAuth:
-          address: "http://it_has_alternatives:5550/v1/jwt_auth_gateway/"
+          # address: "http://it_has_alternatives:5550/v1/jwt_auth_gateway/"
+          address: "http://127.0.0.1:5550/v1/jwt_auth_gateway/"
           authResponseHeaders:
               - "email" # jwt_auth_gateway will put this header to the original request
     my_admin_jwt_auth:
         forwardAuth:
-          address: "http://it_has_alternatives:5550/v1/admin_jwt_auth_gateway/"
+          # address: "http://it_has_alternatives:5550/v1/admin_jwt_auth_gateway/"
+          address: "http://127.0.0.1:5550/v1/admin_jwt_auth_gateway/"
           authResponseHeaders:
               - "email" # jwt_auth_gateway will put this header to the original request
 
@@ -56,15 +58,17 @@ http:
     backend_service_for_visitor:
       loadBalancer:
         servers:
-          - url: http://it_has_alternatives:5551
+          # - url: http://it_has_alternatives:5551
+          - url: http://127.0.0.1:5551
         passHostHeader: true
     backend_service_for_admin:
       loadBalancer:
         servers:
-          - url: http://it_has_alternatives:5552
+          # - url: http://it_has_alternatives:5552
+          - url: http://127.0.0.1:5552
         passHostHeader: true
     next_traefik_service:
       loadBalancer:
         servers:
-          - url: h2c://127.0.0.1:808
+          - url: h2c://127.0.0.1:810
         passHostHeader: true

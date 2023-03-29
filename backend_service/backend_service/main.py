@@ -4,6 +4,7 @@ sys.path.insert(0,'..')
 import multiprocessing
 import os
 import re
+from time import sleep
 from typing import Any
 
 from auto_everything.base import Terminal
@@ -358,10 +359,17 @@ def start():
     process_1.start()
     process_2.start()
 
-    # Wait processes to complete
-    process_0.join()
-    process_1.join()
-    process_2.join()
+    while all([
+        process_0.is_alive(),
+        process_1.is_alive(),
+        process_2.is_alive()
+    ]):
+        sleep(10)
+
+    # # Wait processes to complete
+    # process_0.join()
+    # process_1.join()
+    # process_2.join()
 
 
 def main():

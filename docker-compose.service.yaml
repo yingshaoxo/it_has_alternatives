@@ -1,0 +1,17 @@
+version: "3.9"
+
+services:
+  it_has_alternatives:
+    network_mode: "host"        
+    build: 
+      context: ./backend_service
+      dockerfile: ./Dockerfile
+    image: yingshaoxo/it_has_alternatives
+    # expose:
+    #   - "5550"
+    #   - "5551"
+    ports:
+      - "5550:5550"
+      - "5551:5551"
+      - "5552:5552"
+    restart: unless-stopped

@@ -1,0 +1,38 @@
+version: "3.9"
+
+services:
+  my_mongo:
+    image: mongo:6.0.4-jammy
+    network_mode: "host"        
+    restart: always
+    # expose:
+    #   - "27017:27017"
+    ports:
+      - '27017:27017'
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=yingshaoxo
+      - MONGO_INITDB_ROOT_PASSWORD=yingshaoxo
+
+  # redis: 
+  #   image: redis:7.0
+  #   command: bash -c "redis-server --save 60 1" # save for every 1 minute if at least one operation has been made
+  #   expose:
+  #     - "6379:6379"
+  #   # ports:
+  #   #   - '6379:6379'
+  #   volumes:
+  #     - "./configs/redis_data:/data"
+  #   restart: unless-stopped
+ 
+  # db:
+  #   image: postgres:15
+  #   restart: always
+  #   environment:
+  #     - POSTGRES_USER=yingshaoxo
+  #     - POSTGRES_PASSWORD=yingshaoxo
+  #   expose:
+  #     - "5432:5432"
+  #   # ports:
+  #   #   - '5432:5432'
+  #   volumes: 
+  #     - ./configs/postgre_sql_db:/var/lib/postgresql/data
