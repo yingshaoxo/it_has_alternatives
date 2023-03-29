@@ -128,6 +128,86 @@ class An_Object(YRPC_OBJECT_BASE_CLASS):
 
 
 @dataclass()
+class Get_Special_JWT_Request(YRPC_OBJECT_BASE_CLASS):
+    email: str | None = None
+    password: str | None = None
+
+    _property_name_to_its_type_dict = {
+        "email": str,
+        "password": str,
+    }
+
+    @dataclass()
+    class _key_string_dict:
+        email: str = "email"
+        password: str = "password"
+
+    def from_dict(self, dict: dict[str, Any]):
+        new_variable: Get_Special_JWT_Request = super().from_dict(dict)
+        return new_variable
+
+
+@dataclass()
+class Get_Special_JWT_Response(YRPC_OBJECT_BASE_CLASS):
+    error: str | None = None
+    encrypted_jwt: str | None = None
+
+    _property_name_to_its_type_dict = {
+        "error": str,
+        "encrypted_jwt": str,
+    }
+
+    @dataclass()
+    class _key_string_dict:
+        error: str = "error"
+        encrypted_jwt: str = "encrypted_jwt"
+
+    def from_dict(self, dict: dict[str, Any]):
+        new_variable: Get_Special_JWT_Response = super().from_dict(dict)
+        return new_variable
+
+
+@dataclass()
+class is_JWT_ok_Request(YRPC_OBJECT_BASE_CLASS):
+    jwt: str | None = None
+
+    _property_name_to_its_type_dict = {
+        "jwt": str,
+    }
+
+    @dataclass()
+    class _key_string_dict:
+        jwt: str = "jwt"
+
+    def from_dict(self, dict: dict[str, Any]):
+        new_variable: is_JWT_ok_Request = super().from_dict(dict)
+        return new_variable
+
+
+@dataclass()
+class is_JWT_ok_Response(YRPC_OBJECT_BASE_CLASS):
+    error: str | None = None
+    ok: bool | None = None
+    is_admin: bool | None = None
+
+    _property_name_to_its_type_dict = {
+        "error": str,
+        "ok": bool,
+        "is_admin": bool,
+    }
+
+    @dataclass()
+    class _key_string_dict:
+        error: str = "error"
+        ok: str = "ok"
+        is_admin: str = "is_admin"
+
+    def from_dict(self, dict: dict[str, Any]):
+        new_variable: is_JWT_ok_Response = super().from_dict(dict)
+        return new_variable
+
+
+@dataclass()
 class Search_Alternative_Request(YRPC_OBJECT_BASE_CLASS):
     key_words: str | None = None
     keywords_of_name: str | None = None

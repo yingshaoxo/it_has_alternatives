@@ -2,15 +2,13 @@
 import { onMounted, reactive, ref, UnwrapRef } from 'vue';
 import { PlusOutlined, SearchOutlined, CheckOutlined, EditOutlined } from '@ant-design/icons-vue';
 
-import * as it_has_alternatives_objects from './generated_yrpc/it_has_alternatives_objects'
-import * as it_has_alternatives_rpc from './generated_yrpc/it_has_alternatives_rpc'
+import * as it_has_alternatives_objects from '../../generated_yrpc/it_has_alternatives_objects'
 
-import { global_dict, global_functions } from './store'
+import { global_dict, global_functions } from '../../store'
 
 var clone_object = (obj: any) =>  JSON.parse(JSON.stringify(obj));
 
 const dict = reactive({
-  client: new it_has_alternatives_rpc.Client_it_has_alternatives("http://127.0.0.1:80"),
   column_name: [
     {
       title: 'Name',
@@ -61,6 +59,9 @@ const dict = reactive({
   temprary_object_for_edit: new it_has_alternatives_objects.An_Object(),
   temprary_object_for_search: new it_has_alternatives_objects.An_Object(),
   what_column_is_in_editing_now: "",
+
+  login_dialog_visible: false,
+  login_request: new it_has_alternatives_objects.Get_Special_JWT_Request(),
 })
 
 const functions = {
@@ -76,7 +77,7 @@ const functions = {
     request.key_words = dict.temprary_object_for_search.name
     request.page_number = dict.pagination.current - 1
     request.page_size = dict.pagination.size
-    var result = await dict.client.search_alternatives(
+    var result = await global_dict.admin_client.search_alternatives(
       request
     )
     dict.data_source = result?.alternative_object_list ?? []
@@ -84,7 +85,7 @@ const functions = {
   add_an_object: async (the_object: it_has_alternatives_objects.An_Object) => {
     var request = new it_has_alternatives_objects.Add_Object_Request()
     request.an_object = the_object
-    var result = await dict.client.add_alternative(
+    var result = await global_dict.admin_client.add_alternative(
       request
     )
     console.log(result)
@@ -92,7 +93,7 @@ const functions = {
   delete_an_object: async (the_object: it_has_alternatives_objects.An_Object) => {
     var request = new it_has_alternatives_objects.Delete_Object_Request()
     request.an_object = the_object
-    var result = await dict.client.delete_alternative(
+    var result = await global_dict.admin_client.delete_alternative(
       request
     )
 
@@ -101,7 +102,7 @@ const functions = {
   update_an_object: async (the_object: it_has_alternatives_objects.An_Object) => {
     var request = new it_has_alternatives_objects.Update_Object_Request()
     request.an_object = the_object
-    var result = await dict.client.update_alternative(
+    var result = await global_dict.admin_client.update_alternative(
       request
     )
   },
@@ -112,7 +113,7 @@ const functions = {
       if (dict.editable_data[record.id]) { 
       } else {
         console.log(record.name)
-        await global_dict.router.push(`/object/${record.name}`)
+        await global_dict.router.push(`/admin/object/${record.name}`)
       }
     }, 300)
   },
@@ -138,10 +139,33 @@ const functions = {
 
 onMounted(async () => {
   await functions.refresh_list()
+
+  var is_user = await global_functions.is_user()
+  if (is_user == false) {
+    dict.login_dialog_visible = true
+  }
 })
 </script>
 
 <template>
+  <a-modal
+      v-model:visible="dict.login_dialog_visible"
+      title="Login"
+      style="top: 20px"
+      @ok="async ()=>{
+        var ok = await global_functions.login(dict.login_request) 
+        //@ts-ignore
+        if (ok) {  
+          dict.login_dialog_visible=false
+        }
+      }"
+    >
+    <div class="space-y-[16px]">
+      <a-input :placeholder="dict.login_request._key_string_dict.email" v-model:value="dict.login_request.email" />
+      <a-input :placeholder="dict.login_request._key_string_dict.password" v-model:value="dict.login_request.password" />
+    </div>
+  </a-modal>
+
   <a-modal
       v-model:visible="dict.dialog_visible"
       title="Add"
@@ -278,14 +302,14 @@ onMounted(async () => {
       <p>Help Please! 紧急援助！</p>
       <p>网站主现在正在深圳流浪，吃饭都需要从垃圾桶捡，才能维持生活。并且找不到免费的洗衣服、洗澡的地方。</p>
       <p style="color: red"
-        @click="global_dict.router.push('/contribution/')"
+        @click="global_dict.router.push('/admin/contribution/')"
       >如有意向救助，请点击这里！</p>
     </template>
     <template v-if="global_functions.is_en_broswer()">
       <p>Help Please!</p>
       <p>I'm living in street now. I have to pick up food from trash cans to find food. And I can't find a place to wash clothes and take showers for free.</p>
       <p style="color: red"
-        @click="global_dict.router.push('/contribution/')"
+        @click="global_dict.router.push('/admin/contribution/')"
       >If you wanted to help, click here！</p>
     </template>
   </a-card>

@@ -1,0 +1,3 @@
+MONGO_DB_URL = "mongodb://yingshaoxo:yingshaoxo@127.0.0.1:27017/"
+
+SECRET_TEXT = "Asking is not a bad thing if the person you ask are comfortable with it."

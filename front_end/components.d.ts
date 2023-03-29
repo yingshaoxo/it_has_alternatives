@@ -9,7 +9,6 @@ export {}
 
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
-    A_table: typeof import('./src/components/a_table.vue')['default']
     AButton: typeof import('ant-design-vue/es')['Button']
     ACard: typeof import('ant-design-vue/es')['Card']
     ACol: typeof import('ant-design-vue/es')['Col']
@@ -31,9 +30,7 @@ declare module '@vue/runtime-core' {
     ATypographyTitle: typeof import('ant-design-vue/es')['TypographyTitle']
     Contribution_cn: typeof import('./src/components/contribution_cn.vue')['default']
     Contribution_en: typeof import('./src/components/contribution_en.vue')['default']
-    copy: typeof import('./src/components/HelloWorld copy.vue')['default']
     HelloWorld: typeof import('./src/components/HelloWorld.vue')['default']
-    Main_search_page: typeof import('./src/components/main_search_page.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
   }

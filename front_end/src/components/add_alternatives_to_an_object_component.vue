@@ -3,14 +3,13 @@ import { onMounted, reactive, ref, UnwrapRef } from 'vue';
 import { LikeOutlined, DislikeOutlined, PlusOutlined, SearchOutlined, CheckOutlined, EditOutlined } from '@ant-design/icons-vue';
 
 import * as it_has_alternatives_objects from '../generated_yrpc/it_has_alternatives_objects'
-import * as it_has_alternatives_rpc from '../generated_yrpc/it_has_alternatives_rpc'
+import { global_dict, global_functions } from '../store';
 
 var properties = defineProps<{ master_object: it_has_alternatives_objects.An_Object }>()
 
 var clone_object = (obj: any) =>  JSON.parse(JSON.stringify(obj));
 
 const dict = reactive({
-  client: new it_has_alternatives_rpc.Client_it_has_alternatives("http://127.0.0.1:80"),
   column_name: [
     {
       title: 'Name',
@@ -76,7 +75,7 @@ const functions = {
     request.key_words = dict.temprary_object_for_search.name
     request.page_number = dict.pagination.current - 1
     request.page_size = dict.pagination.size
-    var result = await dict.client.search_alternatives(
+    var result = await global_dict.admin_client.search_alternatives(
       request
     )
     dict.data_source = result?.alternative_object_list ?? []
@@ -100,19 +99,23 @@ const functions = {
     await functions.update_an_object(the_master_object)
 
     dict.selected_row_keys = []
+
+    // await functions.refresh_list()
+    global_functions.refresh()
   },
   add_an_object: async (the_object: it_has_alternatives_objects.An_Object) => {
     var request = new it_has_alternatives_objects.Add_Object_Request()
     request.an_object = the_object
-    var result = await dict.client.add_alternative(
+    var result = await global_dict.admin_client.add_alternative(
       request
     )
-    console.log(result)
+
+    await functions.refresh_list()
   },
   delete_an_object: async (the_object: it_has_alternatives_objects.An_Object) => {
     var request = new it_has_alternatives_objects.Delete_Object_Request()
     request.an_object = the_object
-    var result = await dict.client.delete_alternative(
+    var result = await global_dict.admin_client.delete_alternative(
       request
     )
 
@@ -121,9 +124,11 @@ const functions = {
   update_an_object: async (the_object: it_has_alternatives_objects.An_Object) => {
     var request = new it_has_alternatives_objects.Update_Object_Request()
     request.an_object = the_object
-    var result = await dict.client.update_alternative(
+    var result = await global_dict.admin_client.update_alternative(
       request
     )
+
+    await functions.refresh_list()
   },
   vote_an_object: async (the_object: it_has_alternatives_objects.An_Object, up: boolean) => {
     if (the_object?.likes == null) {
@@ -140,7 +145,7 @@ const functions = {
 
     var request = new it_has_alternatives_objects.Update_Object_Request()
     request.an_object = the_object
-    var result = await dict.client.update_alternative(
+    var result = await global_dict.admin_client.update_alternative(
       request
     )
 

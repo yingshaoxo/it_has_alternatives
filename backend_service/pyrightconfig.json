@@ -4,5 +4,5 @@
     "reportPrivateUsage": false,
     "reportMissingTypeStubs": false,
     "reportUnknownMemberType": false,
-    "reportUnknownVariableType": false
+    "reportUnknownVariableType": false,
 }

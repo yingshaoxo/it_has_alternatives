@@ -44,6 +44,30 @@ export class Client_it_has_alternatives {
         }
     }
 
+    async get_special_jwt(item: it_has_alternatives_objects.Get_Special_JWT_Request, ignore_error?: boolean): Promise<it_has_alternatives_objects.Get_Special_JWT_Response | null> {
+        let result = await this._get_reponse_or_error_by_url_path_and_input("get_special_jwt", item.to_dict())
+        if (Object.keys(result).includes(this._special_error_key)) {
+            if ((ignore_error != null) && (!ignore_error)) {
+                this._error_handle_function(result[this._special_error_key])
+            }
+            return null
+        } else {
+            return new it_has_alternatives_objects.Get_Special_JWT_Response().from_dict(result)
+        }
+    }
+
+    async is_jwt_ok(item: it_has_alternatives_objects.is_JWT_ok_Request, ignore_error?: boolean): Promise<it_has_alternatives_objects.is_JWT_ok_Response | null> {
+        let result = await this._get_reponse_or_error_by_url_path_and_input("is_jwt_ok", item.to_dict())
+        if (Object.keys(result).includes(this._special_error_key)) {
+            if ((ignore_error != null) && (!ignore_error)) {
+                this._error_handle_function(result[this._special_error_key])
+            }
+            return null
+        } else {
+            return new it_has_alternatives_objects.is_JWT_ok_Response().from_dict(result)
+        }
+    }
+
     async search_alternatives(item: it_has_alternatives_objects.Search_Alternative_Request, ignore_error?: boolean): Promise<it_has_alternatives_objects.Search_Alternative_Response | null> {
         let result = await this._get_reponse_or_error_by_url_path_and_input("search_alternatives", item.to_dict())
         if (Object.keys(result).includes(this._special_error_key)) {

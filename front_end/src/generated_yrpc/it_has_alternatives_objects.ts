@@ -1,5 +1,106 @@
 const _ygrpc_official_types = ["string", "number", "boolean"];
 
+export const clone_object_ = (obj: any) =>  JSON.parse(JSON.stringify(obj));
+
+export const get_secret_alphabet_dict_ = (a_secret_string: string) =>  {
+    const ascii_lowercase = "abcdefghijklmnopqrstuvwxyz".split("")
+    const number_0_to_9 = "0123456789".split("")
+
+    var new_key = a_secret_string.replace(" ", "").toLowerCase().split("")
+    var character_list: string[] = []
+    for (var char of new_key) {
+        if ((/[a-zA-Z]/).test(char)) {
+            if (!character_list.includes(char)) {
+                character_list.push(char)
+            }
+        }
+    }
+
+    if (character_list.length >= 26) {
+        character_list = character_list.slice(0, 26)
+    } else {
+        var characters_that_the_key_didnt_cover: string[] = []
+        for (var char of ascii_lowercase) {
+            if (!character_list.includes(char)) {
+                characters_that_the_key_didnt_cover.push(char)
+            }
+        }
+        character_list = character_list.concat(characters_that_the_key_didnt_cover) 
+    }
+
+    var final_dict = {} as Record<string, string>
+
+    // for alphabet
+    for (let [index, char] of ascii_lowercase.entries()) {
+        final_dict[char] = character_list[index]
+    }
+
+    // for numbers
+    var original_numbers_in_alphabet_format = ascii_lowercase.slice(0, 10) // 0-9 representations in alphabet format
+    var secret_numbers_in_alphabet_format = Object.values(final_dict).slice(0, 10)
+    var final_number_list = [] as string[]
+    for (var index in number_0_to_9) {
+        var secret_char = secret_numbers_in_alphabet_format[index]
+        if (original_numbers_in_alphabet_format.includes(secret_char)) {
+            final_number_list.push(String(original_numbers_in_alphabet_format.findIndex((x) => x===secret_char)))
+        }
+    }
+    if (final_number_list.length >= 10) {
+        final_number_list = final_number_list.slice(0, 10)
+    } else {
+        var numbers_that_didnt_get_cover = [] as string[]
+        for (var char of number_0_to_9) {
+            if (!final_number_list.includes(char)) {
+                numbers_that_didnt_get_cover.push(char)
+            }
+        }
+        final_number_list = final_number_list.concat(numbers_that_didnt_get_cover)
+    }
+    for (let [index, char] of final_number_list.entries()) {
+        final_dict[String(index)] = char
+    }
+
+    return final_dict
+};
+
+export const encode_message_ = (a_secret_dict: Record<string, string>, message: string):string => {
+    var new_message = ""
+    for (const char of message) {
+        if ((!(/[a-zA-Z]/).test(char)) && (!(/^\d$/).test(char))) {
+            new_message += char
+            continue
+        }
+        var new_char = a_secret_dict[char.toLowerCase()]
+        if ((/[A-Z]/).test(char)) {
+            new_char = new_char.toUpperCase()
+        }
+        new_message += new_char
+    }
+    return new_message
+}
+
+export const decode_message_ = (a_secret_dict: Record<string, string>, message: string):string => {
+    var new_secret_dict = {} as Record<string, string>
+    for (var key of Object.keys(a_secret_dict)) {
+        new_secret_dict[a_secret_dict[key]] = key
+    }
+    a_secret_dict = new_secret_dict
+
+    var new_message = ""
+    for (const char of message) {
+        if ((!(/[a-zA-Z]/).test(char)) && (!(/^\d$/).test(char))) {
+            new_message += char
+            continue
+        }
+        var new_char = a_secret_dict[char.toLowerCase()]
+        if ((/[A-Z]/).test(char)) {
+            new_char = new_char.toUpperCase()
+        }
+        new_message += new_char
+    }
+    return new_message
+}
+
 const _general_to_dict_function = (object: any): any => {
     let the_type = typeof object
     if (the_type == "object") {
@@ -54,7 +155,6 @@ const _general_from_dict_function = (old_object: any, new_object: any): any => {
                     keys = Object.keys(old_object._property_name_to_its_type_dict)
                     for (const key of keys) {
                         if (Object.keys(new_object).includes(key)) {
-                            console.log((typeof old_object._property_name_to_its_type_dict[key]))
                             if ((typeof old_object._property_name_to_its_type_dict[key]) == "string") {
                                 // default value type
                                 old_object[key] = new_object[key]
@@ -138,6 +238,186 @@ export class An_Object {
 
     from_dict(item: _An_Object): An_Object {
         let an_item = new An_Object()
+        let new_dict = _general_from_dict_function(an_item, item)
+
+        for (const key of Object.keys(new_dict)) {
+            let value = new_dict[key]
+            //@ts-ignore
+            this[key] = value
+            //@ts-ignore
+            an_item[key] = value
+        }
+
+        return an_item
+    }
+}
+
+
+export interface _Get_Special_JWT_Request {
+    email: string | null;
+    password: string | null;
+}
+
+export class Get_Special_JWT_Request {
+    email: string | null = null;
+    password: string | null = null;
+
+    _property_name_to_its_type_dict = {
+            email: "string",
+            password: "string",
+    };
+
+    _key_string_dict = {
+        email: "email",
+        password: "password",
+    };
+
+    to_dict(): _Get_Special_JWT_Request {
+        return _general_to_dict_function(this);
+    }
+
+    _clone(): Get_Special_JWT_Request {
+        let clone = Object.assign(Object.create(Object.getPrototypeOf(this)), this)
+        return clone
+    }
+
+    from_dict(item: _Get_Special_JWT_Request): Get_Special_JWT_Request {
+        let an_item = new Get_Special_JWT_Request()
+        let new_dict = _general_from_dict_function(an_item, item)
+
+        for (const key of Object.keys(new_dict)) {
+            let value = new_dict[key]
+            //@ts-ignore
+            this[key] = value
+            //@ts-ignore
+            an_item[key] = value
+        }
+
+        return an_item
+    }
+}
+
+
+export interface _Get_Special_JWT_Response {
+    error: string | null;
+    encrypted_jwt: string | null;
+}
+
+export class Get_Special_JWT_Response {
+    error: string | null = null;
+    encrypted_jwt: string | null = null;
+
+    _property_name_to_its_type_dict = {
+            error: "string",
+            encrypted_jwt: "string",
+    };
+
+    _key_string_dict = {
+        error: "error",
+        encrypted_jwt: "encrypted_jwt",
+    };
+
+    to_dict(): _Get_Special_JWT_Response {
+        return _general_to_dict_function(this);
+    }
+
+    _clone(): Get_Special_JWT_Response {
+        let clone = Object.assign(Object.create(Object.getPrototypeOf(this)), this)
+        return clone
+    }
+
+    from_dict(item: _Get_Special_JWT_Response): Get_Special_JWT_Response {
+        let an_item = new Get_Special_JWT_Response()
+        let new_dict = _general_from_dict_function(an_item, item)
+
+        for (const key of Object.keys(new_dict)) {
+            let value = new_dict[key]
+            //@ts-ignore
+            this[key] = value
+            //@ts-ignore
+            an_item[key] = value
+        }
+
+        return an_item
+    }
+}
+
+
+export interface _is_JWT_ok_Request {
+    jwt: string | null;
+}
+
+export class is_JWT_ok_Request {
+    jwt: string | null = null;
+
+    _property_name_to_its_type_dict = {
+            jwt: "string",
+    };
+
+    _key_string_dict = {
+        jwt: "jwt",
+    };
+
+    to_dict(): _is_JWT_ok_Request {
+        return _general_to_dict_function(this);
+    }
+
+    _clone(): is_JWT_ok_Request {
+        let clone = Object.assign(Object.create(Object.getPrototypeOf(this)), this)
+        return clone
+    }
+
+    from_dict(item: _is_JWT_ok_Request): is_JWT_ok_Request {
+        let an_item = new is_JWT_ok_Request()
+        let new_dict = _general_from_dict_function(an_item, item)
+
+        for (const key of Object.keys(new_dict)) {
+            let value = new_dict[key]
+            //@ts-ignore
+            this[key] = value
+            //@ts-ignore
+            an_item[key] = value
+        }
+
+        return an_item
+    }
+}
+
+
+export interface _is_JWT_ok_Response {
+    error: string | null;
+    ok: boolean | null;
+    is_admin: boolean | null;
+}
+
+export class is_JWT_ok_Response {
+    error: string | null = null;
+    ok: boolean | null = null;
+    is_admin: boolean | null = null;
+
+    _property_name_to_its_type_dict = {
+            error: "string",
+            ok: "boolean",
+            is_admin: "boolean",
+    };
+
+    _key_string_dict = {
+        error: "error",
+        ok: "ok",
+        is_admin: "is_admin",
+    };
+
+    to_dict(): _is_JWT_ok_Response {
+        return _general_to_dict_function(this);
+    }
+
+    _clone(): is_JWT_ok_Response {
+        let clone = Object.assign(Object.create(Object.getPrototypeOf(this)), this)
+        return clone
+    }
+
+    from_dict(item: _is_JWT_ok_Response): is_JWT_ok_Response {
+        let an_item = new is_JWT_ok_Response()
         let new_dict = _general_from_dict_function(an_item, item)
 
         for (const key of Object.keys(new_dict)) {

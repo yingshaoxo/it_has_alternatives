@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { onMounted, reactive } from 'vue';
-import contribution_cn from './components/contribution_cn.vue';
-import contribution_en from './components/contribution_en.vue';
+import contribution_cn from '../../components/contribution_cn.vue';
+import contribution_en from '../../components/contribution_en.vue';
 
-import { global_dict, global_functions } from './store'
+import { global_dict, global_functions } from '../../store'
 
 var dict = reactive({
   component_list: [] as any[]

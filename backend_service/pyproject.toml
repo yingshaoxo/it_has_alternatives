@@ -8,10 +8,10 @@ packages = [{include = "backend_service"}]
 
 [tool.poetry.dependencies]
 python = "^3.10"
-auto-everything = {path = "/Users/yingshaoxo/CS/auto_everything", develop = true}
 fastapi = "^0.94.1"
 uvicorn = "^0.21.1"
 pymongo = "^4.3.3"
+auto-everything = "^3.19"
 
 [build-system]
 requires = ["poetry-core"]

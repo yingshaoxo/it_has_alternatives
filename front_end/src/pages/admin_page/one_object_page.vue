@@ -4,18 +4,16 @@ import { useRoute, useRouter } from 'vue-router';
 import { onActivated, onMounted, reactive, ref, UnwrapRef } from 'vue';
 import { LikeOutlined, DislikeOutlined, PlusOutlined, SearchOutlined, CheckOutlined, EditOutlined } from '@ant-design/icons-vue';
 
-import * as it_has_alternatives_objects from './generated_yrpc/it_has_alternatives_objects'
-import * as it_has_alternatives_rpc from './generated_yrpc/it_has_alternatives_rpc'
+import * as it_has_alternatives_objects from '../../generated_yrpc/it_has_alternatives_objects'
 
-import add_alternatives_to_an_object_component from './components/add_alternatives_to_an_object_component.vue'
-import { global_dict, global_functions } from './store'
+import add_alternatives_to_an_object_component from '../../components/add_alternatives_to_an_object_component.vue'
+import { global_dict, global_functions } from '../../store'
 
 var route = useRoute()
 
 var clone_object = (obj: any) =>  JSON.parse(JSON.stringify(obj));
 
 const dict = reactive({
-  client: new it_has_alternatives_rpc.Client_it_has_alternatives("http://127.0.0.1:80"),
   object_name: "",
   object: new it_has_alternatives_objects.An_Object(),
   alternative_dict: {} as Record<string, it_has_alternatives_objects.An_Object>,
@@ -67,7 +65,7 @@ const functions = {
     request.key_words = object_name
     request.page_number = 0
     request.page_size = 3
-    var result = await dict.client.search_alternatives(
+    var result = await global_dict.admin_client.search_alternatives(
       request
     )
     var result_object_list = result?.alternative_object_list ?? []
@@ -84,7 +82,7 @@ const functions = {
       console.log(an_id)
       var request = new it_has_alternatives_objects.Get_an_object_Request()
       request.id = an_id
-      var response = await dict.client.get_an_object(request)
+      var response = await global_dict.admin_client.get_an_object(request)
       if (response?.an_object != null) {
         dict.alternative_dict[an_id] = response.an_object
       } else {
@@ -97,7 +95,7 @@ const functions = {
   update_an_object: async (the_object: it_has_alternatives_objects.An_Object) => {
     var request = new it_has_alternatives_objects.Update_Object_Request()
     request.an_object = the_object
-    var result = await dict.client.update_alternative(
+    var result = await global_dict.admin_client.update_alternative(
       request
     )
 
@@ -118,7 +116,7 @@ const functions = {
 
     var request = new it_has_alternatives_objects.Update_Object_Request()
     request.an_object = the_object
-    var result = await dict.client.update_alternative(
+    var result = await global_dict.admin_client.update_alternative(
       request
     )
 
