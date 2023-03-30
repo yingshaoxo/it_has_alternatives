@@ -106,11 +106,16 @@ export var global_functions = {
         global_dict.t = useI18n().t
         global_dict.locale = useI18n().locale 
         global_dict.availableLocales = useI18n().availableLocales 
-        // global_dict.locale = "sc"
 
         var the_locale_in_disk = localStorage.getItem("locale")
         if (the_locale_in_disk) {
             global_dict.locale = the_locale_in_disk
+        } else {
+            if (global_functions.is_en_broswer()) {
+                global_dict.locale = "en"
+            } else {
+                global_dict.locale = "sc"
+            }
         }
 
         watch(useI18n().locale, (new_locale: any) => {
