@@ -16,35 +16,41 @@ const dict = reactive({
       key: 'name',
       align: 'center',
       width: 220,
-      ellipsis: true
+      ellipsis: true,
+      fixed: 'left',
     },
     {
       title: global_dict.t('Description'),
       dataIndex: 'description',
       key: 'description',
       align: 'center',
-      ellipsis: true
+      width: 420,
+      ellipsis: true,
+      // responsive: ["sm"],
     },
     {
       title: global_dict.t('Like'),
       dataIndex: 'likes',
       key: 'likes',
       align: 'center',
-      width: 80 
+      width: 80,
+      // responsive: ["lg"]
     },
     {
       title: global_dict.t('Dislike'),
       dataIndex: 'dislikes',
       key: 'dislikes',
       align: 'center',
-      width: 80 
+      width: 80,
+      // responsive: ["lg"]
     },
     {
       title: global_dict.t('Operations'),
       dataIndex: 'operations',
       key: 'operations',
       align: 'center',
-      width: 120
+      width: 120,
+      // fixed: 'right',
     },
   ],
   data_source: [
@@ -189,7 +195,7 @@ onMounted(async () => {
 
   <div class="h-[50px]"></div>
 
-  <div class="w-full flex flex-col justify-start px-[100px]">
+  <div class="w-full flex flex-col justify-start lg:px-[100px]">
     <a-form
       ref="formRef"
       name="advanced_search"
@@ -245,7 +251,8 @@ onMounted(async () => {
     </a-form>
 
     <div class="w-full flex flex-row justify-center">
-      <a-table class="mb-[24px]" bordered :data-source="dict.data_source" :columns="dict.column_name" :pagination="false"
+      <a-table class="mb-[24px]" bordered :data-source="dict.data_source" :columns="dict.column_name" :pagination="false" 
+        :scroll="{ x: '1500' }"
         :customRow="(record: any) => {
           return {
               onClick: (event: PointerEvent) => {
@@ -331,6 +338,10 @@ onMounted(async () => {
   border: 1px solid #f0f0f0;
   margin-bottom: 100px;
 }
+
+// .for_mobile({
+//   margin-bottom: 60px;
+// });
 
 .editable-cell_not_in_use {
   position: relative;

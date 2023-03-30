@@ -146,7 +146,7 @@ onMounted(async () => {
           </div>
         </div>
         <div class="w-full flex flex-row justify-start">
-            <div class="description_css">
+            <div class="main_item_description_css">
               {{ dict.object.description }}
             </div>
         </div>
@@ -172,7 +172,7 @@ onMounted(async () => {
             <div class="main_item_icon_css w-[148px] h-[148px]" style="background-color: rgba(124, 179, 5, 0.5);"></div>
             <div class="w-full h-full ml-[20px] flex flex-col justify-start">
               <div class="w-full h-full flex flex-col justify-between">
-                <div class="text-lg mb-[20px]">
+                <div class="sub_item_description_css text-lg mb-[20px]">
                   {{ dict.alternative_dict[an_id]?.description }}
                 </div>
                 <div class="text-sm flex flex-row justify-start ml-[2px] text-gray-400">
@@ -184,6 +184,8 @@ onMounted(async () => {
           </div>
         </a-card>
       </div>
+
+      <div class="h-[100px]"></div>
 
     </div>
   </div>
@@ -222,21 +224,42 @@ onMounted(async () => {
     min-width: 150px;
 }
 .main_item_title_css{
-    -webkit-text-size-adjust: 100%;
-    -webkit-font-smoothing: antialiased;
-    box-sizing: inherit;
-    font-family: Arial;
-    font-style: normal;
-    color: inherit;
-    text-rendering: optimizeLegibility;
-    font-size: 2.14286rem;
-    font-weight: 700;
-    word-wrap: break-word;
-    width: 100%;
-    line-height: 2.28571rem;
-    flex-grow: 1;
-    flex-shrink: 1;
-    text-align: left;
+  -webkit-text-size-adjust: 100%;
+  -webkit-font-smoothing: antialiased;
+  box-sizing: inherit;
+  font-family: Arial;
+  font-style: normal;
+  color: inherit;
+  text-rendering: optimizeLegibility;
+  font-weight: 700;
+  word-wrap: break-word;
+  width: 100%;
+  line-height: 2.28571rem;
+  flex-grow: 1;
+  flex-shrink: 1;
+  text-align: left;
+  font-size: 2.14286rem;
+
+  .for_mobile({
+    font-size: 28px;
+  });
+}
+.main_item_description_css {
+  width: 100%;
+  -webkit-text-size-adjust: 100%;
+  font-family: Arial;
+  font-weight: normal;
+  line-height: 1.5;
+  color: #333;
+  -webkit-font-smoothing: antialiased;
+  font-size: 1rem;
+  box-sizing: inherit;
+  display: flex;
+  flex-flow: row wrap;
+  border: 1px solid #00C2C2;
+  border-radius: 5px;
+  padding: 1.42857rem 1.78571rem 1.07143rem 1.78571rem !important;
+  background: #F5FCFC;
 }
 .sub_item_title_css {
     text-align: left;
@@ -255,39 +278,8 @@ onMounted(async () => {
     font-size: 1.28571rem;
 }
 .sub_item_description_css {
-    -webkit-text-size-adjust: 100%;
-    font-family: Arial;
-    font-weight: normal;
-    color: #333;
-    -webkit-font-smoothing: antialiased;
-    list-style-position: outside;
-    line-height: 1.6;
-    list-style-type: none;
-    font-size: inherit;
-    box-sizing: inherit;
-    width: auto;
-    float: none;
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    overflow-wrap: anywhere;
-}
-.description_css {
-  width: 100%;
-  -webkit-text-size-adjust: 100%;
-  font-family: Arial;
-  font-weight: normal;
-  line-height: 1.5;
-  color: #333;
-  -webkit-font-smoothing: antialiased;
-  font-size: 1rem;
-  box-sizing: inherit;
-  display: flex;
-  flex-flow: row wrap;
-  border: 1px solid #00C2C2;
-  border-radius: 5px;
-  padding: 1.42857rem 1.78571rem 1.07143rem 1.78571rem !important;
-  background: #F5FCFC;
+  .for_mobile({
+    font-size: 16px;
+  });
 }
 </style>

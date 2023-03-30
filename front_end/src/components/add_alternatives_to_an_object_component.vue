@@ -16,14 +16,16 @@ const dict = reactive({
       dataIndex: 'name',
       key: 'name',
       align: 'center',
-      width: 220,
-      ellipsis: true
+      width: 120,
+      ellipsis: true,
+      fixed: 'left'
     },
     {
       title: global_dict.t('Description'),
       dataIndex: 'description',
       key: 'description',
       align: 'center',
+      width: 420,
       ellipsis: true
     },
     {
@@ -181,70 +183,64 @@ onMounted(async () => {
   </a-modal>
 
   <div class="w-full flex flex-col justify-start">
-    <a-form
-      ref="formRef"
-      name="advanced_search"
-      class="ant-advanced-search-form"
-      :model="dict.temprary_object_for_search"
-      @finish="functions.on_search"
-    >
-      <a-card>
-        <a-row :gutter="24">
-          <a-col :span="24">
-            <a-form-item
-              :name="`Name`"
-              :label="global_dict.t('Name')"
-              :rules="[{ required: false, message: 'input something' }]"
-            >
-              <a-input v-model:value="dict.temprary_object_for_search.name"></a-input>
-            </a-form-item>
-          </a-col>
-          <!-- <template v-for="(key, index) in Object.keys(dict.temprary_object_for_search)" :key="key">
-            <a-col v-if="index<3 && (!key.startsWith('_'))" :span="8">
-              <a-form-item
-                :name="`${key}`"
-                :label="`${key.toUpperCase()}`"
-                :rules="[{ required: false, message: 'input something' }]"
-              >
-                <a-input v-model:value="dict.temprary_object_for_search[key]"></a-input>
-              </a-form-item>
-            </a-col>
-          </template> -->
-        </a-row>
-        <div class="w-full flex flex-row justify-between">
-          <div>
-            <a-button class="mr-[10px]" @click="()=>{dict.dialog_visible=true}">
-              <div class="flex flex-row place-content-center place-items-center">
-                <PlusOutlined class="mr-[8px]"></PlusOutlined>
-                {{ global_dict.t("Add") }}
-              </div>
-            </a-button>
-            <a-button type="primary" @click="async ()=>{
-              await functions.add_as_an_alternative_to_the_topest_object(dict.selected_row_keys)
-            }">
-              <div class="flex flex-row place-content-center place-items-center">
-                <PlusOutlined class="mr-[8px]"></PlusOutlined>
-                {{ global_dict.t("Add_as_an_alternative_to_the_topest_object") }}
-              </div>
-            </a-button>
-          </div>
-          <div>
-            <a-button type="primary" html-type="submit">
-              <div class="flex flex-row place-content-center place-items-center">
-                <SearchOutlined class="mr-[8px]" />
-                {{ global_dict.t("Search") }}
-              </div>  
-            </a-button>
-            <a-button style="margin: 0 8px" @click="() => functions.reset_search_bar()">
-              {{ global_dict.t("Clear") }}
-            </a-button>
-          </div>
-        </div>
-      </a-card>
-    </a-form>
+    <div class="overflow-x-auto">
+      <div class="max-md:w-[700px]">
+        <a-form
+          ref="formRef"
+          name="advanced_search"
+          class="ant-advanced-search-form"
+          :model="dict.temprary_object_for_search"
+          @finish="functions.on_search"
+        >
+          <a-card>
+                <a-row :gutter="24">
+                  <a-col :span="24">
+                    <a-form-item
+                      :name="`Name`"
+                      :label="global_dict.t('Name')"
+                      :rules="[{ required: false, message: 'input something' }]"
+                    >
+                      <a-input v-model:value="dict.temprary_object_for_search.name"></a-input>
+                    </a-form-item>
+                  </a-col>
+                </a-row>
+                <div class="w-full flex flex-row justify-between">
+                  <div>
+                    <a-button class="mr-[10px]" @click="()=>{dict.dialog_visible=true}">
+                      <div class="flex flex-row place-content-center place-items-center">
+                        <PlusOutlined class="mr-[8px]"></PlusOutlined>
+                        {{ global_dict.t("Add") }}
+                      </div>
+                    </a-button>
+                    <a-button type="primary" @click="async ()=>{
+                      await functions.add_as_an_alternative_to_the_topest_object(dict.selected_row_keys)
+                    }">
+                      <div class="flex flex-row place-content-center place-items-center">
+                        <PlusOutlined class="mr-[8px]"></PlusOutlined>
+                        {{ global_dict.t("Add_as_an_alternative_to_the_topest_object") }}
+                      </div>
+                    </a-button>
+                  </div>
+                  <div>
+                    <a-button type="primary" html-type="submit">
+                      <div class="flex flex-row place-content-center place-items-center">
+                        <SearchOutlined class="mr-[8px]" />
+                        {{ global_dict.t("Search") }}
+                      </div>  
+                    </a-button>
+                    <a-button style="margin: 0 8px" @click="() => functions.reset_search_bar()">
+                      {{ global_dict.t("Clear") }}
+                    </a-button>
+                  </div>
+                </div>
+          </a-card>
+        </a-form>
+      </div>
+    </div>
 
     <div class="w-full flex flex-row justify-center">
       <a-table bordered :data-source="dict.data_source" :columns="dict.column_name" :pagination="false"
+        :scroll="{ x: '1500' }"
         :rowKey="(record: it_has_alternatives_objects.An_Object)=>record.id"
         :row-selection="{ selectedRowKeys: dict.selected_row_keys, onChange: functions.on_select_change }"
         :customRow="(record: it_has_alternatives_objects.An_Object) => {
@@ -323,46 +319,5 @@ onMounted(async () => {
 <style scoped lang="less">
 .ant-card-bordered {
   border: 1px solid #f0f0f0;
-}
-
-.editable-cell {
-  position: relative;
-  .editable-cell-input-wrapper,
-  .editable-cell-text-wrapper {
-    padding-right: 24px;
-  }
-
-  .editable-cell-text-wrapper {
-    padding: 5px 24px 5px 5px;
-  }
-
-  .editable-cell-icon,
-  .editable-cell-icon-check {
-    position: absolute;
-    right: 0;
-    width: 20px;
-    cursor: pointer;
-  }
-
-  .editable-cell-icon {
-    margin-top: 4px;
-    display: none;
-  }
-
-  .editable-cell-icon-check {
-    line-height: 28px;
-  }
-
-  .editable-cell-icon:hover,
-  .editable-cell-icon-check:hover {
-    color: #108ee9;
-  }
-
-  .editable-add-btn {
-    margin-bottom: 8px;
-  }
-}
-.editable-cell:hover .editable-cell-icon {
-  display: inline-block;
 }
 </style>

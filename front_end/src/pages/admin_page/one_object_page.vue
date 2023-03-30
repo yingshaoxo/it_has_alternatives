@@ -24,13 +24,15 @@ const dict = reactive({
       key: 'name',
       align: 'center',
       width: 220,
-      ellipsis: true
+      ellipsis: true,
+      fixed: 'left'
     },
     {
       title: global_dict.t('Description'),
       dataIndex: 'description',
       key: 'description',
       align: 'center',
+      width: 420,
       ellipsis: true
     },
     {
@@ -223,7 +225,9 @@ onMounted(async () => {
         </div>
       </a-modal>
 
-      <a-table bordered :data-source="dict.object.alternative_id_list?.map((an_id: string) => dict.alternative_dict[an_id])" :columns="dict.column_name" :pagination="false">
+      <a-table bordered :data-source="dict.object.alternative_id_list?.map((an_id: string) => dict.alternative_dict[an_id])" :columns="dict.column_name" :pagination="false"
+        :scroll="{ x: '1500' }"
+      >
         <template #bodyCell="{ column, text, record }">
           <template v-if="['name', 'description'].includes(column.dataIndex)">
             <div class="editable-cell">

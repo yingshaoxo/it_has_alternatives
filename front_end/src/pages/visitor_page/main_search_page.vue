@@ -13,29 +13,35 @@ const dict = reactive({
       dataIndex: 'name',
       key: 'name',
       align: 'center',
-      width: 300,
-      ellipsis: true
+      ellipsis: true,
+      width: 200,
+      // fixed: 'left'
     },
     {
       title: global_dict.t('Description'),
       dataIndex: 'description',
       key: 'description',
       align: 'center',
-      ellipsis: true
+      width: 400,
+      ellipsis: true,
+      // fixed: 'left'
+      responsive: ["sm"]
     },
     {
       title: global_dict.t('Like'),
       dataIndex: 'likes',
       key: 'likes',
       align: 'center',
-      width: 80 
+      width: 80,
+      responsive: ["lg"]
     },
     {
       title: global_dict.t('Dislike'),
       dataIndex: 'dislikes',
       key: 'dislikes',
       align: 'center',
-      width: 80 
+      width: 80,
+      responsive: ["lg"]
     },
   ],
   data_source: [
@@ -91,11 +97,11 @@ onMounted(async () => {
 <template>
   <div class="h-[50px]"></div>
 
-  <div class="w-full flex flex-col justify-start px-[100px]">
+  <div class="w-full flex flex-col justify-start lg:px-[100px]">
     <a-form
       ref="formRef"
       name="advanced_search"
-      class="ant-advanced-search-form"
+      class="search_area ant-advanced-search-form"
       :model="dict.temprary_object_for_search"
       @finish="functions.on_search"
     >
@@ -110,17 +116,6 @@ onMounted(async () => {
               <a-input v-model:value="dict.temprary_object_for_search.name"></a-input>
             </a-form-item>
           </a-col>
-          <!-- <template v-for="(key, index) in Object.keys(dict.temprary_object_for_search)" :key="key">
-            <a-col v-if="index<3 && (!key.startsWith('_'))" :span="8">
-              <a-form-item
-                :name="`${key}`"
-                :label="`${key.toUpperCase()}`"
-                :rules="[{ required: false, message: 'input something' }]"
-              >
-                <a-input v-model:value="dict.temprary_object_for_search[key]"></a-input>
-              </a-form-item>
-            </a-col>
-          </template> -->
         </a-row>
         <div class="w-full flex flex-row justify-between">
           <div>
@@ -142,6 +137,7 @@ onMounted(async () => {
 
     <div class="w-full flex flex-row justify-center">
       <a-table class="mb-[24px]" bordered :data-source="dict.data_source" :columns="dict.column_name" :pagination="false"
+        :scroll="{ x: '1500' }"
         :customRow="(record: any) => {
           return {
               onClick: (event: PointerEvent) => {
@@ -184,9 +180,9 @@ onMounted(async () => {
     </div>
   </div>
 
-  <div class="h-[200px]"></div>
+  <div class="space_after_table"></div>
 
-  <div class="">
+  <div class="help_card">
     <a-card class="w-full">
       <template v-if="!global_functions.is_en_broswer()">
         <p>Help Please! 紧急援助！</p>
@@ -205,7 +201,7 @@ onMounted(async () => {
     </a-card>
   </div>
 
-  <div class="h-[100px]"></div>
+  <div class="page_bottom_space"></div>
 
   <div class="bottom-[0px] selection">
     <select v-model="global_dict.locale"
@@ -230,5 +226,31 @@ onMounted(async () => {
 
 .selection {
   margin-bottom: 10px !important;
+}
+
+.search_area {
+  .for_mobile({
+    margin-bottom: 60px;
+  });
+}
+
+.space_after_table {
+  height: 200px;
+  .for_mobile({
+    height: 100px;
+  });
+}
+
+.help_card {
+  .for_mobile({
+    margin-bottom: 0px;
+  });
+}
+
+.page_bottom_space {
+  height: 100px;
+  .for_mobile({
+    height: 50px;
+  });
 }
 </style>
