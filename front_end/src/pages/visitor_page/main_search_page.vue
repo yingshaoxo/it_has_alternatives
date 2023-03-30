@@ -9,7 +9,7 @@ import { global_dict, global_functions } from '../../store'
 const dict = reactive({
   column_name: [
     {
-      title: 'Name',
+      title: global_dict.t('Name'),
       dataIndex: 'name',
       key: 'name',
       align: 'center',
@@ -17,21 +17,21 @@ const dict = reactive({
       ellipsis: true
     },
     {
-      title: 'Description',
+      title: global_dict.t('Description'),
       dataIndex: 'description',
       key: 'description',
       align: 'center',
       ellipsis: true
     },
     {
-      title: 'Like',
+      title: global_dict.t('Like'),
       dataIndex: 'likes',
       key: 'likes',
       align: 'center',
       width: 80 
     },
     {
-      title: 'Dislike',
+      title: global_dict.t('Dislike'),
       dataIndex: 'dislikes',
       key: 'dislikes',
       align: 'center',
@@ -104,7 +104,7 @@ onMounted(async () => {
           <a-col :span="24">
             <a-form-item
               :name="`Name`"
-              :label="`Name`"
+              :label="global_dict.t(`Name`)"
               :rules="[{ required: false, message: 'input something' }]"
             >
               <a-input v-model:value="dict.temprary_object_for_search.name"></a-input>
@@ -124,21 +124,17 @@ onMounted(async () => {
         </a-row>
         <div class="w-full flex flex-row justify-between">
           <div>
-            <!-- <a-button @click="()=>{dict.dialog_visible=true}">
-              <div class="flex flex-row justify-center align-middle content-center place-content-center place-items-center">
-                <PlusOutlined class="mr-[8px]"></PlusOutlined>
-                Add
-              </div>
-            </a-button> -->
           </div>
           <div>
             <a-button type="primary" html-type="submit">
               <div class="flex flex-row justify-center align-middle content-center place-content-center place-items-center">
                 <SearchOutlined class="mr-[8px]" />
-                Search
+                {{ global_dict.t(`Search`) }}
               </div>  
             </a-button>
-            <a-button style="margin: 0 8px" @click="() => functions.reset_search_bar()">Clear</a-button>
+            <a-button style="margin: 0 8px" @click="() => functions.reset_search_bar()">
+                {{ global_dict.t(`Clear`) }}
+            </a-button>
           </div>
         </div>
       </a-card>
@@ -190,27 +186,49 @@ onMounted(async () => {
 
   <div class="h-[200px]"></div>
 
-  <a-card class="w-full">
-    <template v-if="!global_functions.is_en_broswer()">
-      <p>Help Please! 紧急援助！</p>
-      <p>网站主现在正在深圳流浪，吃饭都需要从垃圾桶捡，才能维持生活。并且找不到免费的洗衣服、洗澡的地方。</p>
-      <p style="color: red"
-        @click="global_dict.router.push('/contribution/')"
-      >如有意向救助，请点击这里！</p>
-    </template>
-    <template v-if="global_functions.is_en_broswer()">
-      <p>Help Please!</p>
-      <p>I'm living in street now. I have to pick up food from trash cans to find food. And I can't find a place to wash clothes and take showers for free.</p>
-      <p style="color: red"
-        @click="global_dict.router.push('/contribution/')"
-      >If you wanted to help, click here！</p>
-    </template>
-  </a-card>
+  <div class="">
+    <a-card class="w-full">
+      <template v-if="!global_functions.is_en_broswer()">
+        <p>Help Please! 紧急援助！</p>
+        <p>网站主现在正在深圳流浪，吃饭都需要从垃圾桶捡，才能维持生活。并且找不到免费的洗衣服、洗澡的地方。</p>
+        <p style="color: red"
+          @click="global_dict.router.push('/contribution/')"
+        >如有意向救助，请点击这里！</p>
+      </template>
+      <template v-if="global_functions.is_en_broswer()">
+        <p>Help Please!</p>
+        <p>I'm living in street now. I have to pick up food from trash cans to find food. And I can't find a place to wash clothes and take showers for free.</p>
+        <p style="color: red"
+          @click="global_dict.router.push('/contribution/')"
+        >If you wanted to help, click here！</p>
+      </template>
+    </a-card>
+  </div>
+
+  <div class="h-[100px]"></div>
+
+  <div class="bottom-[0px] selection">
+    <select v-model="global_dict.locale"
+      class="text-center border border-gray-300 rounded-full text-gray-600 h-10 px-5 bg-white hover:border-gray-400 focus:outline-none appearance-none"
+    >
+      <option 
+        v-for="locale in global_dict.availableLocales" :key="`locale-${locale}`" :value="locale"
+      >
+        {{ 
+          //@ts-ignore
+          global_dict.availableLocales_dict[locale] 
+        }}
+      </option>
+    </select>
+  </div>
 </template>
 
 <style scoped lang="less">
 .ant-card-bordered {
   border: 1px solid #f0f0f0;
-  margin-bottom: 100px;
+}
+
+.selection {
+  margin-bottom: 10px !important;
 }
 </style>

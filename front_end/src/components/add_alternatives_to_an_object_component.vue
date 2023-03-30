@@ -12,7 +12,7 @@ var clone_object = (obj: any) =>  JSON.parse(JSON.stringify(obj));
 const dict = reactive({
   column_name: [
     {
-      title: 'Name',
+      title: global_dict.t('Name'),
       dataIndex: 'name',
       key: 'name',
       align: 'center',
@@ -20,28 +20,28 @@ const dict = reactive({
       ellipsis: true
     },
     {
-      title: 'Description',
+      title: global_dict.t('Description'),
       dataIndex: 'description',
       key: 'description',
       align: 'center',
       ellipsis: true
     },
     {
-      title: 'Like',
+      title: global_dict.t('Like'),
       dataIndex: 'likes',
       key: 'likes',
       align: 'center',
       width: 80 
     },
     {
-      title: 'Dislike',
+      title: global_dict.t('Dislike'),
       dataIndex: 'dislikes',
       key: 'dislikes',
       align: 'center',
       width: 80 
     },
     {
-      title: 'Operations',
+      title: global_dict.t('Operations'),
       dataIndex: 'operations',
       key: 'operations',
       align: 'center',
@@ -161,7 +161,7 @@ onMounted(async () => {
 <template>
   <a-modal
       v-model:visible="dict.dialog_visible"
-      title="Add"
+      :title="global_dict.t(`Add`)"
       style="top: 20px"
       @ok="async ()=>{
         await functions.add_an_object(
@@ -193,7 +193,7 @@ onMounted(async () => {
           <a-col :span="24">
             <a-form-item
               :name="`Name`"
-              :label="`Name`"
+              :label="global_dict.t('Name')"
               :rules="[{ required: false, message: 'input something' }]"
             >
               <a-input v-model:value="dict.temprary_object_for_search.name"></a-input>
@@ -216,7 +216,7 @@ onMounted(async () => {
             <a-button class="mr-[10px]" @click="()=>{dict.dialog_visible=true}">
               <div class="flex flex-row place-content-center place-items-center">
                 <PlusOutlined class="mr-[8px]"></PlusOutlined>
-                Add
+                {{ global_dict.t("Add") }}
               </div>
             </a-button>
             <a-button type="primary" @click="async ()=>{
@@ -224,7 +224,7 @@ onMounted(async () => {
             }">
               <div class="flex flex-row place-content-center place-items-center">
                 <PlusOutlined class="mr-[8px]"></PlusOutlined>
-                Add as an alternative to the topest object
+                {{ global_dict.t("Add_as_an_alternative_to_the_topest_object") }}
               </div>
             </a-button>
           </div>
@@ -232,10 +232,12 @@ onMounted(async () => {
             <a-button type="primary" html-type="submit">
               <div class="flex flex-row place-content-center place-items-center">
                 <SearchOutlined class="mr-[8px]" />
-                Search
+                {{ global_dict.t("Search") }}
               </div>  
             </a-button>
-            <a-button style="margin: 0 8px" @click="() => functions.reset_search_bar()">Clear</a-button>
+            <a-button style="margin: 0 8px" @click="() => functions.reset_search_bar()">
+              {{ global_dict.t("Clear") }}
+            </a-button>
           </div>
         </div>
       </a-card>
@@ -265,7 +267,11 @@ onMounted(async () => {
                 @confirm="(e: any)=>{
                   functions.delete_an_object(record)}"
               >
-                <a-button @click.stop="()=>{}">Delete</a-button>
+                <a-button @click.stop="()=>{}">
+                  {{ 
+                    global_dict.t("Delete")
+                  }}
+                </a-button>
               </a-popconfirm>
           </template>
           <template v-else-if="column.dataIndex === 'likes'">

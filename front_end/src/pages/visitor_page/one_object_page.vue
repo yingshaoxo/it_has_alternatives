@@ -19,7 +19,7 @@ const dict = reactive({
   alternative_dict: {} as Record<string, it_has_alternatives_objects.An_Object>,
   column_name: [
     {
-      title: 'Name',
+      title: global_dict.t('Name'),
       dataIndex: 'name',
       key: 'name',
       align: 'center',
@@ -27,28 +27,28 @@ const dict = reactive({
       ellipsis: true
     },
     {
-      title: 'Description',
+      title: global_dict.t('Description'),
       dataIndex: 'description',
       key: 'description',
       align: 'center',
       ellipsis: true
     },
     {
-      title: 'Like',
+      title: global_dict.t('Like'),
       dataIndex: 'likes',
       key: 'likes',
       align: 'center',
       width: 80 
     },
     {
-      title: 'Dislike',
+      title: global_dict.t('Dislike'),
       dataIndex: 'dislikes',
       key: 'dislikes',
       align: 'center',
       width: 80 
     },
     {
-      title: 'Operations',
+      title: global_dict.t('Operations'),
       dataIndex: 'operations',
       key: 'operations',
       align: 'center',
@@ -140,8 +140,8 @@ onMounted(async () => {
                 {{ dict.object_name }}
             </div>
             <div class="text-lg flex flex-row justify-start mb-[5px] ml-[2px] text-gray-500">
-              <div class="mr-[40px]">Like: {{ dict?.object?.likes??'0' }}</div>
-              <div class="">Dislike: {{ dict?.object?.dislikes??'0' }}</div>
+              <div class="mr-[40px]">{{global_dict.t('Like')}}: {{ dict?.object?.likes??'0' }}</div>
+              <div class="">{{global_dict.t('Dislike')}}: {{ dict?.object?.dislikes??'0' }}</div>
             </div>
           </div>
         </div>
@@ -176,8 +176,8 @@ onMounted(async () => {
                   {{ dict.alternative_dict[an_id]?.description }}
                 </div>
                 <div class="text-sm flex flex-row justify-start ml-[2px] text-gray-400">
-                  <div class="mr-[40px]">Like: {{ dict.alternative_dict[an_id]?.likes??'0' }}</div>
-                  <div class="">Dislike: {{ dict.alternative_dict[an_id]?.dislikes??'0' }}</div>
+                  <div class="mr-[40px]">{{global_dict.t('Like')}}: {{ dict.alternative_dict[an_id]?.likes??'0' }}</div>
+                  <div class="">{{global_dict.t('Dislike')}}: {{ dict.alternative_dict[an_id]?.dislikes??'0' }}</div>
                 </div>
               </div>
             </div>

@@ -1,5 +1,6 @@
-import { computed, reactive } from 'vue'
+import { computed, reactive, watch } from 'vue'
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
+import { createI18n, useI18n } from 'vue-i18n'
 
 import { notification } from 'ant-design-vue';
 
@@ -14,6 +15,9 @@ import visitor_contribution_page from './pages/visitor_page/contribution_page.vu
 import * as it_has_alternatives_rpc from './generated_yrpc/it_has_alternatives_rpc'
 import * as it_has_alternatives_objects from './generated_yrpc/it_has_alternatives_objects'
 
+import en from './locales/en.json'
+import sc from './locales/sc.json'
+
 const routes: RouteRecordRaw[] = [
   { path: '/', component: visitor_main_search_page },
   { path: '/object/:name', component: visitor_one_object_page },
@@ -27,6 +31,25 @@ const routes: RouteRecordRaw[] = [
 const router = createRouter({
   history: createWebHistory(),
   routes: routes, 
+})
+
+export const i18n = createI18n({
+  legacy: false,
+  locale: 'en',
+  fallbackLocale: 'en', 
+  messages: {
+      en,
+      sc,
+  }
+  // messages: {
+  //   en: {
+  //       hello: '{msg} world'
+  //   },
+  //   cn: {
+  //       hello: '{msg} 世界'
+  //   },
+  //   //$t('message.hello', { msg: 'hello' })
+  // },
 })
 
 export var global_dict = reactive({
@@ -67,11 +90,34 @@ export var global_dict = reactive({
         )
         return a_client
     }),
+    t: {} as any,
+    locale: {} as any,
+    availableLocales: {} as any,
+    availableLocales_dict: {
+        "en": "English",
+        "sc": "中文"
+    },
     last_url: "",
     special_secret_dict: it_has_alternatives_objects.get_secret_alphabet_dict_("Asking is not a bad thing if the person you ask are comfortable with it.")
 })
 
 export var global_functions = {
+    init: () => {
+        global_dict.t = useI18n().t
+        global_dict.locale = useI18n().locale 
+        global_dict.availableLocales = useI18n().availableLocales 
+        // global_dict.locale = "sc"
+
+        var the_locale_in_disk = localStorage.getItem("locale")
+        if (the_locale_in_disk) {
+            global_dict.locale = the_locale_in_disk
+        }
+
+        watch(useI18n().locale, (new_locale: any) => {
+            console.log(new_locale)
+            localStorage.setItem("locale", new_locale)
+        });
+    },
     refresh: () => {
         window.location.reload();
     },
