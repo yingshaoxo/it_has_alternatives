@@ -2,8 +2,6 @@ import { computed, reactive, watch } from 'vue'
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 import { createI18n, useI18n } from 'vue-i18n'
 
-import { notification } from 'ant-design-vue';
-
 import admin_main_search_page from './pages/admin_page/main_search_page.vue'
 import admin_one_object_page from './pages/admin_page/one_object_page.vue'
 import admin_contribution_page from './pages/admin_page/contribution_page.vue'
@@ -17,6 +15,7 @@ import * as it_has_alternatives_objects from './generated_yrpc/it_has_alternativ
 
 import en from './locales/en.json'
 import sc from './locales/sc.json'
+import { notification } from 'ant-design-vue'
 
 const routes: RouteRecordRaw[] = [
   { path: '/', component: visitor_main_search_page },
@@ -59,15 +58,7 @@ export var global_dict = reactive({
             {
             }, 
             (error_string: string)=>{
-                console.log(error_string)
-                notification.open({
-                    message: 'error',
-                    description:
-                        error_string,
-                    onClick: () => {
-                        // console.log('Notification Clicked!');
-                    }
-                })
+                global_functions.print(error_string)
             }
     ),
     admin_client: computed(() => {
@@ -77,15 +68,7 @@ export var global_dict = reactive({
                 "jwt": localStorage.getItem("jwt")??""
             }, 
             (error_string: string)=>{
-                console.log(error_string)
-                notification.open({
-                    message: 'error',
-                    description:
-                        error_string,
-                    onClick: () => {
-                        // console.log('Notification Clicked!');
-                    }
-                })
+                global_functions.print(error_string)
             }
         )
         return a_client
@@ -96,6 +79,9 @@ export var global_dict = reactive({
     availableLocales_dict: {
         "en": "English",
         "sc": "中文"
+    },
+    print: (message: any) => {
+        // I'll define this function in App.vue
     },
     last_url: "",
     special_secret_dict: it_has_alternatives_objects.get_secret_alphabet_dict_("Asking is not a bad thing if the person you ask are comfortable with it.")

@@ -52,14 +52,14 @@ export class Client_it_has_alternatives {
             });
             return await response.json()
         } catch (e) {
-            return {_special_error_key: String(e)};
+            return {[this._special_error_key]: String(e)};
         }
     }
 
     async get_special_jwt(item: it_has_alternatives_objects.Get_Special_JWT_Request, ignore_error?: boolean): Promise<it_has_alternatives_objects.Get_Special_JWT_Response | null> {
         let result = await this._get_reponse_or_error_by_url_path_and_input("get_special_jwt", item.to_dict())
         if (Object.keys(result).includes(this._special_error_key)) {
-            if ((ignore_error != null) && (!ignore_error)) {
+            if ((ignore_error == null) || ((ignore_error != null) && (!ignore_error))) {
                 this._error_handle_function(result[this._special_error_key])
             }
             return null
@@ -71,7 +71,7 @@ export class Client_it_has_alternatives {
     async is_jwt_ok(item: it_has_alternatives_objects.is_JWT_ok_Request, ignore_error?: boolean): Promise<it_has_alternatives_objects.is_JWT_ok_Response | null> {
         let result = await this._get_reponse_or_error_by_url_path_and_input("is_jwt_ok", item.to_dict())
         if (Object.keys(result).includes(this._special_error_key)) {
-            if ((ignore_error != null) && (!ignore_error)) {
+            if ((ignore_error == null) || ((ignore_error != null) && (!ignore_error))) {
                 this._error_handle_function(result[this._special_error_key])
             }
             return null
@@ -83,7 +83,7 @@ export class Client_it_has_alternatives {
     async search_alternatives(item: it_has_alternatives_objects.Search_Alternative_Request, ignore_error?: boolean): Promise<it_has_alternatives_objects.Search_Alternative_Response | null> {
         let result = await this._get_reponse_or_error_by_url_path_and_input("search_alternatives", item.to_dict())
         if (Object.keys(result).includes(this._special_error_key)) {
-            if ((ignore_error != null) && (!ignore_error)) {
+            if ((ignore_error == null) || ((ignore_error != null) && (!ignore_error))) {
                 this._error_handle_function(result[this._special_error_key])
             }
             return null
@@ -95,7 +95,7 @@ export class Client_it_has_alternatives {
     async get_an_object(item: it_has_alternatives_objects.Get_an_object_Request, ignore_error?: boolean): Promise<it_has_alternatives_objects.Get_an_object_Response | null> {
         let result = await this._get_reponse_or_error_by_url_path_and_input("get_an_object", item.to_dict())
         if (Object.keys(result).includes(this._special_error_key)) {
-            if ((ignore_error != null) && (!ignore_error)) {
+            if ((ignore_error == null) || ((ignore_error != null) && (!ignore_error))) {
                 this._error_handle_function(result[this._special_error_key])
             }
             return null
@@ -107,7 +107,7 @@ export class Client_it_has_alternatives {
     async add_alternative(item: it_has_alternatives_objects.Add_Object_Request, ignore_error?: boolean): Promise<it_has_alternatives_objects.Add_Object_Response | null> {
         let result = await this._get_reponse_or_error_by_url_path_and_input("add_alternative", item.to_dict())
         if (Object.keys(result).includes(this._special_error_key)) {
-            if ((ignore_error != null) && (!ignore_error)) {
+            if ((ignore_error == null) || ((ignore_error != null) && (!ignore_error))) {
                 this._error_handle_function(result[this._special_error_key])
             }
             return null
@@ -119,7 +119,7 @@ export class Client_it_has_alternatives {
     async update_alternative(item: it_has_alternatives_objects.Update_Object_Request, ignore_error?: boolean): Promise<it_has_alternatives_objects.Update_Object_Response | null> {
         let result = await this._get_reponse_or_error_by_url_path_and_input("update_alternative", item.to_dict())
         if (Object.keys(result).includes(this._special_error_key)) {
-            if ((ignore_error != null) && (!ignore_error)) {
+            if ((ignore_error == null) || ((ignore_error != null) && (!ignore_error))) {
                 this._error_handle_function(result[this._special_error_key])
             }
             return null
@@ -131,7 +131,7 @@ export class Client_it_has_alternatives {
     async delete_alternative(item: it_has_alternatives_objects.Delete_Object_Request, ignore_error?: boolean): Promise<it_has_alternatives_objects.Delete_Object_Response | null> {
         let result = await this._get_reponse_or_error_by_url_path_and_input("delete_alternative", item.to_dict())
         if (Object.keys(result).includes(this._special_error_key)) {
-            if ((ignore_error != null) && (!ignore_error)) {
+            if ((ignore_error == null) || ((ignore_error != null) && (!ignore_error))) {
                 this._error_handle_function(result[this._special_error_key])
             }
             return null
