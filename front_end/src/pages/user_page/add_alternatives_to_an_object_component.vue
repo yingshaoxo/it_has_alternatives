@@ -2,10 +2,10 @@
 import { onMounted, reactive, ref, UnwrapRef } from 'vue';
 import { LikeOutlined, DislikeOutlined, PlusOutlined, SearchOutlined, CheckOutlined, EditOutlined } from '@ant-design/icons-vue';
 
-import * as it_has_alternatives_objects from '../generated_yrpc/it_has_alternatives_objects'
-import { global_dict, global_functions } from '../store';
+import * as it_has_alternatives_objects from '../../generated_yrpc/it_has_alternatives_objects'
+import { global_dict, global_functions } from '../../store';
 
-var properties = defineProps<{ master_object: it_has_alternatives_objects.An_Object }>()
+var properties = defineProps<{ master_object: it_has_alternatives_objects.An_Object, parent_refresh_function: any }>()
 
 var clone_object = (obj: any) =>  JSON.parse(JSON.stringify(obj));
 
@@ -77,15 +77,18 @@ const functions = {
     request.key_words = dict.temprary_object_for_search.name
     request.page_number = dict.pagination.current - 1
     request.page_size = dict.pagination.size
-    var result = await global_dict.admin_client.search_alternatives(
+    var result = await global_dict.visitor_client.search_alternatives(
       request
     )
     dict.data_source = result?.alternative_object_list ?? []
+
+    await properties.parent_refresh_function()
   },
   on_select_change: (selected_row_keys: string[]) => {
       dict.selected_row_keys = selected_row_keys
   },
   add_as_an_alternative_to_the_topest_object: async (object_id_list: string[]) => {
+    console.log(object_id_list)
     var the_master_object = clone_object(properties.master_object)
 
     if (the_master_object.alternative_id_list == null) {
@@ -93,6 +96,9 @@ const functions = {
     }
     
     for (var new_id of object_id_list) {
+      if (new_id == the_master_object.id) {
+        continue
+      }
       if (!the_master_object.alternative_id_list.includes(new_id)) {
         the_master_object.alternative_id_list.push(new_id)
       }
@@ -102,13 +108,12 @@ const functions = {
 
     dict.selected_row_keys = []
 
-    // await functions.refresh_list()
-    global_functions.refresh()
+    await functions.refresh_list()
   },
   add_an_object: async (the_object: it_has_alternatives_objects.An_Object) => {
     var request = new it_has_alternatives_objects.Add_Object_Request()
     request.an_object = the_object
-    var result = await global_dict.admin_client.add_alternative(
+    var result = await global_dict.user_client.add_alternative(
       request
     )
 
@@ -117,7 +122,7 @@ const functions = {
   delete_an_object: async (the_object: it_has_alternatives_objects.An_Object) => {
     var request = new it_has_alternatives_objects.Delete_Object_Request()
     request.an_object = the_object
-    var result = await global_dict.admin_client.delete_alternative(
+    var result = await global_dict.user_client.delete_alternative(
       request
     )
 
@@ -126,7 +131,7 @@ const functions = {
   update_an_object: async (the_object: it_has_alternatives_objects.An_Object) => {
     var request = new it_has_alternatives_objects.Update_Object_Request()
     request.an_object = the_object
-    var result = await global_dict.admin_client.update_alternative(
+    var result = await global_dict.user_client.update_alternative(
       request
     )
 
@@ -147,7 +152,7 @@ const functions = {
 
     var request = new it_has_alternatives_objects.Update_Object_Request()
     request.an_object = the_object
-    var result = await global_dict.admin_client.update_alternative(
+    var result = await global_dict.user_client.update_alternative(
       request
     )
 
@@ -164,6 +169,8 @@ onMounted(async () => {
   <a-modal
       v-model:visible="dict.dialog_visible"
       :title="global_dict.t(`Add`)"
+      :cancelText="global_dict.t('Cancel')"
+      :okText="global_dict.t('Ok')"
       style="top: 20px"
       @ok="async ()=>{
         await functions.add_an_object(

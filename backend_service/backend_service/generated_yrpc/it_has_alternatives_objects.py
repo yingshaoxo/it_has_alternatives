@@ -96,10 +96,55 @@ class Sort_By(Enum):
 
         
 @dataclass()
+class A_User(YRPC_OBJECT_BASE_CLASS):
+    id: str | None = None
+    create_time_in_10_numbers_timestamp_format: int | None = None
+    email: str | None = None
+    password: str | None = None
+    jwt: str | None = None
+    level: int | None = None
+    parent_email: str | None = None
+    children_email_list: list[str] | None = None
+    invitation_counting: int | None = None
+    invitation_code_list: list[str] | None = None
+
+    _property_name_to_its_type_dict = {
+        "id": str,
+        "create_time_in_10_numbers_timestamp_format": int,
+        "email": str,
+        "password": str,
+        "jwt": str,
+        "level": int,
+        "parent_email": str,
+        "children_email_list": str,
+        "invitation_counting": int,
+        "invitation_code_list": str,
+    }
+
+    @dataclass()
+    class _key_string_dict:
+        id: str = "id"
+        create_time_in_10_numbers_timestamp_format: str = "create_time_in_10_numbers_timestamp_format"
+        email: str = "email"
+        password: str = "password"
+        jwt: str = "jwt"
+        level: str = "level"
+        parent_email: str = "parent_email"
+        children_email_list: str = "children_email_list"
+        invitation_counting: str = "invitation_counting"
+        invitation_code_list: str = "invitation_code_list"
+
+    def from_dict(self, dict: dict[str, Any]):
+        new_variable: A_User = super().from_dict(dict)
+        return new_variable
+
+
+@dataclass()
 class An_Object(YRPC_OBJECT_BASE_CLASS):
     id: str | None = None
     name: str | None = None
     description: str | None = None
+    level: int | None = None
     likes: int | None = None
     dislikes: int | None = None
     alternative_id_list: list[str] | None = None
@@ -108,6 +153,7 @@ class An_Object(YRPC_OBJECT_BASE_CLASS):
         "id": str,
         "name": str,
         "description": str,
+        "level": int,
         "likes": int,
         "dislikes": int,
         "alternative_id_list": str,
@@ -118,6 +164,7 @@ class An_Object(YRPC_OBJECT_BASE_CLASS):
         id: str = "id"
         name: str = "name"
         description: str = "description"
+        level: str = "level"
         likes: str = "likes"
         dislikes: str = "dislikes"
         alternative_id_list: str = "alternative_id_list"
@@ -131,16 +178,19 @@ class An_Object(YRPC_OBJECT_BASE_CLASS):
 class Get_Special_JWT_Request(YRPC_OBJECT_BASE_CLASS):
     email: str | None = None
     password: str | None = None
+    invitation_code: str | None = None
 
     _property_name_to_its_type_dict = {
         "email": str,
         "password": str,
+        "invitation_code": str,
     }
 
     @dataclass()
     class _key_string_dict:
         email: str = "email"
         password: str = "password"
+        invitation_code: str = "invitation_code"
 
     def from_dict(self, dict: dict[str, Any]):
         new_variable: Get_Special_JWT_Request = super().from_dict(dict)
@@ -204,6 +254,43 @@ class is_JWT_ok_Response(YRPC_OBJECT_BASE_CLASS):
 
     def from_dict(self, dict: dict[str, Any]):
         new_variable: is_JWT_ok_Response = super().from_dict(dict)
+        return new_variable
+
+
+@dataclass()
+class Get_invitation_code_request(YRPC_OBJECT_BASE_CLASS):
+
+
+    _property_name_to_its_type_dict = {
+
+    }
+
+    @dataclass()
+    class _key_string_dict:
+        pass
+
+    def from_dict(self, dict: dict[str, Any]):
+        new_variable: Get_invitation_code_request = super().from_dict(dict)
+        return new_variable
+
+
+@dataclass()
+class Get_invitation_code_response(YRPC_OBJECT_BASE_CLASS):
+    error: str | None = None
+    invitation_code: str | None = None
+
+    _property_name_to_its_type_dict = {
+        "error": str,
+        "invitation_code": str,
+    }
+
+    @dataclass()
+    class _key_string_dict:
+        error: str = "error"
+        invitation_code: str = "invitation_code"
+
+    def from_dict(self, dict: dict[str, Any]):
+        new_variable: Get_invitation_code_response = super().from_dict(dict)
         return new_variable
 
 

@@ -6,7 +6,7 @@ import { LikeOutlined, DislikeOutlined, PlusOutlined, SearchOutlined, CheckOutli
 
 import * as it_has_alternatives_objects from '../../generated_yrpc/it_has_alternatives_objects'
 
-import add_alternatives_to_an_object_component from '../../components/add_alternatives_to_an_object_component.vue'
+import add_alternatives_to_an_object_component from './add_alternatives_to_an_object_component.vue'
 import { global_dict, global_functions } from '../../store'
 
 var route = useRoute()
@@ -66,8 +66,8 @@ const functions = {
     var request = new it_has_alternatives_objects.Search_Alternative_Request()
     request.key_words = object_name
     request.page_number = 0
-    request.page_size = 3
-    var result = await global_dict.admin_client.search_alternatives(
+  request.page_size = 3
+    var result = await global_dict.visitor_client.search_alternatives(
       request
     )
     var result_object_list = result?.alternative_object_list ?? []
@@ -79,12 +79,12 @@ const functions = {
   },
   refresh_list: async () => {
     dict.object = await functions.get_one_object(dict.object_name)?? new it_has_alternatives_objects.An_Object()
-    console.log(dict.object)
+    // console.log(dict.object)
     for (var an_id of dict.object.alternative_id_list??[]) {
-      console.log(an_id)
+      // console.log(an_id)
       var request = new it_has_alternatives_objects.Get_an_object_Request()
       request.id = an_id
-      var response = await global_dict.admin_client.get_an_object(request)
+      var response = await global_dict.visitor_client.get_an_object(request)
       if (response?.an_object != null) {
         dict.alternative_dict[an_id] = response.an_object
       } else {
@@ -97,7 +97,7 @@ const functions = {
   update_an_object: async (the_object: it_has_alternatives_objects.An_Object) => {
     var request = new it_has_alternatives_objects.Update_Object_Request()
     request.an_object = the_object
-    var result = await global_dict.admin_client.update_alternative(
+    var result = await global_dict.user_client.update_alternative(
       request
     )
 
@@ -118,7 +118,7 @@ const functions = {
 
     var request = new it_has_alternatives_objects.Update_Object_Request()
     request.an_object = the_object
-    var result = await global_dict.admin_client.update_alternative(
+    var result = await global_dict.user_client.update_alternative(
       request
     )
 
@@ -131,9 +131,6 @@ const functions = {
 
     await functions.refresh_list()
   },
-  refresh_page: () => {
-    location.reload();
-  }
 }
 
 onMounted(async () => {
@@ -144,6 +141,7 @@ onMounted(async () => {
   }
 
   await functions.refresh_list()
+  await global_functions.show_dialog_if_it_is_not_user()
 })
 </script>
 
@@ -180,7 +178,8 @@ onMounted(async () => {
           <template #title>
             <div class="sub_item_title_css" 
               @click="async ()=>{
-                await global_dict.router.push(`/object/${dict.alternative_dict[an_id]?.name}`)
+                await global_dict.router.push(`/user/object/${dict.alternative_dict[an_id]?.name}`)
+                global_functions.refresh()
               }"
             >
                 {{ dict.alternative_dict[an_id]?.name }}
@@ -207,7 +206,9 @@ onMounted(async () => {
 
       <a-modal
         v-model:visible="dict.dialog_visible"
-        title="Edit"
+        :title="global_dict.t('Edit')"
+        :cancelText="global_dict.t('Cancel')"
+        :okText="global_dict.t('Ok')"
         style="top: 20px"
         @ok="async ()=>{
           await functions.update_an_object(
@@ -257,20 +258,26 @@ onMounted(async () => {
             </div>
           </template>
           <template v-else-if="column.dataIndex === 'operations'">
-            <a-button class="w-[80px] mb-[12px]" @click="()=>{
+            <a-button class="w-[80px] mb-[12px]" @click.stop="()=>{
               dict.temprary_object_for_adding = record
               dict.dialog_visible=true
             }">
               {{ global_dict.t("Edit") }}
             </a-button>
-            <a-popconfirm
-              title="Sure to delete?"
-              @confirm="functions.delete_an_object_from_alternative_list(record)"
+            <div
+              @click.stop="(e:any) => {
+                e.preventDefault(); e.stopPropagation(); e.nativeEvent.stopImmediatePropagation(); 
+              }"
             >
-              <a-button class="w-[80px]">
-                {{ global_dict.t("Delete") }}
-              </a-button>
-            </a-popconfirm>
+              <a-popconfirm
+                title="Sure to delete?"
+                @confirm="functions.delete_an_object_from_alternative_list(record)"
+              >
+                <a-button class="w-[80px]">
+                  {{ global_dict.t("Delete") }}
+                </a-button>
+              </a-popconfirm>
+            </div>
           </template>
         </template>
       </a-table>
@@ -279,6 +286,7 @@ onMounted(async () => {
 
       <add_alternatives_to_an_object_component 
         :master_object="dict.object"
+        :parent_refresh_function="functions.refresh_list"
       ></add_alternatives_to_an_object_component>
     </div>
   </div>

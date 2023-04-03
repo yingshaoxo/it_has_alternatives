@@ -1,5 +1,7 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
+import { babel } from "@rollup/plugin-babel";
+
 import { resolve } from 'path'
 
 import Components from 'unplugin-vue-components/vite';
@@ -11,9 +13,24 @@ export default defineConfig({
   base: '/',
   plugins: [
     vue(),
-    Components({
-      resolvers: [AntDesignVueResolver()],
+    babel({
+      include: "src/prismjs.ts",
+      plugins: [
+        [
+          "prismjs",
+          {
+            languages: "all",
+            theme: "default",
+            css: true,
+          },
+        ],
+      ],
+      babelHelpers: "bundled",
+      extensions: [".js", ".jsx", ".es6", ".es", ".mjs", ".ts", "*.tsx"],
     }),
+    // Components({
+    //   resolvers: [AntDesignVueResolver()],
+    // }),
   ],
   css: {
     preprocessorOptions: {

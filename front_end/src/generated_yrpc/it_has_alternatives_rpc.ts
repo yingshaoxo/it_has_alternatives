@@ -5,13 +5,15 @@ export class Client_it_has_alternatives {
    * @param {string} _service_url is something like: "http://127.0.0.1:80" or "https://127.0.0.1"
    * @param {{ [key: string]: string }} _header  http headers, it's a dictionary, liek {'content-type', 'application/json'}
    * @param {Function} _error_handle_function will get called when http request got error, you need to give it a function like: (err: String) {print(err)}
+   * @param {Function} _interceptor_function will get called for every response, you need to give it a function like: (data: dict[Any, Any]) {print(data)}
    */
     _service_url: string
     _header: { [key: string]: string } = {}
     _error_handle_function: (error: string) => void = (error: string) => {console.log(error)}
     _special_error_key: string = "__yingshaoxo's_error__"
+    _interceptor_function: (data: any) => void = (data: any) => {console.log(data)}
 
-    constructor(service_url: string, header?: { [key: string]: string }, error_handle_function?: (error: string) => void) {
+    constructor(service_url: string, header?: { [key: string]: string }, error_handle_function?: (error: string) => void, interceptor_function?: (data: any) => void) {
         if (service_url.endsWith("/")) {
             service_url = service_url.slice(0, service_url.length-1);
         }
@@ -36,6 +38,10 @@ export class Client_it_has_alternatives {
         if (error_handle_function != null) {
             this._error_handle_function = error_handle_function
         }
+
+        if (interceptor_function != null) {
+            this._interceptor_function = interceptor_function
+        }
     } 
 
     async _get_reponse_or_error_by_url_path_and_input(sub_url: string, input_dict: { [key: string]: any }): Promise<any> {
@@ -50,7 +56,9 @@ export class Client_it_has_alternatives {
                     ...this._header
                 }
             });
-            return await response.json()
+            var json_response = await response.json()
+            this._interceptor_function(json_response)
+            return json_response
         } catch (e) {
             return {[this._special_error_key]: String(e)};
         }
@@ -77,6 +85,18 @@ export class Client_it_has_alternatives {
             return null
         } else {
             return new it_has_alternatives_objects.is_JWT_ok_Response().from_dict(result)
+        }
+    }
+
+    async get_invitation_code(item: it_has_alternatives_objects.Get_invitation_code_request, ignore_error?: boolean): Promise<it_has_alternatives_objects.Get_invitation_code_response | null> {
+        let result = await this._get_reponse_or_error_by_url_path_and_input("get_invitation_code", item.to_dict())
+        if (Object.keys(result).includes(this._special_error_key)) {
+            if ((ignore_error == null) || ((ignore_error != null) && (!ignore_error))) {
+                this._error_handle_function(result[this._special_error_key])
+            }
+            return null
+        } else {
+            return new it_has_alternatives_objects.Get_invitation_code_response().from_dict(result)
         }
     }
 

@@ -130,6 +130,16 @@ onMounted(async () => {
 </script>
 
 <template>
+  <a-button 
+    v-if="global_functions.get_current_url().includes('/object/')"
+    class="bottom_right" 
+    type="link"
+    @click="async () => {
+      await global_dict.router.push(`/user/object/${dict.object_name}`)
+      // global_dict.login_dialog_visible = true
+    }"
+  >{{global_dict.t("Edit")}}</a-button>
+
   <div class="flex flex-col place-content-center place-items-center">
     <div class="container_css max-w-[1366px]">
       <div class="px-[0px]">
@@ -163,6 +173,7 @@ onMounted(async () => {
             <div class="sub_item_title_css" 
               @click="async ()=>{
                 await global_dict.router.push(`/object/${dict.alternative_dict[an_id]?.name}`)
+                global_functions.refresh()
               }"
             >
                 {{ dict.alternative_dict[an_id]?.name }}
@@ -281,5 +292,11 @@ onMounted(async () => {
   .for_mobile({
     font-size: 16px;
   });
+}
+
+.bottom_right {
+  position: absolute;
+  bottom: 0;
+  right: 0;
 }
 </style>

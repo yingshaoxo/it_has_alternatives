@@ -3,7 +3,7 @@ version: "3.9"
 services:
   my_mongo:
     image: mongo:6.0.4-jammy
-    network_mode: "host"        
+    # network_mode: "host"        
     restart: always
     # expose:
     #   - "27017:27017"

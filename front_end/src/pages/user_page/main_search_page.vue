@@ -6,6 +6,9 @@ import * as it_has_alternatives_objects from '../../generated_yrpc/it_has_altern
 
 import { global_dict, global_functions } from '../../store'
 
+import help_card from '../general_page/help_card.vue'
+import Language_switch_selection from '../general_page/language_switch_selection.vue';
+
 var clone_object = (obj: any) =>  JSON.parse(JSON.stringify(obj));
 
 const dict = reactive({
@@ -62,12 +65,10 @@ const dict = reactive({
     total: 1000,
   },
   dialog_visible: false,
+  edit_dialog_visible: false,
   temprary_object_for_edit: new it_has_alternatives_objects.An_Object(),
   temprary_object_for_search: new it_has_alternatives_objects.An_Object(),
   what_column_is_in_editing_now: "",
-
-  login_dialog_visible: false,
-  login_request: new it_has_alternatives_objects.Get_Special_JWT_Request(),
 })
 
 const functions = {
@@ -83,7 +84,7 @@ const functions = {
     request.key_words = dict.temprary_object_for_search.name
     request.page_number = dict.pagination.current - 1
     request.page_size = dict.pagination.size
-    var result = await global_dict.admin_client.search_alternatives(
+    var result = await global_dict.visitor_client.search_alternatives(
       request
     )
     dict.data_source = result?.alternative_object_list ?? []
@@ -91,7 +92,7 @@ const functions = {
   add_an_object: async (the_object: it_has_alternatives_objects.An_Object) => {
     var request = new it_has_alternatives_objects.Add_Object_Request()
     request.an_object = the_object
-    var result = await global_dict.admin_client.add_alternative(
+    var result = await global_dict.user_client.add_alternative(
       request
     )
     console.log(result)
@@ -99,7 +100,7 @@ const functions = {
   delete_an_object: async (the_object: it_has_alternatives_objects.An_Object) => {
     var request = new it_has_alternatives_objects.Delete_Object_Request()
     request.an_object = the_object
-    var result = await global_dict.admin_client.delete_alternative(
+    var result = await global_dict.user_client.delete_alternative(
       request
     )
 
@@ -108,7 +109,7 @@ const functions = {
   update_an_object: async (the_object: it_has_alternatives_objects.An_Object) => {
     var request = new it_has_alternatives_objects.Update_Object_Request()
     request.an_object = the_object
-    var result = await global_dict.admin_client.update_alternative(
+    var result = await global_dict.user_client.update_alternative(
       request
     )
   },
@@ -119,7 +120,7 @@ const functions = {
       if (dict.editable_data[record.id]) { 
       } else {
         console.log(record.name)
-        await global_dict.router.push(`/admin/object/${record.name}`)
+        await global_dict.router.push(`/user/object/${record.name}`)
       }
     }, 300)
   },
@@ -140,41 +141,36 @@ const functions = {
 
       await functions.refresh_list()
     }
+  },
+  get_invitation_code: async () => {
+    let request = new it_has_alternatives_objects.Get_invitation_code_request();
+    let data = await global_dict.user_client.get_invitation_code(request)
+    if (data?.invitation_code == null) {
+      if (global_functions.is_english_language()) {
+        global_functions.print(`Get invitation code failed.`)
+      } else {
+        global_functions.print(`获取邀请码失败，你的2次邀请机会可能已经用完了。`)
+      }
+    } else {
+      navigator.clipboard.writeText(data.invitation_code??"")
+      global_functions.print(`Your invitation code has been copied into clipboard: \n\n${data.invitation_code}`)
+    }
   }
 }
 
 onMounted(async () => {
   await functions.refresh_list()
 
-  var is_user = await global_functions.is_user()
-  if (is_user == false) {
-    dict.login_dialog_visible = true
-  }
+  await global_functions.show_dialog_if_it_is_not_user()
 })
 </script>
 
 <template>
   <a-modal
-      v-model:visible="dict.login_dialog_visible"
-      :title="global_dict.t(`Login`)"
-      style="top: 20px"
-      @ok="async ()=>{
-        var ok = await global_functions.login(dict.login_request) 
-        //@ts-ignore
-        if (ok) {  
-          dict.login_dialog_visible=false
-        }
-      }"
-    >
-    <div class="space-y-[16px]">
-      <a-input :placeholder="dict.login_request._key_string_dict.email" v-model:value="dict.login_request.email" />
-      <a-input :placeholder="dict.login_request._key_string_dict.password" v-model:value="dict.login_request.password" />
-    </div>
-  </a-modal>
-
-  <a-modal
       v-model:visible="dict.dialog_visible"
       :title="global_dict.t(`Add`)"
+      :cancelText="global_dict.t('Cancel')"
+      :okText="global_dict.t('Ok')"
       style="top: 20px"
       @ok="async ()=>{
         await functions.add_an_object(
@@ -191,6 +187,28 @@ onMounted(async () => {
       <a-input :placeholder="dict.temprary_object_for_edit._key_string_dict.name" v-model:value="dict.temprary_object_for_edit.name" />
       <a-input :placeholder="dict.temprary_object_for_edit._key_string_dict.description" v-model:value="dict.temprary_object_for_edit.description" />
     </div>
+  </a-modal>
+
+  <a-modal
+      v-model:visible="dict.edit_dialog_visible"
+      :title="global_dict.t('Edit')"
+      :cancelText="global_dict.t('Cancel')"
+      :okText="global_dict.t('Ok')"
+      style="top: 20px"
+      @ok="async ()=>{
+        await functions.update_an_object(
+          dict.temprary_object_for_edit
+        )
+
+        dict.edit_dialog_visible=false
+
+        await functions.refresh_list()
+      }"
+    >
+      <div class="space-y-[16px]">
+        <a-input :placeholder="dict.temprary_object_for_edit._key_string_dict.name" v-model:value="dict.temprary_object_for_edit.name" />
+        <a-input :placeholder="dict.temprary_object_for_edit._key_string_dict.description" v-model:value="dict.temprary_object_for_edit.description" />
+      </div>
   </a-modal>
 
   <div class="h-[50px]"></div>
@@ -284,15 +302,27 @@ onMounted(async () => {
             </div>
           </template>
           <template v-else-if="column.dataIndex === 'operations'">
-            <a-popconfirm
-              v-if="dict.data_source.length"
-              title="Sure to delete?"
-              @confirm="functions.delete_an_object(record)"
+            <a-button class="w-[80px] mb-[12px]" @click.stop="()=>{
+              dict.temprary_object_for_edit = record
+              dict.dialog_visible=true
+            }">
+              {{ global_dict.t("Edit") }}
+            </a-button>
+            <div 
+              @click.stop="(e:any) => {
+                e.preventDefault(); e.stopPropagation(); e.nativeEvent.stopImmediatePropagation(); 
+              }"
             >
-              <a-button>
-                {{ global_dict.t(`Delete`) }}
-              </a-button>
-            </a-popconfirm>
+              <a-popconfirm
+                v-if="dict.data_source.length"
+                title="Sure to delete?"
+                @confirm="functions.delete_an_object(record)"
+              >
+                <a-button class="w-[80px]">
+                  {{ global_dict.t(`Delete`) }}
+                </a-button>
+              </a-popconfirm>
+            </div>
           </template>
         </template>
       </a-table>
@@ -315,22 +345,15 @@ onMounted(async () => {
 
   <div class="h-[200px]"></div>
 
-  <a-card class="w-full">
-    <template v-if="!global_functions.is_en_broswer()">
-      <p>Help Please! 紧急援助！</p>
-      <p>网站主现在正在深圳流浪，吃饭都需要从垃圾桶捡，才能维持生活。并且找不到免费的洗衣服、洗澡的地方。</p>
-      <p style="color: red"
-        @click="global_dict.router.push('/admin/contribution/')"
-      >如有意向救助，请点击这里！</p>
-    </template>
-    <template v-if="global_functions.is_en_broswer()">
-      <p>Help Please!</p>
-      <p>I'm living in street now. I have to pick up food from trash cans to find food. And I can't find a place to wash clothes and take showers for free.</p>
-      <p style="color: red"
-        @click="global_dict.router.push('/admin/contribution/')"
-      >If you wanted to help, click here！</p>
-    </template>
-  </a-card>
+  <help_card></help_card>
+
+  <a-button @click="async ()=>{
+    await functions.get_invitation_code()
+  }">{{ global_dict.t("Get invitation code") }}</a-button>
+
+  <div class="page_bottom_space"></div>
+
+  <Language_switch_selection></Language_switch_selection>
 </template>
 
 <style scoped lang="less">
@@ -339,19 +362,11 @@ onMounted(async () => {
   margin-bottom: 100px;
 }
 
-// .for_mobile({
-//   margin-bottom: 60px;
-// });
-
-.editable-cell_not_in_use {
+.editable-cell {
   position: relative;
-  .editable-cell-input-wrapper,
   .editable-cell-text-wrapper {
-    padding-right: 24px;
-  }
-
-  .editable-cell-text-wrapper {
-    padding: 5px 24px 5px 5px;
+    // padding-right: 24px;
+    // padding: 5px 24px 5px 5px;
   }
 
   .editable-cell-icon,
@@ -382,5 +397,13 @@ onMounted(async () => {
 }
 .editable-cell:hover .editable-cell-icon {
   display: inline-block;
+}
+
+
+.page_bottom_space {
+  height: 100px;
+  .for_mobile({
+    height: 50px;
+  });
 }
 </style>

@@ -23,19 +23,23 @@ trio = ["trio (>=0.16,<0.22)"]
 
 [[package]]
 name = "auto-everything"
-version = "3.19"
+version = "3.20"
 description = "do automate things on Linux"
 category = "main"
 optional = false
-python-versions = ">=3.10,<4.0"
-files = [
-    {file = "auto_everything-3.19-py3-none-any.whl", hash = "sha256:6932b4dc1228227afec2bf26f9b10858a363a574a06af69a9a268162e23f1449"},
-    {file = "auto_everything-3.19.tar.gz", hash = "sha256:430b760a3114bd540778eff3cfe12f40b8e26cd67437dbefc3d8cdc36e52c15c"},
-]
+python-versions = "^3.10"
+files = []
+develop = false
 
 [package.dependencies]
 fire = "0.5.0"
 psutil = "5.9.4"
+
+[package.source]
+type = "git"
+url = "https://github.com/yingshaoxo/auto_everything.git"
+reference = "dev"
+resolved_reference = "c1ba237ab31a61b7c63c7a128400a76c0459dbb2"
 
 [[package]]
 name = "click"
@@ -412,4 +416,4 @@ standard = ["colorama (>=0.4)", "httptools (>=0.5.0)", "python-dotenv (>=0.13)",
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "32866e313b0b0daf6b4449233c430c0fab3328700c019b39dd8c26642eb5119a"
+content-hash = "2db355f0c045755269840a8914329894acd5ce6a406a5734222666ab6971a06b"

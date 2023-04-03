@@ -192,10 +192,88 @@ enum Sort_By {
     dislike = "dislike",
 }
 
+export interface _A_User {
+    id: string | null;
+    create_time_in_10_numbers_timestamp_format: number | null;
+    email: string | null;
+    password: string | null;
+    jwt: string | null;
+    level: number | null;
+    parent_email: string | null;
+    children_email_list: string[] | null;
+    invitation_counting: number | null;
+    invitation_code_list: string[] | null;
+}
+
+export class A_User {
+    id: string | null = null;
+    create_time_in_10_numbers_timestamp_format: number | null = null;
+    email: string | null = null;
+    password: string | null = null;
+    jwt: string | null = null;
+    level: number | null = null;
+    parent_email: string | null = null;
+    children_email_list: string[] | null = null;
+    invitation_counting: number | null = null;
+    invitation_code_list: string[] | null = null;
+
+    _property_name_to_its_type_dict = {
+            id: "string",
+            create_time_in_10_numbers_timestamp_format: "number",
+            email: "string",
+            password: "string",
+            jwt: "string",
+            level: "number",
+            parent_email: "string",
+            children_email_list: "string",
+            invitation_counting: "number",
+            invitation_code_list: "string",
+    };
+
+    _key_string_dict = {
+        id: "id",
+        create_time_in_10_numbers_timestamp_format: "create_time_in_10_numbers_timestamp_format",
+        email: "email",
+        password: "password",
+        jwt: "jwt",
+        level: "level",
+        parent_email: "parent_email",
+        children_email_list: "children_email_list",
+        invitation_counting: "invitation_counting",
+        invitation_code_list: "invitation_code_list",
+    };
+
+    to_dict(): _A_User {
+        return _general_to_dict_function(this);
+    }
+
+    _clone(): A_User {
+        let clone = Object.assign(Object.create(Object.getPrototypeOf(this)), this)
+        return clone
+    }
+
+    from_dict(item: _A_User): A_User {
+        let an_item = new A_User()
+        let new_dict = _general_from_dict_function(an_item, item)
+
+        for (const key of Object.keys(new_dict)) {
+            let value = new_dict[key]
+            //@ts-ignore
+            this[key] = value
+            //@ts-ignore
+            an_item[key] = value
+        }
+
+        return an_item
+    }
+}
+
+
 export interface _An_Object {
     id: string | null;
     name: string | null;
     description: string | null;
+    level: number | null;
     likes: number | null;
     dislikes: number | null;
     alternative_id_list: string[] | null;
@@ -205,6 +283,7 @@ export class An_Object {
     id: string | null = null;
     name: string | null = null;
     description: string | null = null;
+    level: number | null = null;
     likes: number | null = null;
     dislikes: number | null = null;
     alternative_id_list: string[] | null = null;
@@ -213,6 +292,7 @@ export class An_Object {
             id: "string",
             name: "string",
             description: "string",
+            level: "number",
             likes: "number",
             dislikes: "number",
             alternative_id_list: "string",
@@ -222,6 +302,7 @@ export class An_Object {
         id: "id",
         name: "name",
         description: "description",
+        level: "level",
         likes: "likes",
         dislikes: "dislikes",
         alternative_id_list: "alternative_id_list",
@@ -256,20 +337,24 @@ export class An_Object {
 export interface _Get_Special_JWT_Request {
     email: string | null;
     password: string | null;
+    invitation_code: string | null;
 }
 
 export class Get_Special_JWT_Request {
     email: string | null = null;
     password: string | null = null;
+    invitation_code: string | null = null;
 
     _property_name_to_its_type_dict = {
             email: "string",
             password: "string",
+            invitation_code: "string",
     };
 
     _key_string_dict = {
         email: "email",
         password: "password",
+        invitation_code: "invitation_code",
     };
 
     to_dict(): _Get_Special_JWT_Request {
@@ -418,6 +503,92 @@ export class is_JWT_ok_Response {
 
     from_dict(item: _is_JWT_ok_Response): is_JWT_ok_Response {
         let an_item = new is_JWT_ok_Response()
+        let new_dict = _general_from_dict_function(an_item, item)
+
+        for (const key of Object.keys(new_dict)) {
+            let value = new_dict[key]
+            //@ts-ignore
+            this[key] = value
+            //@ts-ignore
+            an_item[key] = value
+        }
+
+        return an_item
+    }
+}
+
+
+export interface _Get_invitation_code_request {
+
+}
+
+export class Get_invitation_code_request {
+
+
+    _property_name_to_its_type_dict = {
+
+    };
+
+    _key_string_dict = {
+
+    };
+
+    to_dict(): _Get_invitation_code_request {
+        return _general_to_dict_function(this);
+    }
+
+    _clone(): Get_invitation_code_request {
+        let clone = Object.assign(Object.create(Object.getPrototypeOf(this)), this)
+        return clone
+    }
+
+    from_dict(item: _Get_invitation_code_request): Get_invitation_code_request {
+        let an_item = new Get_invitation_code_request()
+        let new_dict = _general_from_dict_function(an_item, item)
+
+        for (const key of Object.keys(new_dict)) {
+            let value = new_dict[key]
+            //@ts-ignore
+            this[key] = value
+            //@ts-ignore
+            an_item[key] = value
+        }
+
+        return an_item
+    }
+}
+
+
+export interface _Get_invitation_code_response {
+    error: string | null;
+    invitation_code: string | null;
+}
+
+export class Get_invitation_code_response {
+    error: string | null = null;
+    invitation_code: string | null = null;
+
+    _property_name_to_its_type_dict = {
+            error: "string",
+            invitation_code: "string",
+    };
+
+    _key_string_dict = {
+        error: "error",
+        invitation_code: "invitation_code",
+    };
+
+    to_dict(): _Get_invitation_code_response {
+        return _general_to_dict_function(this);
+    }
+
+    _clone(): Get_invitation_code_response {
+        let clone = Object.assign(Object.create(Object.getPrototypeOf(this)), this)
+        return clone
+    }
+
+    from_dict(item: _Get_invitation_code_response): Get_invitation_code_response {
+        let an_item = new Get_invitation_code_response()
         let new_dict = _general_from_dict_function(an_item, item)
 
         for (const key of Object.keys(new_dict)) {

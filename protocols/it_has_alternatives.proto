@@ -11,6 +11,8 @@ service it_has_alternatives {
     rpc get_special_jwt (Get_Special_JWT_Request) returns (Get_Special_JWT_Response);
     rpc is_jwt_ok (is_JWT_ok_Request) returns (is_JWT_ok_Response);
 
+    rpc get_invitation_code (Get_invitation_code_request) returns (Get_invitation_code_response);
+
     rpc search_alternatives (Search_Alternative_Request) returns (Search_Alternative_Response);
     rpc get_an_object (Get_an_object_Request) returns (Get_an_object_Response);
     rpc add_alternative (Add_Object_Request) returns (Add_Object_Response);
@@ -23,18 +25,34 @@ enum Sort_By {
     dislike = 1;
 }
 
+message A_User {
+    string id = 1;
+    int64 create_time_in_10_numbers_timestamp_format = 2;
+    //datetime.fromtimestamp(timestamp)
+    string email = 3;
+    string password = 4;
+    string jwt = 5;
+    int64 level = 6;
+    string parent_email = 7;
+    repeated string children_email_list = 8;
+    int64 invitation_counting = 9;
+    repeated string invitation_code_list = 10;
+}
+
 message An_Object {
     string id = 1;
     string name = 2;
     string description = 3;
-    int64 likes = 4; 
-    int64 dislikes = 5; 
-    repeated string alternative_id_list = 6;
+    int64 level = 4;
+    int64 likes = 5; 
+    int64 dislikes = 6; 
+    repeated string alternative_id_list = 7;
 }
 
 message Get_Special_JWT_Request {
     string email = 1;
     string password = 2; // it needs to have a strong password
+    string invitation_code = 3;
 }
 
 message Get_Special_JWT_Response {
@@ -50,6 +68,15 @@ message is_JWT_ok_Response {
     string error = 1;
     bool ok = 2;
     bool is_admin = 3;
+}
+
+message Get_invitation_code_request {
+
+}
+
+message Get_invitation_code_response {
+    string error = 1;
+    string invitation_code = 2;
 }
 
 message Search_Alternative_Request {

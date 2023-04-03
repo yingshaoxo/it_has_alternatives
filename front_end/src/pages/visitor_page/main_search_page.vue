@@ -6,6 +6,9 @@ import * as it_has_alternatives_objects from '../../generated_yrpc/it_has_altern
 
 import { global_dict, global_functions } from '../../store'
 
+import help_card from '../general_page/help_card.vue'
+import Language_switch_selection from '../general_page/language_switch_selection.vue';
+
 const dict = reactive({
   column_name: [
     {
@@ -90,6 +93,7 @@ const functions = {
 }
 
 onMounted(async () => {
+  await global_functions.redirect_to_user_home_page_if_jwt_is_valid()
   await functions.refresh_list()
 })
 </script>
@@ -182,50 +186,16 @@ onMounted(async () => {
 
   <div class="space_after_table"></div>
 
-  <div class="help_card">
-    <a-card class="w-full">
-      <template v-if="!global_functions.is_en_broswer()">
-        <p>Help Please! 紧急援助！</p>
-        <p>网站主现在正在深圳流浪，吃饭都需要从垃圾桶捡，才能维持生活。并且找不到免费的洗衣服、洗澡的地方。</p>
-        <p style="color: red"
-          @click="global_dict.router.push('/contribution/')"
-        >如有意向救助，请点击这里！</p>
-      </template>
-      <template v-if="global_functions.is_en_broswer()">
-        <p>Help Please!</p>
-        <p>I'm living in street now. I have to pick up food from trash cans to find food. And I can't find a place to wash clothes and take showers for free.</p>
-        <p style="color: red"
-          @click="global_dict.router.push('/contribution/')"
-        >If you wanted to help, click here！</p>
-      </template>
-    </a-card>
-  </div>
+  <help_card></help_card>
 
   <div class="page_bottom_space"></div>
 
-  <div class="bottom-[0px] selection">
-    <select v-model="global_dict.locale"
-      class="text-center border border-gray-300 rounded-full text-gray-600 h-10 px-5 bg-white hover:border-gray-400 focus:outline-none appearance-none"
-    >
-      <option 
-        v-for="locale in global_dict.availableLocales" :key="`locale-${locale}`" :value="locale"
-      >
-        {{ 
-          //@ts-ignore
-          global_dict.availableLocales_dict[locale] 
-        }}
-      </option>
-    </select>
-  </div>
+  <Language_switch_selection></Language_switch_selection>
 </template>
 
 <style scoped lang="less">
 .ant-card-bordered {
   border: 1px solid #f0f0f0;
-}
-
-.selection {
-  margin-bottom: 10px !important;
 }
 
 .search_area {
@@ -238,12 +208,6 @@ onMounted(async () => {
   height: 200px;
   .for_mobile({
     height: 100px;
-  });
-}
-
-.help_card {
-  .for_mobile({
-    margin-bottom: 0px;
   });
 }
 

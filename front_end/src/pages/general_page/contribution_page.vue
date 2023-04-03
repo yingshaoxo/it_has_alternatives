@@ -10,7 +10,7 @@ var dict = reactive({
 })
 
 onMounted(async () => {
-  if (global_functions.is_en_broswer()) {
+  if (global_functions.is_english_language()) {
     dict.component_list = [
       contribution_en, contribution_cn
     ]

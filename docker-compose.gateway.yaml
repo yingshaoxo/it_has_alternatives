@@ -3,7 +3,7 @@ version: "3.9"
 services:
   traefik:
     image: "traefik:v3.0.0-beta2"
-    network_mode: "host"        
+    # network_mode: "host"        
     command:
       - "--accesslog=true"
       - "--log.level=DEBUG"

@@ -10,5 +10,9 @@
   "Dislike": "踩",
   "Operations": "操作",
   "Edit": "编辑",
-  "Add_as_an_alternative_to_the_topest_object": "作为可替代品添加到上面的列表"
+  "Add_as_an_alternative_to_the_topest_object": "作为可替代品添加到上面的列表",
+  "Register": "注册",
+  "Cancel": "取消",
+  "Ok": "确定",
+  "Get invitation code": "获取注册邀请码"
 }

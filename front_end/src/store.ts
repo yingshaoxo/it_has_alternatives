@@ -2,29 +2,34 @@ import { computed, reactive, watch } from 'vue'
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 import { createI18n, useI18n } from 'vue-i18n'
 
-import admin_main_search_page from './pages/admin_page/main_search_page.vue'
-import admin_one_object_page from './pages/admin_page/one_object_page.vue'
-import admin_contribution_page from './pages/admin_page/contribution_page.vue'
+import contribution_page from './pages/general_page/contribution_page.vue'
+
+import user_main_search_page from './pages/user_page/main_search_page.vue'
+import user_one_object_page from './pages/user_page/one_object_page.vue'
 
 import visitor_main_search_page from './pages/visitor_page/main_search_page.vue'
 import visitor_one_object_page from './pages/visitor_page/one_object_page.vue'
-import visitor_contribution_page from './pages/visitor_page/contribution_page.vue'
 
 import * as it_has_alternatives_rpc from './generated_yrpc/it_has_alternatives_rpc'
 import * as it_has_alternatives_objects from './generated_yrpc/it_has_alternatives_objects'
 
 import en from './locales/en.json'
 import sc from './locales/sc.json'
-import { notification } from 'ant-design-vue'
+
+
+import zh_CN from 'ant-design-vue/es/locale/zh_CN';
+import en_US from 'ant-design-vue/es/locale/en_US';
+import dayjs from 'dayjs';
+import 'dayjs/locale/zh-cn';
+import 'dayjs/locale/en';
 
 const routes: RouteRecordRaw[] = [
   { path: '/', component: visitor_main_search_page },
   { path: '/object/:name', component: visitor_one_object_page },
-  { path: '/contribution/', component: visitor_contribution_page },
+  { path: '/contribution/', component: contribution_page },
 
-  { path: '/admin', component: admin_main_search_page },
-  { path: '/admin/object/:name', component: admin_one_object_page },
-  { path: '/admin/contribution/', component: admin_contribution_page },
+  { path: '/user', component: user_main_search_page },
+  { path: '/user/object/:name', component: user_one_object_page },
 ]
 
 const router = createRouter({
@@ -51,24 +56,61 @@ export const i18n = createI18n({
   // },
 })
 
+const interceptor_function = (data: any) => {
+    if (Object.keys(data).includes('error')) {
+        if (data?.error) {
+            global_functions.print(data?.error)
+        }
+    } else {
+        if (data) {
+            if (typeof data === 'string') {
+                if (data.trim() != "") {
+                    global_functions.print(data)
+                }
+            }
+        }
+    }
+}
+
 export var global_dict = reactive({
     router,
     visitor_client: new it_has_alternatives_rpc.Client_it_has_alternatives(
-            "https://alternatives.ai-tools-online.xyz", 
+            // "https://alternatives.ai-tools-online.xyz", 
+            "http://alternatives.domain.local",
             {
             }, 
             (error_string: string)=>{
                 global_functions.print(error_string)
+            },
+            (data: any)=>{
+                interceptor_function(data)
             }
     ),
-    admin_client: computed(() => {
-        var a_client = new it_has_alternatives_rpc.Client_it_has_alternatives(
-            "https://admin_alternatives.ai-tools-online.xyz", 
+    user_client: new it_has_alternatives_rpc.Client_it_has_alternatives(
+            // "https://alternatives.ai-tools-online.xyz", 
+            "http://user_alternatives.domain.local",
             {
                 "jwt": localStorage.getItem("jwt")??""
             }, 
             (error_string: string)=>{
                 global_functions.print(error_string)
+            },
+            (data: any)=>{
+                interceptor_function(data)
+            }
+    ),
+    admin_client: computed(() => {
+        var a_client = new it_has_alternatives_rpc.Client_it_has_alternatives(
+            // "https://admin_alternatives.ai-tools-online.xyz", 
+            "http://admin_alternatives.domain.local",
+            {
+                "jwt": localStorage.getItem("jwt")??""
+            }, 
+            (error_string: string)=>{
+                global_functions.print(error_string)
+            },
+            (data: any)=>{
+                interceptor_function(data)
             }
         )
         return a_client
@@ -80,11 +122,11 @@ export var global_dict = reactive({
         "en": "English",
         "sc": "中文"
     },
-    print: (message: any) => {
-        // I'll define this function in App.vue
-    },
+    ant_design_locale: en_US,
     last_url: "",
-    special_secret_dict: it_has_alternatives_objects.get_secret_alphabet_dict_("Asking is not a bad thing if the person you ask are comfortable with it.")
+    special_secret_dict: it_has_alternatives_objects.get_secret_alphabet_dict_("Asking is not a bad thing if the person you ask are comfortable with it."),
+    login_dialog_visible: false,
+    login_request: new it_has_alternatives_objects.Get_Special_JWT_Request(),
 })
 
 export var global_functions = {
@@ -104,10 +146,26 @@ export var global_functions = {
             }
         }
 
+        var switch_ant_design_language = () => {
+            if (global_dict.locale == "sc") {
+                dayjs.locale('zh-cn');
+                global_dict.ant_design_locale = zh_CN
+            } else {
+                dayjs.locale('en');
+                global_dict.ant_design_locale = en_US
+            }
+        }
+        switch_ant_design_language()
+
         watch(useI18n().locale, (new_locale: any) => {
             console.log(new_locale)
             localStorage.setItem("locale", new_locale)
+
+            switch_ant_design_language()
         });
+    },
+    print: (message: any) => {
+        // I'll define this function in App.vue
     },
     refresh: () => {
         window.location.reload();
@@ -140,12 +198,18 @@ export var global_functions = {
             check_url_change_function()
         });
     },
+    get_current_url: (): string => {
+        return window.location.href
+    },
     is_en_broswer: ():boolean => {
         let language = window.navigator.language;
         if (language.startsWith("en-")) {
             return true;
         }
         return false;
+    },
+    is_english_language: ():boolean => {
+        return global_dict.locale == "en"
     },
     is_user: async ():Promise<boolean> => {
         var jwt_string = localStorage.getItem("jwt")
@@ -161,6 +225,12 @@ export var global_functions = {
             return false
         }
     },
+    show_dialog_if_it_is_not_user: async () => {
+        var is_user = await global_functions.is_user()
+        if (is_user == false) {
+            global_dict.login_dialog_visible = true
+        }
+    },
     login: async (request: it_has_alternatives_objects.Get_Special_JWT_Request):Promise<boolean> => {
         var request = new it_has_alternatives_objects.Get_Special_JWT_Request().from_dict(request.to_dict())
         request.email = it_has_alternatives_objects.encode_message_(global_dict.special_secret_dict, request.email??"") 
@@ -172,9 +242,18 @@ export var global_functions = {
         }
         return false
     },
-    print: (item: any) => {
-        console.log(item)
-    }
+    redirect_to_user_home_page_if_jwt_is_valid: async () => {
+        var jwt_string = localStorage.getItem("jwt")
+        if (jwt_string == null) {
+        } else {
+            var request = new it_has_alternatives_objects.is_JWT_ok_Request()
+            request.jwt = jwt_string
+            const response = await global_dict.visitor_client.is_jwt_ok(request, true)
+            if (response?.ok == true) {
+                router.push('/user')
+            }
+        }
+    },
 }
 
 export default {

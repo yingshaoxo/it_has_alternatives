@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { onBeforeMount, onMounted, reactive } from 'vue';
-import { global_functions } from './store';
+import { onBeforeMount, onMounted, reactive, watch } from 'vue';
+import { global_dict, global_functions } from './store';
 
-import { notification } from 'ant-design-vue';
+import { message, notification } from 'ant-design-vue';
 
 var dict = reactive({
 })
@@ -11,12 +11,16 @@ onBeforeMount(() => {
   global_functions.init()
   global_functions.reload_when_url_change()
 
-  global_functions.print = (message: string) => {
-    console.log(message)
+  global_functions.print = (msg: string) => {
+    console.log(msg)
     notification.open({
         message: null,
-        description: message,
-        duration: 0,
+        description: msg,
+        duration: 5,
+        style: {
+          // whiteSpace: 'pre',
+          zIndex: 999
+        },
         onClick: () => {
             // console.log('Notification Clicked!');
         }
@@ -25,12 +29,49 @@ onBeforeMount(() => {
 })
 
 onMounted(()=>{
+  // global_functions.print(global_dict.locale)
 })
 </script>
 
 <template>
-  <router-view></router-view>
+  <a-config-provider :locale="global_dict.ant_design_locale">
+    <router-view></router-view>
+
+    <a-modal
+        v-model:visible="global_dict.login_dialog_visible"
+        :title="global_dict.t(`Login`) + '/' + global_dict.t(`Register`)"
+        :cancelText="global_dict.t('Cancel')"
+        :okText="global_dict.t('Ok')"
+        style="top: 20px"
+        :zIndex="500"
+        :closable="false"
+        :maskClosable="false"
+        :cancelButtonProps="{
+          disabled: true
+        }"
+        @ok="async ()=>{
+          var ok = await global_functions.login(global_dict.login_request) 
+          //@ts-ignore
+          if (ok) {  
+            global_dict.login_dialog_visible=false
+            global_functions.refresh()
+          }
+        }"
+      >
+      <div class="space-y-[16px]">
+        <a-input :placeholder="global_dict.login_request._key_string_dict.email" v-model:value="global_dict.login_request.email" />
+        <a-input :placeholder="global_dict.login_request._key_string_dict.password" v-model:value="global_dict.login_request.password" />
+        <a-input :placeholder="global_dict.login_request._key_string_dict.invitation_code" v-model:value="global_dict.login_request.invitation_code" />
+      </div>
+    </a-modal>
+  </a-config-provider>
 </template>
 
 <style scoped lang="less">
+</style>
+
+<style>
+.ant-notification .ant-notification-notice .ant-notification-notice-closable {
+  z-index: 999;
+}
 </style>

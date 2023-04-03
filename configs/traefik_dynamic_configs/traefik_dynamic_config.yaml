@@ -1,5 +1,5 @@
 ## in /etc/hosts
-# 127.0.0.1 alternatives.domain.local admin_alternatives.domain.local
+# 127.0.0.1 alternatives.domain.local user_alternatives.domain.local admin_alternatives.domain.local
 
 # tcp:
 #   routers:
@@ -37,6 +37,15 @@ http:
       middlewares:
         - cros_allow_all
       service: backend_service_for_visitor
+    its_alternative_router_for_users_operations:
+      entryPoints:
+        - web
+        - websecure
+      rule: "Host(`user_alternatives.ai-tools-online.xyz`) || Host(`user_alternatives.domain.local`)"
+      middlewares:
+        - cros_allow_all
+        - my_jwt_auth
+      service: backend_service_for_user
     its_alternative_router_for_admin_operations:
       entryPoints:
         - web
@@ -62,13 +71,15 @@ http:
     my_jwt_auth:
         forwardAuth:
           # address: "http://it_has_alternatives:5550/v1/jwt_auth_gateway/"
-          address: "http://127.0.0.1:5550/v1/jwt_auth_gateway/"
+          # address: "http://127.0.0.1:5550/v1/jwt_auth_gateway/"
+          address: http://host.docker.internal:5550/v1/jwt_auth_gateway/
           authResponseHeaders:
               - "email" # jwt_auth_gateway will put this header to the original request
     my_admin_jwt_auth:
         forwardAuth:
           # address: "http://it_has_alternatives:5550/v1/admin_jwt_auth_gateway/"
-          address: "http://127.0.0.1:5550/v1/admin_jwt_auth_gateway/"
+          # address: "http://127.0.0.1:5550/v1/admin_jwt_auth_gateway/"
+          address: http://host.docker.internal:5550/v1/admin_jwt_auth_gateway/
           authResponseHeaders:
               - "email" # jwt_auth_gateway will put this header to the original request
 
@@ -76,16 +87,26 @@ http:
     next_traefik_service:
       loadBalancer:
         servers:
-          - url: http://127.0.0.1:810
+          # - url: http://127.0.0.1:810
+          - url: http://host.docker.internal:810
     backend_service_for_visitor:
       loadBalancer:
         servers:
           # - url: http://it_has_alternatives:5551
-          - url: http://127.0.0.1:5551
+          # - url: http://127.0.0.1:5551
+          - url: http://host.docker.internal:5551
+        passHostHeader: true
+    backend_service_for_user:
+      loadBalancer:
+        servers:
+          # - url: http://it_has_alternatives:5552
+          # - url: http://127.0.0.1:5552
+          - url: http://host.docker.internal:5552
         passHostHeader: true
     backend_service_for_admin:
       loadBalancer:
         servers:
-          # - url: http://it_has_alternatives:5552
-          - url: http://127.0.0.1:5552
+          # - url: http://it_has_alternatives:5553
+          # - url: http://127.0.0.1:5553
+          - url: http://host.docker.internal:5553
         passHostHeader: true
