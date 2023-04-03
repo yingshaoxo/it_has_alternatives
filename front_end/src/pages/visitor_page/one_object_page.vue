@@ -6,7 +6,6 @@ import { LikeOutlined, DislikeOutlined, PlusOutlined, SearchOutlined, CheckOutli
 
 import * as it_has_alternatives_objects from '../../generated_yrpc/it_has_alternatives_objects'
 
-import add_alternatives_to_an_object_component from '../../components/add_alternatives_to_an_object_component.vue'
 import { global_dict, global_functions } from '../../store'
 
 var route = useRoute()
