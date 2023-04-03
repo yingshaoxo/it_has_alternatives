@@ -2,7 +2,7 @@ version: "3.9"
 
 services:
   it_has_alternatives:
-    # network_mode: "host"        
+    network_mode: "host"        
     build: 
       context: ./backend_service
       dockerfile: ./Dockerfile
