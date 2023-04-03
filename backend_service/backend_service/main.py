@@ -513,7 +513,7 @@ class Admin_Service(User_Service):
 
 
 def run_visitor_grpc_service(port: str):
-    vue_html_file_folder = disk.join_paths(disk.get_directory_name(__file__), "./vue")  
+    vue_html_file_folder = disk.join_paths(disk.get_directory_path(__file__), "./vue")  
 
     service_instance = Visitor_Service()
     it_has_alternatives_rpc.run(service_instance, port=port, html_folder_path=vue_html_file_folder)

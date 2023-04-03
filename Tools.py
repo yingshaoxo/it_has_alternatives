@@ -1,3 +1,4 @@
+#!/usr/bin/env /usr/bin/python3
 #!/usr/bin/env /opt/homebrew/opt/python@3.10/bin/python3.10
 #!/usr/bin/env /usr/bin/python3
 import os
@@ -15,7 +16,7 @@ disk = Disk()
 
 class Tools():
     def __init__(self) -> None:
-        self.project_root_folder = disk.get_directory_name(os.path.realpath(os.path.abspath(__file__))) 
+        self.project_root_folder = disk.get_directory_path(os.path.realpath(os.path.abspath(__file__))) 
 
     def push(self, comment: str):
         t.run('git add .')
