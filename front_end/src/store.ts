@@ -75,8 +75,8 @@ const interceptor_function = (data: any) => {
 export var global_dict = reactive({
     router,
     visitor_client: new it_has_alternatives_rpc.Client_it_has_alternatives(
-            // "https://alternatives.ai-tools-online.xyz", 
-            "http://alternatives.domain.local",
+            "https://alternatives.ai-tools-online.xyz", 
+            // "http://alternatives.domain.local",
             {
             }, 
             (error_string: string)=>{
@@ -87,8 +87,8 @@ export var global_dict = reactive({
             }
     ),
     user_client: new it_has_alternatives_rpc.Client_it_has_alternatives(
-            // "https://alternatives.ai-tools-online.xyz", 
-            "http://user_alternatives.domain.local",
+            "https://user_alternatives.ai-tools-online.xyz", 
+            // "http://user_alternatives.domain.local",
             {
                 "jwt": localStorage.getItem("jwt")??""
             }, 
@@ -101,8 +101,8 @@ export var global_dict = reactive({
     ),
     admin_client: computed(() => {
         var a_client = new it_has_alternatives_rpc.Client_it_has_alternatives(
-            // "https://admin_alternatives.ai-tools-online.xyz", 
-            "http://admin_alternatives.domain.local",
+            "https://admin_alternatives.ai-tools-online.xyz", 
+            // "http://admin_alternatives.domain.local",
             {
                 "jwt": localStorage.getItem("jwt")??""
             }, 
