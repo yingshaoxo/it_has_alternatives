@@ -267,7 +267,7 @@ class Visitor_Service(it_has_alternatives_rpc.Service_it_has_alternatives):
                             "$options": "i"
                         }
                 }
-            ).skip(item.page_number*item.page_size).limit(item.page_size) # type: ignore
+            ).sort('_id', -1).skip(item.page_number*item.page_size).limit(item.page_size) # type: ignore
 
             object_list = []
             for one in result: #type: ignore

@@ -15,8 +15,8 @@ services:
       - "--entrypoints.web.address=:80"
       # - "--entrypoints.websecure.address=:443"
       # - "--entrypoints.smtp.address=:25"
-    ports:
-      - "80:80"
+    # ports:
+      # - "80:80"
       # - "443:443"
       # - "25:25"
       #- "8081:8080"

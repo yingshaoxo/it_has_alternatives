@@ -16,7 +16,6 @@ import * as it_has_alternatives_objects from './generated_yrpc/it_has_alternativ
 import en from './locales/en.json'
 import sc from './locales/sc.json'
 
-
 import zh_CN from 'ant-design-vue/es/locale/zh_CN';
 import en_US from 'ant-design-vue/es/locale/en_US';
 import dayjs from 'dayjs';
@@ -72,11 +71,23 @@ const interceptor_function = (data: any) => {
     }
 }
 
+let get_host_url = (sub_domain: string) => {
+    return `https://${sub_domain}.ai-tools-online.xyz`
+}
+if (import.meta.env.DEV) {
+    get_host_url = (sub_domain: string) => {
+        return `http://${sub_domain}.domain.local`
+    }
+} else {
+    get_host_url = (sub_domain: string) => {
+        return `https://${sub_domain}.ai-tools-online.xyz`
+    }
+}
+
 export var global_dict = reactive({
     router,
     visitor_client: new it_has_alternatives_rpc.Client_it_has_alternatives(
-            "https://alternatives.ai-tools-online.xyz", 
-            // "http://alternatives.domain.local",
+            get_host_url("alternatives"),
             {
             }, 
             (error_string: string)=>{
@@ -87,8 +98,7 @@ export var global_dict = reactive({
             }
     ),
     user_client: new it_has_alternatives_rpc.Client_it_has_alternatives(
-            "https://user_alternatives.ai-tools-online.xyz", 
-            // "http://user_alternatives.domain.local",
+            get_host_url("user_alternatives"),
             {
                 "jwt": localStorage.getItem("jwt")??""
             }, 
@@ -101,8 +111,7 @@ export var global_dict = reactive({
     ),
     admin_client: computed(() => {
         var a_client = new it_has_alternatives_rpc.Client_it_has_alternatives(
-            "https://admin_alternatives.ai-tools-online.xyz", 
-            // "http://admin_alternatives.domain.local",
+            get_host_url("admin_alternatives"),
             {
                 "jwt": localStorage.getItem("jwt")??""
             }, 
