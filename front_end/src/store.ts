@@ -233,8 +233,8 @@ export var global_functions = {
     },
     login: async (request: it_has_alternatives_objects.Get_Special_JWT_Request):Promise<boolean> => {
         var request = new it_has_alternatives_objects.Get_Special_JWT_Request().from_dict(request.to_dict())
-        request.email = it_has_alternatives_objects.encode_message_(global_dict.special_secret_dict, request.email??"") 
-        request.password =  it_has_alternatives_objects.encode_message_(global_dict.special_secret_dict, request.password??"")
+        request.email = it_has_alternatives_objects.encode_message_(global_dict.special_secret_dict, (request.email??"").trim()) 
+        request.password =  it_has_alternatives_objects.encode_message_(global_dict.special_secret_dict, (request.password??"").trim())
         const response = await global_dict.visitor_client.get_special_jwt(request)
         if (response?.encrypted_jwt) {
             localStorage.setItem("jwt", response.encrypted_jwt)
