@@ -263,7 +263,7 @@ class Visitor_Service(it_has_alternatives_rpc.Service_it_has_alternatives):
                 {
                     it_has_alternatives_objects.An_Object()._key_string_dict.name: 
                         {
-                            '$regex':f'(.*){key_words}(.*)',
+                            '$regex':f'(.*){re.escape(key_words)}(.*)',
                             "$options": "i"
                         }
                 }
