@@ -174,7 +174,7 @@ onMounted(async () => {
       style="top: 20px"
       @ok="async ()=>{
         await functions.add_an_object(
-          dict.temprary_object_for_edit._clone()
+          clone_object(dict.temprary_object_for_edit)
           // new it_has_alternatives_objects.An_Object().from_dict(dict.temprary_object_for_edit.to_dict())
         )
 
@@ -304,7 +304,7 @@ onMounted(async () => {
           <template v-else-if="column.dataIndex === 'operations'">
             <a-button class="w-[80px] mb-[12px]" @click.stop="()=>{
               dict.temprary_object_for_edit = record
-              dict.dialog_visible=true
+              dict.edit_dialog_visible=true
             }">
               {{ global_dict.t("Edit") }}
             </a-button>

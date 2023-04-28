@@ -4,10 +4,10 @@ package it_has_alternatives;
 service it_has_alternatives {
     // just try to put traefik outside the docker, then handle 80 port directly
     // then do auth only for requests_url that starts with 'it_has_alternatives'
-    // for others, forward them to docker
+    // for others, forward them to another traefik instance
 
-    // we only allow get_special_jwt() function not include the jwt token
-    // others, has to pass an jwt_check api, for example /is_admin, if it returns 200, then pass, if it returns 500, then refuse
+    // we only allow get_special_jwt() and is_jwt_ok() and search_alternatives() and get_an_object() function not include the jwt token
+    // others, in traefik logic, have to pass a jwt_check api, for example '/is_user', if it returns 200, then pass, if it returns 500, then refuse
     rpc get_special_jwt (Get_Special_JWT_Request) returns (Get_Special_JWT_Response);
     rpc is_jwt_ok (is_JWT_ok_Request) returns (is_JWT_ok_Response);
 
@@ -28,7 +28,6 @@ enum Sort_By {
 message A_User {
     string id = 1;
     int64 create_time_in_10_numbers_timestamp_format = 2;
-    //datetime.fromtimestamp(timestamp)
     string email = 3;
     string password = 4;
     string jwt = 5;

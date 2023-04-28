@@ -58,8 +58,8 @@ const dict = reactive({
     size: 10,
     total: 1000,
   },
-  dialog_visible: false,
-  temprary_object_for_edit: new it_has_alternatives_objects.An_Object(),
+  adding_dialog_visible: false,
+  temprary_object_for_adding: new it_has_alternatives_objects.An_Object(),
   temprary_object_for_search: new it_has_alternatives_objects.An_Object(),
   what_column_is_in_editing_now: "",
 })
@@ -167,25 +167,25 @@ onMounted(async () => {
 
 <template>
   <a-modal
-      v-model:visible="dict.dialog_visible"
+      v-model:visible="dict.adding_dialog_visible"
       :title="global_dict.t(`Add`)"
       :cancelText="global_dict.t('Cancel')"
       :okText="global_dict.t('Ok')"
       style="top: 20px"
       @ok="async ()=>{
         await functions.add_an_object(
-          dict.temprary_object_for_edit._clone()
+          clone_object(dict.temprary_object_for_adding)
           // new it_has_alternatives_objects.An_Object().from_dict(dict.temprary_object_for_edit.to_dict())
         )
 
-        dict.dialog_visible=false
+        dict.adding_dialog_visible=false
 
         await functions.refresh_list()
       }"
     >
     <div class="space-y-[16px]">
-      <a-input :placeholder="dict.temprary_object_for_edit._key_string_dict.name" v-model:value="dict.temprary_object_for_edit.name" />
-      <a-input :placeholder="dict.temprary_object_for_edit._key_string_dict.description" v-model:value="dict.temprary_object_for_edit.description" />
+      <a-input :placeholder="dict.temprary_object_for_adding._key_string_dict.name" v-model:value="dict.temprary_object_for_adding.name" />
+      <a-input :placeholder="dict.temprary_object_for_adding._key_string_dict.description" v-model:value="dict.temprary_object_for_adding.description" />
     </div>
   </a-modal>
 
@@ -213,7 +213,7 @@ onMounted(async () => {
                 </a-row>
                 <div class="w-full flex flex-row justify-between">
                   <div>
-                    <a-button class="mr-[10px]" @click="()=>{dict.dialog_visible=true}">
+                    <a-button class="mr-[10px]" @click="()=>{dict.adding_dialog_visible=true}">
                       <div class="flex flex-row place-content-center place-items-center">
                         <PlusOutlined class="mr-[8px]"></PlusOutlined>
                         {{ global_dict.t("Add") }}

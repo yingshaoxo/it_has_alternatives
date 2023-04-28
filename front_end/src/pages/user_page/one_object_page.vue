@@ -57,7 +57,7 @@ const dict = reactive({
       width: 120
     },
   ],
-  dialog_visible: false,
+  edit_dialog_visible: false,
   temprary_object_for_adding: new it_has_alternatives_objects.An_Object(),
 })
 
@@ -205,7 +205,7 @@ onMounted(async () => {
       <div class="h-[100px]"></div>
 
       <a-modal
-        v-model:visible="dict.dialog_visible"
+        v-model:visible="dict.edit_dialog_visible"
         :title="global_dict.t('Edit')"
         :cancelText="global_dict.t('Cancel')"
         :okText="global_dict.t('Ok')"
@@ -215,7 +215,7 @@ onMounted(async () => {
             dict.temprary_object_for_adding
           )
 
-          dict.dialog_visible=false
+          dict.edit_dialog_visible=false
 
           await functions.refresh_list()
         }"
@@ -260,7 +260,7 @@ onMounted(async () => {
           <template v-else-if="column.dataIndex === 'operations'">
             <a-button class="w-[80px] mb-[12px]" @click.stop="()=>{
               dict.temprary_object_for_adding = record
-              dict.dialog_visible=true
+              dict.edit_dialog_visible=true
             }">
               {{ global_dict.t("Edit") }}
             </a-button>
