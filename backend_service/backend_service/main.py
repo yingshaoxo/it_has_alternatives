@@ -513,7 +513,16 @@ class Admin_Service(User_Service):
 
 
 def run_visitor_grpc_service(port: str):
-    vue_html_file_folder = disk.join_paths(disk.get_directory_path(__file__), "./vue")  
+    if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
+        #print('running in a PyInstaller bundle')
+        def resource_path(relative_path: str) -> str:
+            if hasattr(sys, '_MEIPASS'):
+                return os.path.join(sys._MEIPASS, relative_path) #type: ignore
+            return os.path.join(os.path.abspath("."), relative_path)
+        vue_html_file_folder = resource_path("./vue") 
+    else:
+        #print('running in a normal Python process')
+        vue_html_file_folder = disk.join_paths(disk.get_directory_path(__file__), "./vue")  
 
     service_instance = Visitor_Service()
     it_has_alternatives_rpc.run(service_instance, port=port, html_folder_path=vue_html_file_folder)
