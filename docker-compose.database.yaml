@@ -11,8 +11,8 @@ services:
     environment:
       - MONGO_INITDB_ROOT_USERNAME=yingshaoxo
       - MONGO_INITDB_ROOT_PASSWORD=yingshaoxo
-    # volumes:
-    #   - "./configs/mongodb_data:/data/db"
+    volumes:
+      - "./configs/mongodb_data:/data/db"
     restart: always
 
   # redis: 
