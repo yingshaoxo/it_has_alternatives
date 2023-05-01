@@ -152,7 +152,7 @@ class Visitor_Service(it_has_alternatives_rpc.Service_it_has_alternatives):
                         )
                     else:
                         if item.invitation_code == None:
-                            default_response.error = "Sorry, you need invitation_code to do the register"
+                            default_response.error = "Sorry, you need invitation code to do the register.\nYou can @yingshaoxo on twitter to get an invitation code if you think you are good enough to be an content leader."
                             return default_response
                         
                         the_parent_user, code = decode_invitation_code(jwt_code=item.invitation_code)
