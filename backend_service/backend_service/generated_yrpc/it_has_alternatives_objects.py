@@ -107,6 +107,7 @@ class A_User(YRPC_OBJECT_BASE_CLASS):
     children_email_list: list[str] | None = None
     invitation_counting: int | None = None
     invitation_code_list: list[str] | None = None
+    last_login_time_in_10_numbers_timestamp_format: int | None = None
 
     _property_name_to_its_type_dict = {
         "id": str,
@@ -119,6 +120,7 @@ class A_User(YRPC_OBJECT_BASE_CLASS):
         "children_email_list": str,
         "invitation_counting": int,
         "invitation_code_list": str,
+        "last_login_time_in_10_numbers_timestamp_format": int,
     }
 
     @dataclass()
@@ -133,6 +135,7 @@ class A_User(YRPC_OBJECT_BASE_CLASS):
         children_email_list: str = "children_email_list"
         invitation_counting: str = "invitation_counting"
         invitation_code_list: str = "invitation_code_list"
+        last_login_time_in_10_numbers_timestamp_format: str = "last_login_time_in_10_numbers_timestamp_format"
 
     def from_dict(self, dict: dict[str, Any]):
         new_variable: A_User = super().from_dict(dict)
@@ -149,6 +152,7 @@ class An_Object(YRPC_OBJECT_BASE_CLASS):
     dislikes: int | None = None
     alternative_id_list: list[str] | None = None
     create_time_in_10_numbers_timestamp_format: int | None = None
+    update_time_in_10_numbers_timestamp_format: int | None = None
 
     _property_name_to_its_type_dict = {
         "id": str,
@@ -159,6 +163,7 @@ class An_Object(YRPC_OBJECT_BASE_CLASS):
         "dislikes": int,
         "alternative_id_list": str,
         "create_time_in_10_numbers_timestamp_format": int,
+        "update_time_in_10_numbers_timestamp_format": int,
     }
 
     @dataclass()
@@ -171,6 +176,7 @@ class An_Object(YRPC_OBJECT_BASE_CLASS):
         dislikes: str = "dislikes"
         alternative_id_list: str = "alternative_id_list"
         create_time_in_10_numbers_timestamp_format: str = "create_time_in_10_numbers_timestamp_format"
+        update_time_in_10_numbers_timestamp_format: str = "update_time_in_10_numbers_timestamp_format"
 
     def from_dict(self, dict: dict[str, Any]):
         new_variable: An_Object = super().from_dict(dict)

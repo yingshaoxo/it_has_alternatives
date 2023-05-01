@@ -39,6 +39,7 @@ message A_User {
     repeated string children_email_list = 8;
     int64 invitation_counting = 9;
     repeated string invitation_code_list = 10;
+    int64 last_login_time_in_10_numbers_timestamp_format = 8;
 }
 
 message An_Object {

@@ -203,6 +203,7 @@ export interface _A_User {
     children_email_list: string[] | null;
     invitation_counting: number | null;
     invitation_code_list: string[] | null;
+    last_login_time_in_10_numbers_timestamp_format: number | null;
 }
 
 export class A_User {
@@ -216,6 +217,7 @@ export class A_User {
     children_email_list: string[] | null = null;
     invitation_counting: number | null = null;
     invitation_code_list: string[] | null = null;
+    last_login_time_in_10_numbers_timestamp_format: number | null = null;
 
     _property_name_to_its_type_dict = {
             id: "string",
@@ -228,6 +230,7 @@ export class A_User {
             children_email_list: "string",
             invitation_counting: "number",
             invitation_code_list: "string",
+            last_login_time_in_10_numbers_timestamp_format: "number",
     };
 
     _key_string_dict = {
@@ -241,6 +244,7 @@ export class A_User {
         children_email_list: "children_email_list",
         invitation_counting: "invitation_counting",
         invitation_code_list: "invitation_code_list",
+        last_login_time_in_10_numbers_timestamp_format: "last_login_time_in_10_numbers_timestamp_format",
     };
 
     to_dict(): _A_User {
@@ -278,6 +282,7 @@ export interface _An_Object {
     dislikes: number | null;
     alternative_id_list: string[] | null;
     create_time_in_10_numbers_timestamp_format: number | null;
+    update_time_in_10_numbers_timestamp_format: number | null;
 }
 
 export class An_Object {
@@ -289,6 +294,7 @@ export class An_Object {
     dislikes: number | null = null;
     alternative_id_list: string[] | null = null;
     create_time_in_10_numbers_timestamp_format: number | null = null;
+    update_time_in_10_numbers_timestamp_format: number | null = null;
 
     _property_name_to_its_type_dict = {
             id: "string",
@@ -299,6 +305,7 @@ export class An_Object {
             dislikes: "number",
             alternative_id_list: "string",
             create_time_in_10_numbers_timestamp_format: "number",
+            update_time_in_10_numbers_timestamp_format: "number",
     };
 
     _key_string_dict = {
@@ -310,6 +317,7 @@ export class An_Object {
         dislikes: "dislikes",
         alternative_id_list: "alternative_id_list",
         create_time_in_10_numbers_timestamp_format: "create_time_in_10_numbers_timestamp_format",
+        update_time_in_10_numbers_timestamp_format: "update_time_in_10_numbers_timestamp_format",
     };
 
     to_dict(): _An_Object {

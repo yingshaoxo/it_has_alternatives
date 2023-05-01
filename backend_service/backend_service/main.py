@@ -15,6 +15,7 @@ from auto_everything.disk import Disk
 from auto_everything.io import IO
 from auto_everything.cryptography import EncryptionAndDecryption, Password_Generator
 from auto_everything.cryptography import JWT_Tool
+from auto_everything.time import Time
 
 import backend_service.generated_yrpc.it_has_alternatives_objects as it_has_alternatives_objects
 import backend_service.generated_yrpc.it_has_alternatives_rpc as it_has_alternatives_rpc
@@ -24,6 +25,7 @@ import backend_service.configuration as configuration
 t = Terminal()
 disk = Disk()
 io_ = IO()
+time_ = Time()
 
 _ADMIN_EMAIL = os.getenv("ADMIN_EMAIL")
 if _ADMIN_EMAIL:
@@ -55,6 +57,18 @@ def get_a_user_by_email(email: str) -> it_has_alternatives_objects.A_User | None
     else:
         a_user = it_has_alternatives_objects.A_User().from_dict(a_user)
         return a_user
+
+def update_last_login_time_for_a_user(user_email: str):
+    user_collection.update_one(
+        {
+            it_has_alternatives_objects.A_User._key_string_dict.email: user_email,
+        },
+        {
+            "$set": {
+                it_has_alternatives_objects.A_User._key_string_dict.last_login_time_in_10_numbers_timestamp_format: time_.get_current_timestamp_in_10_digits_format(),
+            }
+        }
+    )
 
 def mongodb_item_to_dict(item: Any) -> dict[str, Any]:
     a_dict = {**item}
@@ -152,7 +166,8 @@ class Visitor_Service(it_has_alternatives_rpc.Service_it_has_alternatives):
                         # create a new user
                         a_new_user = it_has_alternatives_objects.A_User(
                             id=email,
-                            create_time_in_10_numbers_timestamp_format=int(datetime.now().timestamp()),
+                            create_time_in_10_numbers_timestamp_format=time_.get_current_timestamp_in_10_digits_format(),
+                            last_login_time_in_10_numbers_timestamp_format=time_.get_current_timestamp_in_10_digits_format(),
                             email=email,
                             password=item.password,
                             level=the_parent_user.level + 1,
@@ -207,7 +222,8 @@ class Visitor_Service(it_has_alternatives_rpc.Service_it_has_alternatives):
                     },
                     {
                         "$set": {
-                            it_has_alternatives_objects.A_User._key_string_dict.jwt: the_jwt_code
+                            it_has_alternatives_objects.A_User._key_string_dict.jwt: the_jwt_code,
+                            it_has_alternatives_objects.A_User._key_string_dict.last_login_time_in_10_numbers_timestamp_format: time_.get_current_timestamp_in_10_digits_format(),
                         }
                     }
                 )
@@ -380,6 +396,8 @@ class User_Service(Visitor_Service):
                 default_response.error = f"Sorry, the object '{item.an_object.name}' you want to add is already in our database."
                 return default_response
 
+            item.an_object.create_time_in_10_numbers_timestamp_format = time_.get_current_timestamp_in_10_digits_format()
+            item.an_object.update_time_in_10_numbers_timestamp_format = time_.get_current_timestamp_in_10_digits_format()
             result = object_collection.insert_one(
                 {
                     **item.an_object.to_dict(), #type: ignore
@@ -437,6 +455,7 @@ class User_Service(Visitor_Service):
                 default_response.error = f"Sorry, you don't have enough permission to edit this object. It has level of {old_object.level}, your level is {user_level}."
                 return default_response
             
+            item.an_object.update_time_in_10_numbers_timestamp_format = time_.get_current_timestamp_in_10_digits_format()
             new_object = item.an_object.to_dict()
             del new_object[it_has_alternatives_objects.An_Object()._key_string_dict.level]
             object_collection.update_one(
@@ -627,6 +646,7 @@ def run_restful_service(port: str):
                     "email": email
                 })
                 response.status_code = status.HTTP_202_ACCEPTED
+                update_last_login_time_for_a_user(user_email=email)
                 return "ok"
 
     @app.get("/v1/admin_jwt_auth_gateway/", response_model=str)
@@ -653,6 +673,7 @@ def run_restful_service(port: str):
                     "email": email
                 })
                 response.status_code = status.HTTP_202_ACCEPTED
+                update_last_login_time_for_a_user(user_email=email)
                 return 'ok'
             else:
                 response.status_code = status.HTTP_401_UNAUTHORIZED
