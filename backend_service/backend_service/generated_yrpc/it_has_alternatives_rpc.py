@@ -37,6 +37,12 @@ class Service_it_has_alternatives:
     async def delete_alternative(self, headers: dict[str, str], item: Delete_Object_Request) -> Delete_Object_Response:
         return Delete_Object_Response()
 
+    async def download_backup_data(self, headers: dict[str, str], item: Download_backup_data_request) -> Download_backup_data_response:
+        return Download_backup_data_response()
+
+    async def upload_backup_data(self, headers: dict[str, str], item: Upload_backup_data_request) -> Upload_backup_data_response:
+        return Upload_backup_data_response()
+
 
 def init(service_instance: Any):
     @router.post("/get_special_jwt/", tags=["it_has_alternatives"])
@@ -86,6 +92,18 @@ def init(service_instance: Any):
         item = Delete_Object_Request().from_dict(item.to_dict())
         headers = dict(request.headers.items())
         return (await service_instance.delete_alternative(headers, item)).to_dict()
+
+    @router.post("/download_backup_data/", tags=["it_has_alternatives"])
+    async def download_backup_data(request: Request, item: Download_backup_data_request) -> Download_backup_data_response:
+        item = Download_backup_data_request().from_dict(item.to_dict())
+        headers = dict(request.headers.items())
+        return (await service_instance.download_backup_data(headers, item)).to_dict()
+
+    @router.post("/upload_backup_data/", tags=["it_has_alternatives"])
+    async def upload_backup_data(request: Request, item: Upload_backup_data_request) -> Upload_backup_data_response:
+        item = Upload_backup_data_request().from_dict(item.to_dict())
+        headers = dict(request.headers.items())
+        return (await service_instance.upload_backup_data(headers, item)).to_dict()
 
 
 def run(service_instance: Any, port: str, html_folder_path: str="", serve_html_under_which_url: str="/"):

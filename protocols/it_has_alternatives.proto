@@ -18,6 +18,9 @@ service it_has_alternatives {
     rpc add_alternative (Add_Object_Request) returns (Add_Object_Response);
     rpc update_alternative (Update_Object_Request) returns (Update_Object_Response);
     rpc delete_alternative (Delete_Object_Request) returns (Delete_Object_Response);
+
+    rpc download_backup_data(Download_backup_data_request) returns (Download_backup_data_response);
+    rpc upload_backup_data(Upload_backup_data_request) returns (Upload_backup_data_response);
 }
 
 enum Sort_By {
@@ -46,6 +49,8 @@ message An_Object {
     int64 likes = 5; 
     int64 dislikes = 6; 
     repeated string alternative_id_list = 7;
+    int64 create_time_in_10_numbers_timestamp_format = 8;
+    int64 update_time_in_10_numbers_timestamp_format = 8;
 }
 
 message Get_Special_JWT_Request {
@@ -125,6 +130,24 @@ message Delete_Object_Request {
 }
 
 message Delete_Object_Response {
+    optional string error = 1;
+    bool success = 2;
+}
+
+message Download_backup_data_request {
+}
+
+message Download_backup_data_response {
+    optional string error = 1;
+    string file_name = 2;
+    string file_bytes_in_base64_format = 3;
+}
+
+message Upload_backup_data_request {
+    string file_bytes_in_base64_format = 1;
+}
+
+message Upload_backup_data_response {
     optional string error = 1;
     bool success = 2;
 }

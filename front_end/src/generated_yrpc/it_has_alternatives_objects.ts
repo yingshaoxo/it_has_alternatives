@@ -277,6 +277,7 @@ export interface _An_Object {
     likes: number | null;
     dislikes: number | null;
     alternative_id_list: string[] | null;
+    create_time_in_10_numbers_timestamp_format: number | null;
 }
 
 export class An_Object {
@@ -287,6 +288,7 @@ export class An_Object {
     likes: number | null = null;
     dislikes: number | null = null;
     alternative_id_list: string[] | null = null;
+    create_time_in_10_numbers_timestamp_format: number | null = null;
 
     _property_name_to_its_type_dict = {
             id: "string",
@@ -296,6 +298,7 @@ export class An_Object {
             likes: "number",
             dislikes: "number",
             alternative_id_list: "string",
+            create_time_in_10_numbers_timestamp_format: "number",
     };
 
     _key_string_dict = {
@@ -306,6 +309,7 @@ export class An_Object {
         likes: "likes",
         dislikes: "dislikes",
         alternative_id_list: "alternative_id_list",
+        create_time_in_10_numbers_timestamp_format: "create_time_in_10_numbers_timestamp_format",
     };
 
     to_dict(): _An_Object {
@@ -1043,6 +1047,182 @@ export class Delete_Object_Response {
 
     from_dict(item: _Delete_Object_Response): Delete_Object_Response {
         let an_item = new Delete_Object_Response()
+        let new_dict = _general_from_dict_function(an_item, item)
+
+        for (const key of Object.keys(new_dict)) {
+            let value = new_dict[key]
+            //@ts-ignore
+            this[key] = value
+            //@ts-ignore
+            an_item[key] = value
+        }
+
+        return an_item
+    }
+}
+
+
+export interface _Download_backup_data_request {
+
+}
+
+export class Download_backup_data_request {
+
+
+    _property_name_to_its_type_dict = {
+
+    };
+
+    _key_string_dict = {
+
+    };
+
+    to_dict(): _Download_backup_data_request {
+        return _general_to_dict_function(this);
+    }
+
+    _clone(): Download_backup_data_request {
+        let clone = Object.assign(Object.create(Object.getPrototypeOf(this)), this)
+        return clone
+    }
+
+    from_dict(item: _Download_backup_data_request): Download_backup_data_request {
+        let an_item = new Download_backup_data_request()
+        let new_dict = _general_from_dict_function(an_item, item)
+
+        for (const key of Object.keys(new_dict)) {
+            let value = new_dict[key]
+            //@ts-ignore
+            this[key] = value
+            //@ts-ignore
+            an_item[key] = value
+        }
+
+        return an_item
+    }
+}
+
+
+export interface _Download_backup_data_response {
+    error: string | null;
+    file_name: string | null;
+    file_bytes_in_base64_format: string | null;
+}
+
+export class Download_backup_data_response {
+    error: string | null = null;
+    file_name: string | null = null;
+    file_bytes_in_base64_format: string | null = null;
+
+    _property_name_to_its_type_dict = {
+            error: "string",
+            file_name: "string",
+            file_bytes_in_base64_format: "string",
+    };
+
+    _key_string_dict = {
+        error: "error",
+        file_name: "file_name",
+        file_bytes_in_base64_format: "file_bytes_in_base64_format",
+    };
+
+    to_dict(): _Download_backup_data_response {
+        return _general_to_dict_function(this);
+    }
+
+    _clone(): Download_backup_data_response {
+        let clone = Object.assign(Object.create(Object.getPrototypeOf(this)), this)
+        return clone
+    }
+
+    from_dict(item: _Download_backup_data_response): Download_backup_data_response {
+        let an_item = new Download_backup_data_response()
+        let new_dict = _general_from_dict_function(an_item, item)
+
+        for (const key of Object.keys(new_dict)) {
+            let value = new_dict[key]
+            //@ts-ignore
+            this[key] = value
+            //@ts-ignore
+            an_item[key] = value
+        }
+
+        return an_item
+    }
+}
+
+
+export interface _Upload_backup_data_request {
+    file_bytes_in_base64_format: string | null;
+}
+
+export class Upload_backup_data_request {
+    file_bytes_in_base64_format: string | null = null;
+
+    _property_name_to_its_type_dict = {
+            file_bytes_in_base64_format: "string",
+    };
+
+    _key_string_dict = {
+        file_bytes_in_base64_format: "file_bytes_in_base64_format",
+    };
+
+    to_dict(): _Upload_backup_data_request {
+        return _general_to_dict_function(this);
+    }
+
+    _clone(): Upload_backup_data_request {
+        let clone = Object.assign(Object.create(Object.getPrototypeOf(this)), this)
+        return clone
+    }
+
+    from_dict(item: _Upload_backup_data_request): Upload_backup_data_request {
+        let an_item = new Upload_backup_data_request()
+        let new_dict = _general_from_dict_function(an_item, item)
+
+        for (const key of Object.keys(new_dict)) {
+            let value = new_dict[key]
+            //@ts-ignore
+            this[key] = value
+            //@ts-ignore
+            an_item[key] = value
+        }
+
+        return an_item
+    }
+}
+
+
+export interface _Upload_backup_data_response {
+    error: string | null;
+    success: boolean | null;
+}
+
+export class Upload_backup_data_response {
+    error: string | null = null;
+    success: boolean | null = null;
+
+    _property_name_to_its_type_dict = {
+            error: "string",
+            success: "boolean",
+    };
+
+    _key_string_dict = {
+        error: "error",
+        success: "success",
+    };
+
+    to_dict(): _Upload_backup_data_response {
+        return _general_to_dict_function(this);
+    }
+
+    _clone(): Upload_backup_data_response {
+        let clone = Object.assign(Object.create(Object.getPrototypeOf(this)), this)
+        return clone
+    }
+
+    from_dict(item: _Upload_backup_data_response): Upload_backup_data_response {
+        let an_item = new Upload_backup_data_response()
         let new_dict = _general_from_dict_function(an_item, item)
 
         for (const key of Object.keys(new_dict)) {

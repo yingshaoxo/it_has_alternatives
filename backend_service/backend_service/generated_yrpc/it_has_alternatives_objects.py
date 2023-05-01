@@ -148,6 +148,7 @@ class An_Object(YRPC_OBJECT_BASE_CLASS):
     likes: int | None = None
     dislikes: int | None = None
     alternative_id_list: list[str] | None = None
+    create_time_in_10_numbers_timestamp_format: int | None = None
 
     _property_name_to_its_type_dict = {
         "id": str,
@@ -157,6 +158,7 @@ class An_Object(YRPC_OBJECT_BASE_CLASS):
         "likes": int,
         "dislikes": int,
         "alternative_id_list": str,
+        "create_time_in_10_numbers_timestamp_format": int,
     }
 
     @dataclass()
@@ -168,6 +170,7 @@ class An_Object(YRPC_OBJECT_BASE_CLASS):
         likes: str = "likes"
         dislikes: str = "dislikes"
         alternative_id_list: str = "alternative_id_list"
+        create_time_in_10_numbers_timestamp_format: str = "create_time_in_10_numbers_timestamp_format"
 
     def from_dict(self, dict: dict[str, Any]):
         new_variable: An_Object = super().from_dict(dict)
@@ -494,4 +497,81 @@ class Delete_Object_Response(YRPC_OBJECT_BASE_CLASS):
 
     def from_dict(self, dict: dict[str, Any]):
         new_variable: Delete_Object_Response = super().from_dict(dict)
+        return new_variable
+
+
+@dataclass()
+class Download_backup_data_request(YRPC_OBJECT_BASE_CLASS):
+
+
+    _property_name_to_its_type_dict = {
+
+    }
+
+    @dataclass()
+    class _key_string_dict:
+        pass
+
+    def from_dict(self, dict: dict[str, Any]):
+        new_variable: Download_backup_data_request = super().from_dict(dict)
+        return new_variable
+
+
+@dataclass()
+class Download_backup_data_response(YRPC_OBJECT_BASE_CLASS):
+    error: str | None = None
+    file_name: str | None = None
+    file_bytes_in_base64_format: str | None = None
+
+    _property_name_to_its_type_dict = {
+        "error": str,
+        "file_name": str,
+        "file_bytes_in_base64_format": str,
+    }
+
+    @dataclass()
+    class _key_string_dict:
+        error: str = "error"
+        file_name: str = "file_name"
+        file_bytes_in_base64_format: str = "file_bytes_in_base64_format"
+
+    def from_dict(self, dict: dict[str, Any]):
+        new_variable: Download_backup_data_response = super().from_dict(dict)
+        return new_variable
+
+
+@dataclass()
+class Upload_backup_data_request(YRPC_OBJECT_BASE_CLASS):
+    file_bytes_in_base64_format: str | None = None
+
+    _property_name_to_its_type_dict = {
+        "file_bytes_in_base64_format": str,
+    }
+
+    @dataclass()
+    class _key_string_dict:
+        file_bytes_in_base64_format: str = "file_bytes_in_base64_format"
+
+    def from_dict(self, dict: dict[str, Any]):
+        new_variable: Upload_backup_data_request = super().from_dict(dict)
+        return new_variable
+
+
+@dataclass()
+class Upload_backup_data_response(YRPC_OBJECT_BASE_CLASS):
+    error: str | None = None
+    success: bool | None = None
+
+    _property_name_to_its_type_dict = {
+        "error": str,
+        "success": bool,
+    }
+
+    @dataclass()
+    class _key_string_dict:
+        error: str = "error"
+        success: str = "success"
+
+    def from_dict(self, dict: dict[str, Any]):
+        new_variable: Upload_backup_data_response = super().from_dict(dict)
         return new_variable

@@ -71,15 +71,13 @@ http:
     my_jwt_auth:
         forwardAuth:
           # address: "http://it_has_alternatives:5550/v1/jwt_auth_gateway/"
-          address: "http://127.0.0.1:5550/v1/jwt_auth_gateway/"
           # address: http://host.docker.internal:5550/v1/jwt_auth_gateway/
+          address: "http://127.0.0.1:5550/v1/jwt_auth_gateway/"
           authResponseHeaders:
               - "email" # jwt_auth_gateway will put this header to the original request
     my_admin_jwt_auth:
         forwardAuth:
-          # address: "http://it_has_alternatives:5550/v1/admin_jwt_auth_gateway/"
           address: "http://127.0.0.1:5550/v1/admin_jwt_auth_gateway/"
-          # address: http://host.docker.internal:5550/v1/admin_jwt_auth_gateway/
           authResponseHeaders:
               - "email" # jwt_auth_gateway will put this header to the original request
 
@@ -88,25 +86,20 @@ http:
       loadBalancer:
         servers:
           - url: http://127.0.0.1:810
-          # - url: http://host.docker.internal:810
     backend_service_for_visitor:
       loadBalancer:
         servers:
           # - url: http://it_has_alternatives:5551
-          - url: http://127.0.0.1:5551
           # - url: http://host.docker.internal:5551
+          - url: http://127.0.0.1:5551
         passHostHeader: true
     backend_service_for_user:
       loadBalancer:
         servers:
-          # - url: http://it_has_alternatives:5552
           - url: http://127.0.0.1:5552
-          # - url: http://host.docker.internal:5552
         passHostHeader: true
     backend_service_for_admin:
       loadBalancer:
         servers:
-          # - url: http://it_has_alternatives:5553
           - url: http://127.0.0.1:5553
-          # - url: http://host.docker.internal:5553
         passHostHeader: true

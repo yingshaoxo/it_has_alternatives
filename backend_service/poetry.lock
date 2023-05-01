@@ -51,7 +51,7 @@ psutil = "5.9.4"
 type = "git"
 url = "https://github.com/yingshaoxo/auto_everything.git"
 reference = "dev"
-resolved_reference = "1d2b2c6c4fe39f72c781c3a2aaf028a1b5833ebf"
+resolved_reference = "189f40447bfc795e99dd323e72bcdcf192a8c8cf"
 
 [[package]]
 name = "click"

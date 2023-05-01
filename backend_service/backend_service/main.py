@@ -12,6 +12,7 @@ from typing import Any
 from auto_everything.base import Terminal
 from auto_everything.database import MongoDB
 from auto_everything.disk import Disk
+from auto_everything.io import IO
 from auto_everything.cryptography import EncryptionAndDecryption, Password_Generator
 from auto_everything.cryptography import JWT_Tool
 
@@ -22,6 +23,7 @@ import backend_service.configuration as configuration
 
 t = Terminal()
 disk = Disk()
+io_ = IO()
 
 _ADMIN_EMAIL = os.getenv("ADMIN_EMAIL")
 if _ADMIN_EMAIL:
@@ -509,7 +511,55 @@ class User_Service(Visitor_Service):
 
 
 class Admin_Service(User_Service):
-    pass
+    async def download_backup_data(self, headers: dict[str, str], item: it_has_alternatives_objects.Download_backup_data_request) -> it_has_alternatives_objects.Download_backup_data_response:
+        default_response = it_has_alternatives_objects.Download_backup_data_response()
+
+        try:
+            temp_saving_folder: str = disk.join_paths(disk.get_the_temp_dir(), "it_has_alternatives_mongodb_backup")
+            if not disk.exists(temp_saving_folder):
+                disk.create_a_folder(temp_saving_folder)
+
+            mongoDB.backup_mongodb(temp_saving_folder, use_time_as_sub_folder_name=False)
+
+            backup_zip_file = disk.get_a_temp_file_path('backup.zip')
+            disk.compress(temp_saving_folder, backup_zip_file)
+
+            the_backup_zip_file_bytes_io = disk.get_bytesio_from_a_file(backup_zip_file)
+            base64_string = disk.bytesio_to_base64(bytes_io=the_backup_zip_file_bytes_io)
+
+            default_response.file_name = f"backup_{str(datetime.now())}.zip"
+            default_response.file_bytes_in_base64_format = base64_string
+        except Exception as e:
+            print(e)
+            default_response.error = str(e)
+
+        return default_response
+
+    async def upload_backup_data(self, headers: dict[str, str], item: it_has_alternatives_objects.Upload_backup_data_request) -> it_has_alternatives_objects.Upload_backup_data_response:
+        default_response = it_has_alternatives_objects.Upload_backup_data_response()
+
+        try:
+            base64_string = item.file_bytes_in_base64_format
+            if base64_string == None:
+                raise Exception("the 'file_bytes_in_base64_format' shoudn't be None")
+
+            the_backup_zip_file_bytes_io = disk.base64_to_bytesio(base64_string=base64_string)
+            backup_zip_file = disk.get_a_temp_file_path('backup.zip')
+            disk.save_bytesio_to_file(bytes_io=the_backup_zip_file_bytes_io, file_path=backup_zip_file)
+
+            temp_saving_folder: str = disk.join_paths(disk.get_the_temp_dir(), "it_has_alternatives_mongodb_backup")
+            if disk.exists(temp_saving_folder):
+                disk.delete_a_folder(temp_saving_folder)
+            disk.uncompress(backup_zip_file, temp_saving_folder)
+
+            mongoDB.recover_mongodb(backup_folder_path=temp_saving_folder, use_time_as_sub_folder_name=False)
+
+            default_response.success = True
+        except Exception as e:
+            print(e)
+            default_response.error = str(e)
+
+        return default_response
 
 
 def run_visitor_grpc_service(port: str):

@@ -159,6 +159,30 @@ export class Client_it_has_alternatives {
             return new it_has_alternatives_objects.Delete_Object_Response().from_dict(result)
         }
     }
+
+    async download_backup_data(item: it_has_alternatives_objects.Download_backup_data_request, ignore_error?: boolean): Promise<it_has_alternatives_objects.Download_backup_data_response | null> {
+        let result = await this._get_reponse_or_error_by_url_path_and_input("download_backup_data", item.to_dict())
+        if (Object.keys(result).includes(this._special_error_key)) {
+            if ((ignore_error == null) || ((ignore_error != null) && (!ignore_error))) {
+                this._error_handle_function(result[this._special_error_key])
+            }
+            return null
+        } else {
+            return new it_has_alternatives_objects.Download_backup_data_response().from_dict(result)
+        }
+    }
+
+    async upload_backup_data(item: it_has_alternatives_objects.Upload_backup_data_request, ignore_error?: boolean): Promise<it_has_alternatives_objects.Upload_backup_data_response | null> {
+        let result = await this._get_reponse_or_error_by_url_path_and_input("upload_backup_data", item.to_dict())
+        if (Object.keys(result).includes(this._special_error_key)) {
+            if ((ignore_error == null) || ((ignore_error != null) && (!ignore_error))) {
+                this._error_handle_function(result[this._special_error_key])
+            }
+            return null
+        } else {
+            return new it_has_alternatives_objects.Upload_backup_data_response().from_dict(result)
+        }
+    }
 }
 
 export default Client_it_has_alternatives

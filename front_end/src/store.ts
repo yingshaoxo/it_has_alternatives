@@ -4,11 +4,13 @@ import { createI18n, useI18n } from 'vue-i18n'
 
 import contribution_page from './pages/general_page/contribution_page.vue'
 
+import visitor_main_search_page from './pages/visitor_page/main_search_page.vue'
+import visitor_one_object_page from './pages/visitor_page/one_object_page.vue'
+
 import user_main_search_page from './pages/user_page/main_search_page.vue'
 import user_one_object_page from './pages/user_page/one_object_page.vue'
 
-import visitor_main_search_page from './pages/visitor_page/main_search_page.vue'
-import visitor_one_object_page from './pages/visitor_page/one_object_page.vue'
+import admin_page from './pages/admin_page/admin_page.vue'
 
 import * as it_has_alternatives_rpc from './generated_yrpc/it_has_alternatives_rpc'
 import * as it_has_alternatives_objects from './generated_yrpc/it_has_alternatives_objects'
@@ -29,6 +31,8 @@ const routes: RouteRecordRaw[] = [
 
   { path: '/user', component: user_main_search_page },
   { path: '/user/object/:name', component: user_one_object_page },
+
+  { path: '/admin', component: admin_page },
 ]
 
 const router = createRouter({
@@ -172,6 +176,9 @@ export var global_functions = {
 
             switch_ant_design_language()
         });
+    },
+    log: (message:any) => {
+        console.log(message)
     },
     print: (message: any) => {
         // I'll define this function in App.vue
