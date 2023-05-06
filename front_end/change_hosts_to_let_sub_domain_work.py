@@ -4,7 +4,7 @@ from auto_everything.io import IO #type: ignore
 terminal = Terminal()
 io_ = IO()
 
-ip_address = "192.168.49.105"
+ip_address = "192.168.56.101"
 
 hosts_text = io_.read("/etc/hosts")
 print(hosts_text)

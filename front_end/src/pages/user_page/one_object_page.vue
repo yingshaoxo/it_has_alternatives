@@ -9,6 +9,9 @@ import * as it_has_alternatives_objects from '../../generated_yrpc/it_has_altern
 import add_alternatives_to_an_object_component from './add_alternatives_to_an_object_component.vue'
 import { global_dict, global_functions } from '../../store'
 
+import snarkdown from 'snarkdown'
+import { watch } from 'fs';
+
 var route = useRoute()
 
 var clone_object = (obj: any) =>  JSON.parse(JSON.stringify(obj));
@@ -17,6 +20,7 @@ const dict = reactive({
   object_name: "",
   object: new it_has_alternatives_objects.An_Object(),
   alternative_dict: {} as Record<string, it_has_alternatives_objects.An_Object>,
+  object_id_to_description_markdown_html_code_dict: {} as Record<string, string>,
   column_name: [
     {
       title: global_dict.t('Name'),
@@ -78,10 +82,12 @@ const functions = {
     }
   },
   refresh_list: async () => {
+    // update the main object
     dict.object = await functions.get_one_object(dict.object_name)?? new it_has_alternatives_objects.An_Object()
-    // console.log(dict.object)
+    dict.object_id_to_description_markdown_html_code_dict[dict?.object?.id??''] = snarkdown(dict?.object?.description??'')
+
+    // update those objects under the main object
     for (var an_id of dict.object.alternative_id_list??[]) {
-      // console.log(an_id)
       var request = new it_has_alternatives_objects.Get_an_object_Request()
       request.id = an_id
       var response = await global_dict.visitor_client.get_an_object(request)
@@ -92,6 +98,8 @@ const functions = {
         new_object.id = an_id
         dict.alternative_dict[an_id] = new_object
       }
+
+      dict.object_id_to_description_markdown_html_code_dict[an_id] = snarkdown(dict?.alternative_dict[an_id]?.description??'')
     }
   },
   update_an_object: async (the_object: it_has_alternatives_objects.An_Object) => {
@@ -146,7 +154,8 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="flex flex-col place-content-center place-items-center">
+  <div class="flex flex-col place-content-center place-items-center"
+  >
     <div class="container_css max-w-[1366px]">
       <div class="px-[0px]">
         <div class="flex flex-row justify-start mb-[20px]">
@@ -163,7 +172,10 @@ onMounted(async () => {
         </div>
         <div class="w-full flex flex-row justify-start">
             <div class="description_css">
-              {{ dict.object.description }}
+              <div class="prose prose-sm dark:prose-invert">
+                <div v-html="dict.object_id_to_description_markdown_html_code_dict[dict?.object?.id??'']??''">
+                </div>
+              </div>
             </div>
         </div>
       </div>
@@ -189,8 +201,11 @@ onMounted(async () => {
             <div class="main_item_icon_css w-[148px] h-[148px]" style="background-color: rgba(124, 179, 5, 0.5);"></div>
             <div class="w-full h-full ml-[20px] flex flex-col justify-start">
               <div class="w-full h-full flex flex-col justify-between">
-                <div class="text-lg mb-[20px]">
-                  {{ dict.alternative_dict[an_id]?.description }}
+                <!-- <div class="text-lg mb-[20px]"> -->
+                <div class="mb-[20px] prose prose-sm dark:prose-invert">
+                  <!-- {{ dict.alternative_dict[an_id]?.description }} -->
+                  <div v-html="dict.object_id_to_description_markdown_html_code_dict[an_id??'']??''">
+                  </div>
                 </div>
                 <div class="text-sm flex flex-row justify-start ml-[2px] text-gray-400">
                   <div class="mr-[40px]">{{global_dict.t('Like')}}: {{ dict.alternative_dict[an_id]?.likes??'0' }}</div>
@@ -222,7 +237,12 @@ onMounted(async () => {
       >
         <div class="space-y-[16px]">
           <a-input :placeholder="dict.temprary_object_for_adding._key_string_dict.name" v-model:value="dict.temprary_object_for_adding.name" />
-          <a-input :placeholder="dict.temprary_object_for_adding._key_string_dict.description" v-model:value="dict.temprary_object_for_adding.description" />
+          <!-- <a-input :placeholder="dict.temprary_object_for_adding._key_string_dict.description" v-model:value="dict.temprary_object_for_adding.description" /> -->
+          <a-textarea
+            v-model:value="dict.temprary_object_for_adding.description"
+            :placeholder="dict.temprary_object_for_adding._key_string_dict.description"
+            auto-size
+          />
         </div>
       </a-modal>
 
@@ -392,5 +412,6 @@ onMounted(async () => {
   border-radius: 5px;
   padding: 1.42857rem 1.78571rem 1.07143rem 1.78571rem !important;
   background: #F5FCFC;
+  text-align: left;
 }
 </style>

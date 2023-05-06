@@ -185,7 +185,12 @@ onMounted(async () => {
     >
     <div class="space-y-[16px]">
       <a-input :placeholder="dict.temprary_object_for_adding._key_string_dict.name" v-model:value="dict.temprary_object_for_adding.name" />
-      <a-input :placeholder="dict.temprary_object_for_adding._key_string_dict.description" v-model:value="dict.temprary_object_for_adding.description" />
+      <!-- <a-input :placeholder="dict.temprary_object_for_adding._key_string_dict.description" v-model:value="dict.temprary_object_for_adding.description" /> -->
+      <a-textarea
+        v-model:value="dict.temprary_object_for_adding.description"
+        :placeholder="dict.temprary_object_for_adding._key_string_dict.description"
+        auto-size
+      />
     </div>
   </a-modal>
 
