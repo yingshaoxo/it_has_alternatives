@@ -1,22 +1,37 @@
 # docker build --tag yingshaoxo/it_has_alternatives . --no-cache
 
+FROM node:18-slim as front_end_building_stage
+
+COPY ./front_end /front_end
+
+WORKDIR /front_end
+
+RUN npm install
+
+RUN npm run build
+
+
+
+
 FROM python:3.10-bullseye as building_stage
 
 WORKDIR /code
 
 RUN pip install poetry
 
-COPY ./pyproject.toml ./poetry.lock* /code/
+COPY ./backend_service/pyproject.toml ./backend_service/poetry.lock* /code/
 
 RUN poetry export -f requirements.txt --output requirements.txt --without-hashes
 # RUN poetry install
 
 RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
 
-COPY ./backend_service /code/backend_service
+COPY ./backend_service/backend_service /code/backend_service
+
+COPY --from=front_end_building_stage /front_end/dist /code/backend_service/vue
 
 RUN pip install pyinstaller
-COPY ./compile.sh /code/compile.sh
+COPY ./backend_service/compile.sh /code/compile.sh
 
 RUN bash compile.sh
 
