@@ -1,14 +1,14 @@
 # docker build --tag yingshaoxo/it_has_alternatives . --no-cache
 
-FROM node:18-slim as front_end_building_stage
+FROM node:18 as front_end_building_stage
 
 COPY ./front_end /front_end
 
 WORKDIR /front_end
 
-RUN npm install
+RUN yarn
 
-RUN npm run build
+RUN GENERATE_SOURCEMAP=false NODE_OPTIONS="--max-old-space-size=8192" yarn build
 
 
 
