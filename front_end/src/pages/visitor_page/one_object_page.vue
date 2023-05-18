@@ -270,6 +270,7 @@ onMounted(async () => {
   border-radius: 5px;
   padding: 1.42857rem 1.78571rem 1.07143rem 1.78571rem !important;
   background: #F5FCFC;
+  word-break: break-word;
 }
 .sub_item_title_css {
     text-align: left;
@@ -291,6 +292,7 @@ onMounted(async () => {
   .for_mobile({
     font-size: 16px;
   });
+  word-break: break-word;
 }
 
 .bottom_right {

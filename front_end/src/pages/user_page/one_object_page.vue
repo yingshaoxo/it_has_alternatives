@@ -202,7 +202,7 @@ onMounted(async () => {
             <div class="w-full h-full ml-[20px] flex flex-col justify-start">
               <div class="w-full h-full flex flex-col justify-between">
                 <!-- <div class="text-lg mb-[20px]"> -->
-                <div class="mb-[20px] prose prose-sm dark:prose-invert">
+                <div class="mb-[20px] prose prose-sm dark:prose-invert sub_item_description">
                   <!-- {{ dict.alternative_dict[an_id]?.description }} -->
                   <div v-html="dict.object_id_to_description_markdown_html_code_dict[an_id??'']??''">
                   </div>
@@ -377,25 +377,6 @@ onMounted(async () => {
     font-weight: 700;
     font-size: 1.28571rem;
 }
-.sub_item_description_css {
-    -webkit-text-size-adjust: 100%;
-    font-family: Arial;
-    font-weight: normal;
-    color: #333;
-    -webkit-font-smoothing: antialiased;
-    list-style-position: outside;
-    line-height: 1.6;
-    list-style-type: none;
-    font-size: inherit;
-    box-sizing: inherit;
-    width: auto;
-    float: none;
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    overflow-wrap: anywhere;
-}
 .description_css {
   width: 100%;
   -webkit-text-size-adjust: 100%;
@@ -413,5 +394,9 @@ onMounted(async () => {
   padding: 1.42857rem 1.78571rem 1.07143rem 1.78571rem !important;
   background: #F5FCFC;
   text-align: left;
+  word-break: break-word;
+}
+.sub_item_description {
+  word-break: break-word;
 }
 </style>
