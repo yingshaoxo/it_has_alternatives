@@ -8,6 +8,8 @@ import * as it_has_alternatives_objects from '../../generated_yrpc/it_has_altern
 
 import { global_dict, global_functions } from '../../store'
 
+import snarkdown from 'snarkdown'
+
 var route = useRoute()
 
 var clone_object = (obj: any) =>  JSON.parse(JSON.stringify(obj));
@@ -16,6 +18,7 @@ const dict = reactive({
   object_name: "",
   object: new it_has_alternatives_objects.An_Object(),
   alternative_dict: {} as Record<string, it_has_alternatives_objects.An_Object>,
+  object_id_to_description_markdown_html_code_dict: {} as Record<string, string>,
   column_name: [
     {
       title: global_dict.t('Name'),
@@ -75,10 +78,12 @@ const functions = {
     }
   },
   refresh_list: async () => {
+    // update the main object
     dict.object = await functions.get_one_object(dict.object_name)?? new it_has_alternatives_objects.An_Object()
-    console.log(dict.object)
+    dict.object_id_to_description_markdown_html_code_dict[dict?.object?.id??''] = snarkdown(dict?.object?.description??'')
+
+    // update those objects under the main object
     for (var an_id of dict.object.alternative_id_list??[]) {
-      console.log(an_id)
       var request = new it_has_alternatives_objects.Get_an_object_Request()
       request.id = an_id
       var response = await global_dict.visitor_client.get_an_object(request)
@@ -89,6 +94,8 @@ const functions = {
         new_object.id = an_id
         dict.alternative_dict[an_id] = new_object
       }
+
+      dict.object_id_to_description_markdown_html_code_dict[an_id] = snarkdown(dict?.alternative_dict[an_id]?.description??'')
     }
   },
   vote_an_object: async (the_object: it_has_alternatives_objects.An_Object, up: boolean) => {
@@ -155,8 +162,11 @@ onMounted(async () => {
           </div>
         </div>
         <div class="w-full flex flex-row justify-start">
-            <div class="main_item_description_css">
-              {{ dict.object.description }}
+            <div class="main_description_css">
+              <div class="prose prose-sm dark:prose-invert">
+                <div v-html="dict.object_id_to_description_markdown_html_code_dict[dict?.object?.id??'']??''">
+                </div>
+              </div>
             </div>
         </div>
       </div>
@@ -182,8 +192,9 @@ onMounted(async () => {
             <div class="main_item_icon_css w-[148px] h-[148px]" style="background-color: rgba(124, 179, 5, 0.5);"></div>
             <div class="w-full h-full ml-[20px] flex flex-col justify-start">
               <div class="w-full h-full flex flex-col justify-between">
-                <div class="sub_item_description_css text-lg mb-[20px]">
-                  {{ dict.alternative_dict[an_id]?.description }}
+                <div class="mb-[20px] prose prose-sm dark:prose-invert sub_item_description">
+                  <div v-html="dict.object_id_to_description_markdown_html_code_dict[an_id??'']??''">
+                  </div>
                 </div>
                 <div class="text-sm flex flex-row justify-start ml-[2px] text-gray-400">
                   <div class="mr-[40px]">{{global_dict.t('Like')}}: {{ dict.alternative_dict[an_id]?.likes??'0' }}</div>
@@ -220,18 +231,18 @@ onMounted(async () => {
   position: relative;
 }
 .main_item_icon_css {
-    -webkit-text-size-adjust: 100%;
-    font-size: 14px;
-    font-family: Arial;
-    font-weight: normal;
-    line-height: 1.5;
-    -webkit-font-smoothing: antialiased;
-    box-sizing: inherit;
-    border-style: none;
-    display: inline-block;
-    vertical-align: middle;
-    min-height: 150px;
-    min-width: 150px;
+  -webkit-text-size-adjust: 100%;
+  font-size: 14px;
+  font-family: Arial;
+  font-weight: normal;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  box-sizing: inherit;
+  border-style: none;
+  display: inline-block;
+  vertical-align: middle;
+  min-height: 150px;
+  min-width: 150px;
 }
 .main_item_title_css{
   -webkit-text-size-adjust: 100%;
@@ -254,7 +265,7 @@ onMounted(async () => {
     font-size: 28px;
   });
 }
-.main_item_description_css {
+.main_description_css {
   width: 100%;
   -webkit-text-size-adjust: 100%;
   font-family: Arial;
@@ -270,31 +281,34 @@ onMounted(async () => {
   border-radius: 5px;
   padding: 1.42857rem 1.78571rem 1.07143rem 1.78571rem !important;
   background: #F5FCFC;
+  text-align: left;
   word-break: break-word;
+  .for_mobile({
+    font-size: 28px;
+  });
 }
 .sub_item_title_css {
-    text-align: left;
-    -webkit-text-size-adjust: 100%;
-    -webkit-font-smoothing: antialiased;
-    list-style-position: outside;
-    list-style-type: none;
-    cursor: pointer;
-    width: 100%;
-    box-sizing: inherit;
-    font-family: Arial;
-    font-style: normal;
-    text-rendering: optimizeLegibility;
-    line-height: 1.4;
-    font-weight: 700;
-    font-size: 1.28571rem;
+  text-align: left;
+  -webkit-text-size-adjust: 100%;
+  -webkit-font-smoothing: antialiased;
+  list-style-position: outside;
+  list-style-type: none;
+  cursor: pointer;
+  width: 100%;
+  box-sizing: inherit;
+  font-family: Arial;
+  font-style: normal;
+  text-rendering: optimizeLegibility;
+  line-height: 1.4;
+  font-weight: 700;
+  font-size: 1.28571rem;
 }
-.sub_item_description_css {
+.sub_item_description {
+  word-break: break-word;
   .for_mobile({
     font-size: 16px;
   });
-  word-break: break-word;
 }
-
 .bottom_right {
   position: absolute;
   bottom: 0;

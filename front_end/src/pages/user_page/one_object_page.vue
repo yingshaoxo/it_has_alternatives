@@ -10,7 +10,6 @@ import add_alternatives_to_an_object_component from './add_alternatives_to_an_ob
 import { global_dict, global_functions } from '../../store'
 
 import snarkdown from 'snarkdown'
-import { watch } from 'fs';
 
 var route = useRoute()
 
@@ -171,7 +170,7 @@ onMounted(async () => {
           </div>
         </div>
         <div class="w-full flex flex-row justify-start">
-            <div class="description_css">
+            <div class="main_description_css">
               <div class="prose prose-sm dark:prose-invert">
                 <div v-html="dict.object_id_to_description_markdown_html_code_dict[dict?.object?.id??'']??''">
                 </div>
@@ -331,53 +330,40 @@ onMounted(async () => {
   position: relative;
 }
 .main_item_icon_css {
-    -webkit-text-size-adjust: 100%;
-    font-size: 14px;
-    font-family: Arial;
-    font-weight: normal;
-    line-height: 1.5;
-    -webkit-font-smoothing: antialiased;
-    box-sizing: inherit;
-    border-style: none;
-    display: inline-block;
-    vertical-align: middle;
-    min-height: 150px;
-    min-width: 150px;
+  -webkit-text-size-adjust: 100%;
+  font-size: 14px;
+  font-family: Arial;
+  font-weight: normal;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  box-sizing: inherit;
+  border-style: none;
+  display: inline-block;
+  vertical-align: middle;
+  min-height: 150px;
+  min-width: 150px;
 }
 .main_item_title_css{
-    -webkit-text-size-adjust: 100%;
-    -webkit-font-smoothing: antialiased;
-    box-sizing: inherit;
-    font-family: Arial;
-    font-style: normal;
-    color: inherit;
-    text-rendering: optimizeLegibility;
-    font-size: 2.14286rem;
-    font-weight: 700;
-    word-wrap: break-word;
-    width: 100%;
-    line-height: 2.28571rem;
-    flex-grow: 1;
-    flex-shrink: 1;
-    text-align: left;
+  -webkit-text-size-adjust: 100%;
+  -webkit-font-smoothing: antialiased;
+  box-sizing: inherit;
+  font-family: Arial;
+  font-style: normal;
+  color: inherit;
+  text-rendering: optimizeLegibility;
+  font-size: 2.14286rem;
+  font-weight: 700;
+  word-wrap: break-word;
+  width: 100%;
+  line-height: 2.28571rem;
+  flex-grow: 1;
+  flex-shrink: 1;
+  text-align: left;
+  .for_mobile({
+    font-size: 28px;
+  });
 }
-.sub_item_title_css {
-    text-align: left;
-    -webkit-text-size-adjust: 100%;
-    -webkit-font-smoothing: antialiased;
-    list-style-position: outside;
-    list-style-type: none;
-    cursor: pointer;
-    width: 100%;
-    box-sizing: inherit;
-    font-family: Arial;
-    font-style: normal;
-    text-rendering: optimizeLegibility;
-    line-height: 1.4;
-    font-weight: 700;
-    font-size: 1.28571rem;
-}
-.description_css {
+.main_description_css {
   width: 100%;
   -webkit-text-size-adjust: 100%;
   font-family: Arial;
@@ -396,7 +382,26 @@ onMounted(async () => {
   text-align: left;
   word-break: break-word;
 }
+.sub_item_title_css {
+  text-align: left;
+  -webkit-text-size-adjust: 100%;
+  -webkit-font-smoothing: antialiased;
+  list-style-position: outside;
+  list-style-type: none;
+  cursor: pointer;
+  width: 100%;
+  box-sizing: inherit;
+  font-family: Arial;
+  font-style: normal;
+  text-rendering: optimizeLegibility;
+  line-height: 1.4;
+  font-weight: 700;
+  font-size: 1.28571rem;
+}
 .sub_item_description {
   word-break: break-word;
+  .for_mobile({
+    font-size: 16px;
+  });
 }
 </style>
