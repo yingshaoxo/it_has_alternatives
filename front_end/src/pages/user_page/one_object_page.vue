@@ -158,7 +158,7 @@ onMounted(async () => {
     <div class="container_css max-w-[1366px]">
       <div class="px-[0px]">
         <div class="flex flex-row justify-start mb-[20px]">
-          <div class="main_item_icon_css w-[148px] h-[148px]" style="background-color: rgba(124, 179, 5, 0.5);"></div>
+          <div class="main_item_icon_css" style="background-color: rgba(124, 179, 5, 0.5);"></div>
           <div class="ml-[20px] flex flex-col justify-between">
             <div class="main_item_title_css">
                 {{ dict.object_name }}
@@ -197,7 +197,7 @@ onMounted(async () => {
             </div>
           </template>
           <div class="flex flex-row justify-start mb-[20px]">
-            <div class="main_item_icon_css w-[148px] h-[148px]" style="background-color: rgba(124, 179, 5, 0.5);"></div>
+            <div class="sub_item_icon_css w-[148px] h-[148px]" style="background-color: rgba(124, 179, 5, 0.5);"></div>
             <div class="w-full h-full ml-[20px] flex flex-col justify-start">
               <div class="w-full h-full flex flex-col justify-between">
                 <!-- <div class="text-lg mb-[20px]"> -->
@@ -340,8 +340,9 @@ onMounted(async () => {
   border-style: none;
   display: inline-block;
   vertical-align: middle;
-  min-height: 150px;
-  min-width: 150px;
+
+  min-width: 148px;
+  min-height: 148px;
 }
 .main_item_title_css{
   -webkit-text-size-adjust: 100%;
@@ -381,6 +382,21 @@ onMounted(async () => {
   background: #F5FCFC;
   text-align: left;
   word-break: break-word;
+}
+.sub_item_icon_css {
+  -webkit-text-size-adjust: 100%;
+  font-size: 14px;
+  font-family: Arial;
+  font-weight: normal;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  box-sizing: inherit;
+  border-style: none;
+  display: inline-block;
+  vertical-align: middle;
+
+  min-width: 140px;
+  min-height: 140px;
 }
 .sub_item_title_css {
   text-align: left;

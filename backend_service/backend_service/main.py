@@ -694,6 +694,8 @@ def start():
 
     for process in process_list:
         process.start()
+    
+    print("\n\nWhat is the yingshaoxo@gmail.com password? What you type at the first login is what the password is.\n\n")
 
     while all([
         one.is_alive()
