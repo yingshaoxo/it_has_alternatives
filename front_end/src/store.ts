@@ -186,6 +186,18 @@ export var global_functions = {
     make_first_character_upper_case: (text: any) => {
         return text.charAt(0).toUpperCase() + text.slice(1);
     },
+    copy_text_to_clipboard: async (text: string) => {
+        try {
+            var input = document.createElement('textarea');
+            input.innerHTML = text;
+            document.body.appendChild(input);
+            input.select();
+            var result = document.execCommand('copy');
+            document.body.removeChild(input);
+        } catch (e) {
+            await navigator.clipboard.writeText(text);
+        }
+    },
     refresh: () => {
         window.location.reload();
     },

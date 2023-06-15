@@ -2,7 +2,7 @@
 import { useRoute, useRouter } from 'vue-router';
 
 import { onActivated, onMounted, reactive, ref, UnwrapRef } from 'vue';
-import { LikeOutlined, DislikeOutlined, PlusOutlined, SearchOutlined, CheckOutlined, EditOutlined } from '@ant-design/icons-vue';
+import { LikeOutlined, DislikeOutlined, PlusOutlined, ShareAltOutlined, SearchOutlined, CheckOutlined, EditOutlined } from '@ant-design/icons-vue';
 
 import * as it_has_alternatives_objects from '../../generated_yrpc/it_has_alternatives_objects'
 
@@ -153,6 +153,15 @@ onMounted(async () => {
 </script>
 
 <template>
+  <a-button type="primary" shape="circle" class="my_float_button"
+    @click="async () => {
+        await global_functions.copy_text_to_clipboard(global_functions.get_current_url().replace('/user/o', '/o'))
+        global_functions.print('Current website url has been copied into clipboard, now you can share it for free.')
+    }"
+  >
+    <template #icon><ShareAltOutlined /></template>
+  </a-button>
+
   <div class="flex flex-col place-content-center place-items-center"
   >
     <div class="container_css max-w-[1366px]">
@@ -419,5 +428,24 @@ onMounted(async () => {
   .for_mobile({
     font-size: 16px;
   });
+}
+
+.my_float_button {
+	position:fixed;
+  z-index: 99;
+
+	width:40px;
+	height:40px;
+
+	bottom:40px;
+	right:40px;
+
+	border-radius:50px;
+	box-shadow: 2px 2px 3px #999;
+
+  border-color: transparent;
+	background-color:#F8BBD0;
+
+  opacity: 0.8;
 }
 </style>
