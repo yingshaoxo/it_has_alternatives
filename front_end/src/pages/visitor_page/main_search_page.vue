@@ -186,6 +186,14 @@ onMounted(async () => {
 
   <div class="space_after_table"></div>
 
+  <a-button type="primary" ghost class="opacity-[0.7]"
+    @click="async () => {
+      await global_dict.router.push(`/user`)
+    }"
+  >Login/Register</a-button>
+
+  <div class="space_after_table"></div>
+
   <help_card></help_card>
 
   <div class="page_bottom_space"></div>

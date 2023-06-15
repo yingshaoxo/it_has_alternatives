@@ -183,6 +183,9 @@ export var global_functions = {
     print: (message: any) => {
         // I'll define this function in App.vue
     },
+    make_first_character_upper_case: (text: any) => {
+        return text.charAt(0).toUpperCase() + text.slice(1);
+    },
     refresh: () => {
         window.location.reload();
     },

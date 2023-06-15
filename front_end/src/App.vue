@@ -59,9 +59,9 @@ onMounted(()=>{
         }"
       >
       <div class="space-y-[16px]">
-        <a-input :placeholder="global_dict.login_request._key_string_dict.email" v-model:value="global_dict.login_request.email" />
-        <a-input :placeholder="global_dict.login_request._key_string_dict.password" v-model:value="global_dict.login_request.password" />
-        <a-input :placeholder="global_dict.login_request._key_string_dict.invitation_code" v-model:value="global_dict.login_request.invitation_code" />
+        <a-input :placeholder="global_functions.make_first_character_upper_case(global_dict.login_request._key_string_dict.email)" v-model:value="global_dict.login_request.email" />
+        <a-input :placeholder="global_functions.make_first_character_upper_case(global_dict.login_request._key_string_dict.password)" v-model:value="global_dict.login_request.password" />
+        <a-input :placeholder="global_functions.make_first_character_upper_case(global_dict.login_request._key_string_dict.invitation_code)" v-model:value="global_dict.login_request.invitation_code" />
       </div>
     </a-modal>
   </a-config-provider>
