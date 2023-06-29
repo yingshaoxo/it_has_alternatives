@@ -3,10 +3,6 @@ import vue from '@vitejs/plugin-vue'
 import { babel } from "@rollup/plugin-babel";
 
 import { resolve } from 'path'
-
-import Components from 'unplugin-vue-components/vite';
-import { AntDesignVueResolver } from 'unplugin-vue-components/resolvers';
-
 const pathResolve = (dir: string): any => resolve(__dirname, '.', dir)
 
 export default defineConfig({

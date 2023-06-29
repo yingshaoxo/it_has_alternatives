@@ -13,8 +13,7 @@ from auto_everything.base import Terminal
 from auto_everything.database import MongoDB
 from auto_everything.disk import Disk
 from auto_everything.io import IO
-from auto_everything.cryptography import EncryptionAndDecryption, Password_Generator
-from auto_everything.cryptography import JWT_Tool
+from auto_everything.cryptography import Encryption_And_Decryption, Password_Generator, JWT_Tool
 from auto_everything.time import Time
 
 import backend_service.generated_yrpc.it_has_alternatives_objects as it_has_alternatives_objects
@@ -36,7 +35,7 @@ if _MONGO_DB_URL:
     configuration.MONGO_DB_URL = _MONGO_DB_URL
 mongoDB = MongoDB(configuration.MONGO_DB_URL)
 
-encryption_and_decryption = EncryptionAndDecryption()
+encryption_and_decryption = Encryption_And_Decryption()
 secret_dict = encryption_and_decryption.get_secret_alphabet_dict(a_secret_string=configuration.SECRET_TEXT)
 password_generator = Password_Generator(configuration.SECRET_TEXT)
 jwt_tool = JWT_Tool()
