@@ -1,3 +1,4 @@
+#!/usr/bin/env /home/yingshaoxo/anaconda3/bin/python3
 #!/usr/bin/env /usr/bin/python3
 #!/usr/bin/env /root/.cache/pypoetry/virtualenvs/backend-service-dYydayWh-py3.10/bin/python3
 #!/usr/bin/env /usr/bin/python3
@@ -6,6 +7,7 @@ import os
 from auto_everything.base import Python, Terminal
 from auto_everything.develop import YRPC
 from auto_everything.disk import Disk
+from auto_everything.database import Database_Of_Yingshaoxo
 
 
 py = Python()
@@ -38,6 +40,13 @@ git reset --hard origin/master
         )
 
         yrpc.generate_code(
+            which_language="python",
+            input_folder="./protocols",
+            input_files=["it_has_alternatives.proto"],
+            output_folder="./backend_service/backend_service/generated_yrpc"
+        )
+
+        Database_Of_Yingshaoxo.generate_code_from_yrpc_protocol(
             which_language="python",
             input_folder="./protocols",
             input_files=["it_has_alternatives.proto"],
