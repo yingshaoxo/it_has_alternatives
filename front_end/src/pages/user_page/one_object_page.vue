@@ -147,8 +147,14 @@ onMounted(async () => {
     dict.object_name = route.params?.name??""
   }
 
-  await functions.refresh_list()
-  await global_functions.show_dialog_if_it_is_not_user()
+
+  var is_user = await global_functions.is_user()
+  if (is_user) {
+    await functions.refresh_list()
+  } else {
+    await global_dict.router.push(`/object/${dict.object_name}`)
+    // await global_functions.show_dialog_if_it_is_not_user()
+  }
 })
 </script>
 

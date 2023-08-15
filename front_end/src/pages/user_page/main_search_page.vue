@@ -290,7 +290,7 @@ onMounted(async () => {
         }"
       >
         <template #bodyCell="{ column, text, record }">
-          <template v-if="['name', 'description'].includes(column.dataIndex)">
+          <template v-if="['name'].includes(column.dataIndex)">
             <div class="editable-cell">
               <div v-if="dict.editable_data && dict.editable_data[record.id] && column.dataIndex==dict.what_column_is_in_editing_now" class="editable-cell-input-wrapper">
                 <a-input v-model:value="
