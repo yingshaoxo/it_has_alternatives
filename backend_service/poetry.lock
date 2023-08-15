@@ -33,7 +33,7 @@ trio = ["trio (>=0.16,<0.22)"]
 
 [[package]]
 name = "auto-everything"
-version = "3.22"
+version = "3.23"
 description = "do automate things on Linux"
 optional = false
 python-versions = "^3.10"
@@ -47,7 +47,7 @@ psutil = "5.9.4"
 type = "git"
 url = "https://github.com/yingshaoxo/auto_everything.git"
 reference = "dev"
-resolved_reference = "8d7605786c61269c8266e7dd75b055384b2222b3"
+resolved_reference = "eba17dcb5f2e8ba209e5b4dffe692069036d55e0"
 
 [[package]]
 name = "click"

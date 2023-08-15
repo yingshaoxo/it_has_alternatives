@@ -372,7 +372,7 @@ class User_Service(Visitor_Service):
                 default_response.error = "You should login before do any operations. (missing josn web token)"
                 return default_response
 
-            if (item.an_object.name == None or item.an_object.description == None):
+            if (item.an_object == None or item.an_object.name == None or item.an_object.description == None):
                 default_response.error = "name and description should have values."
                 return default_response
             
@@ -420,7 +420,7 @@ class User_Service(Visitor_Service):
                 default_response.error = "You should login before do any operations. (missing josn web token)"
                 return default_response
 
-            if (item.an_object.name == None or item.an_object.description == None):
+            if (item.an_object == None or item.an_object.name == None or item.an_object.description == None):
                 default_response.error = "name and description should have values."
                 return default_response
             
@@ -482,7 +482,7 @@ class User_Service(Visitor_Service):
                 default_response.error = "You should login before do any operations. (missing josn web token)"
                 return default_response
 
-            if (item.an_object.name == None or item.an_object.description == None):
+            if (item.an_object == None or item.an_object.name == None or item.an_object.description == None):
                 default_response.error = "name and description should have values."
                 return default_response
             
