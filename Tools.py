@@ -53,19 +53,19 @@ git reset --hard origin/master
             output_folder="./backend_service/backend_service/generated_yrpc"
         )
 
-    def build_front_end(self):
-        t.run(f"""
-        cd {self.project_root_folder}
-        cd front_end
-        yarn
-        yarn build
-        rm -fr ../backend_service/backend_service/vue/*
-        mkdir -p ../backend_service/backend_service/vue
-        cp -fr dist/* ../backend_service/backend_service/vue/
-        """)
+    # def build_front_end(self):
+    #     t.run(f"""
+    #     cd {self.project_root_folder}
+    #     cd front_end
+    #     yarn
+    #     yarn build
+    #     rm -fr ../backend_service/backend_service/vue/*
+    #     mkdir -p ../backend_service/backend_service/vue
+    #     cp -fr dist/* ../backend_service/backend_service/vue/
+    #     """)
     
     def rebuild_docker_image(self):
-        self.build_front_end()
+        # self.build_front_end()
         t.run(f"""
         cd {self.project_root_folder}
         docker-compose -f docker-compose.service.yaml down
