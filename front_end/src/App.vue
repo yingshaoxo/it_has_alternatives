@@ -74,4 +74,8 @@ onMounted(()=>{
 .ant-notification .ant-notification-notice .ant-notification-notice-closable {
   z-index: 999;
 }
+
+.prose {
+  color: black !important;
+}
 </style>
