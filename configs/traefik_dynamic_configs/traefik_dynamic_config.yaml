@@ -21,13 +21,19 @@
 
 http:
   routers:
-    next_traefik_router:
+    # next_traefik_router:
+    #   entryPoints:
+    #     - web
+    #     - websecure
+    #   # rule: "!Host(`alternatives.ai-tools-online.xyz`)"
+    #   rule: "HostRegexp(`(.*)weloveparty(.*)`)"
+    #   service: next_traefik_service
+    next_traefik_router_for_style_shop:
       entryPoints:
         - web
         - websecure
-      # rule: "!Host(`alternatives.ai-tools-online.xyz`)"
-      rule: "HostRegexp(`(.*)weloveparty(.*)`)"
-      service: next_traefik_service
+      rule: "HostRegexp(`(.*)style_shop(.*)`)"
+      service: next_traefik_service_for_style_shop
     its_alternative_router_for_visitor_operations:
       entryPoints:
         - web
@@ -82,10 +88,13 @@ http:
               - "email" # jwt_auth_gateway will put this header to the original request
 
   services:
-    next_traefik_service:
-      loadBalancer:
+    # next_traefik_service:
+    #   loadBalancer:
+    #     servers:
+    #       - url: http://127.0.0.1:810
+    next_traefik_service_for_style_shop:
         servers:
-          - url: http://127.0.0.1:810
+          - url: http://127.0.0.1:811
     backend_service_for_visitor:
       loadBalancer:
         servers:
