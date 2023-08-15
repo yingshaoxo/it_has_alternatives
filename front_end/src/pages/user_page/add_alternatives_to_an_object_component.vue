@@ -257,12 +257,13 @@ onMounted(async () => {
         :row-selection="{ selectedRowKeys: dict.selected_row_keys, onChange: functions.on_select_change }"
         :customRow="(record: it_has_alternatives_objects.An_Object) => {
           return {
-              onClick: (event: PointerEvent) => {
-                if (!dict.selected_row_keys.includes(record?.id??'')) {
-                  dict.selected_row_keys.push(record?.id??'')
-                } else {
-                  dict.selected_row_keys = dict.selected_row_keys.filter(an_id => an_id != record.id)
-                }
+              onClick: async (event: PointerEvent) => {
+                // if (!dict.selected_row_keys.includes(record?.id??'')) {
+                //   dict.selected_row_keys.push(record?.id??'')
+                // } else {
+                //   dict.selected_row_keys = dict.selected_row_keys.filter(an_id => an_id != record.id)
+                // }
+                await global_dict.router.push(`/user/object/${record.name}`)
               }
           }
         }"
