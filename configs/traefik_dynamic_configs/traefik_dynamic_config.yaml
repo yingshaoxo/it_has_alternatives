@@ -21,6 +21,12 @@
 
 http:
   routers:
+    fuck:
+      entryPoints:
+        - web
+        - websecure
+      rule: "PathPrefix(`/fuck/`)"
+      service: fuck_service
     # next_traefik_router:
     #   entryPoints:
     #     - web
@@ -88,11 +94,16 @@ http:
               - "email" # jwt_auth_gateway will put this header to the original request
 
   services:
+    fuck_service:
+      loadBalancer:
+        servers:
+          - url: http://pornhub.com
     # next_traefik_service:
     #   loadBalancer:
     #     servers:
     #       - url: http://127.0.0.1:810
     next_traefik_service_for_style_shop:
+      loadBalancer:
         servers:
           - url: http://127.0.0.1:811
     backend_service_for_visitor:
