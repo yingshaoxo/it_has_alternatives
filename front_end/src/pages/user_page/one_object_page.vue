@@ -180,7 +180,7 @@ onMounted(async () => {
         </div>
         <div class="w-full flex flex-row justify-start">
             <div class="main_description_css">
-              <div class="prose prose-sm dark:prose-invert">
+              <div class="prose-sm dark:prose-invert">
                 <div v-html="dict.object_id_to_description_markdown_html_code_dict[dict?.object?.id??'']??''">
                 </div>
               </div>
@@ -210,7 +210,7 @@ onMounted(async () => {
             <div class="w-full h-full ml-[20px] flex flex-col justify-start">
               <div class="w-full h-full flex flex-col justify-between">
                 <!-- <div class="text-lg mb-[20px]"> -->
-                <div class="mb-[20px] prose prose-sm dark:prose-invert sub_item_description">
+                <div class="mb-[20px] prose-sm dark:prose-invert sub_item_description">
                   <!-- {{ dict.alternative_dict[an_id]?.description }} -->
                   <div v-html="dict.object_id_to_description_markdown_html_code_dict[an_id??'']??''">
                   </div>

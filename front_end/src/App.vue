@@ -75,7 +75,8 @@ onMounted(()=>{
   z-index: 999;
 }
 
+/* 
 .prose {
   color: black !important;
-}
+} */
 </style>
