@@ -264,6 +264,7 @@ onMounted(async () => {
                 //   dict.selected_row_keys = dict.selected_row_keys.filter(an_id => an_id != record.id)
                 // }
                 await global_dict.router.push(`/user/object/${record.name}`)
+                global_functions.refresh()
               }
           }
         }"
