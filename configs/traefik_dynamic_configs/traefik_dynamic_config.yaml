@@ -27,6 +27,14 @@ http:
         - websecure
       rule: "PathPrefix(`/fuck/`)"
       service: fuck_service
+    expo_shop:
+      entryPoints:
+        - web
+        - websecure
+      rule: "HostRegexp(`(.*)expo_shop(.*)`)"
+      middlewares:
+        - cros_allow_all
+      service: expo_shop_service
     # next_traefik_router:
     #   entryPoints:
     #     - web
@@ -98,6 +106,10 @@ http:
       loadBalancer:
         servers:
           - url: http://pornhub.com
+    expo_shop_service:
+      loadBalancer:
+        servers:
+          - url: http://127.0.0.1:3000
     # next_traefik_service:
     #   loadBalancer:
     #     servers:
