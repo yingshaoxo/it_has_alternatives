@@ -52,13 +52,17 @@ http:
       entryPoints:
         - web
         - websecure
-      rule: "HostRegexp(`(.*)play-with-css(.*)`)"
+      rule: "PathPrefix(`/play-with-css/`)"
+      middlewares:
+        - cros_allow_all
       service: next_traefik_service_for_play_with_css
     next_traefik_router_for_yingshaoxo_xyz:
       entryPoints:
         - web
         - websecure
-      rule: "HostRegexp(`(.*)yingshaoxo(.*)`)"
+      rule: "Host(`yingshaoxo.xyz`)"
+      middlewares:
+        - cros_allow_all
       service: next_traefik_service_for_yingshaoxo_xyz
     its_alternative_router_for_visitor_operations:
       entryPoints:
