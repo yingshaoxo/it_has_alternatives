@@ -40,6 +40,18 @@ http:
         - websecure
       rule: "HostRegexp(`(.*)style_shop(.*)`)"
       service: next_traefik_service_for_style_shop
+    next_traefik_router_for_play_with_css:
+      entryPoints:
+        - web
+        - websecure
+      rule: "HostRegexp(`(.*)play-with-css(.*)`)"
+      service: next_traefik_service_for_play_with_css
+    next_traefik_router_for_yingshaoxo_xyz:
+      entryPoints:
+        - web
+        - websecure
+      rule: "HostRegexp(`(.*)yingshaoxo(.*)`)"
+      service: next_traefik_service_for_yingshaoxo_xyz
     its_alternative_router_for_visitor_operations:
       entryPoints:
         - web
@@ -106,6 +118,14 @@ http:
       loadBalancer:
         servers:
           - url: http://127.0.0.1:811
+    next_traefik_service_for_play_with_css:
+      loadBalancer:
+        servers:
+          - url: http://127.0.0.1:9191
+    next_traefik_service_for_yingshaoxo_xyz:
+      loadBalancer:
+        servers:
+          - url: http://127.0.0.1:9190
     backend_service_for_visitor:
       loadBalancer:
         servers:
