@@ -52,7 +52,7 @@ http:
       entryPoints:
         - web
         - websecure
-      rule: "PathPrefix(`/play-with-css/`)"
+      rule: "HostRegexp(`(.*)yingshaoxo.xyz`) && PathPrefix(`/play-with-css/`)"
       middlewares:
         - cros_allow_all
       service: next_traefik_service_for_play_with_css
@@ -60,7 +60,7 @@ http:
       entryPoints:
         - web
         - websecure
-      rule: "HostRegexp(`(.*)yingshaoxo.xyz`)"
+      rule: "HostRegexp(`(.*)yingshaoxo.xyz`) && !PathPrefix(`/play-with-css/`)"
       middlewares:
         - cros_allow_all
       service: next_traefik_service_for_yingshaoxo_xyz
