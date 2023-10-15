@@ -1,0 +1,19 @@
+{
+    "db_type": "mongodb",
+    "backup_tool": "python, auto_everything",
+    "author": "yingshaoxo@gmail.com",
+    "file_tree": [
+        {
+            "path": "./data_backup/it_has_alternatives_object",
+            "type": "folder"
+        },
+        {
+            "path": "./data_backup/it_has_alternatives_object/it_has_alternatives_object.json",
+            "type": "file"
+        },
+        {
+            "path": "./data_backup/it_has_alternatives_object/user.json",
+            "type": "file"
+        }
+    ]
+}

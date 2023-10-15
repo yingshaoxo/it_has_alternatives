@@ -1,0 +1,66 @@
+[
+    {
+        "id": "yingshaoxo@gmail.com",
+        "create_time_in_10_numbers_timestamp_format": 1680519892,
+        "email": "yingshaoxo@gmail.com",
+        "password": "WmnYxltrp1",
+        "jwt": "nxJtsGkbObAbTUQ8IbqoIpR2kCI4ICJKV8QbgQ==.nxJfsWFysCI4ICJ2aW2pk6tts1tjQGilYWfmLeNjsSImICJxYW2hs68gk1RxaW2pIdroIhVFYdNVNTFeidAbgQ==.k790a779i050017a0k609kkg76a141g9",
+        "level": 0,
+        "parent_email": null,
+        "children_email_list": [
+            "bernhardruimschoot@gmail.com",
+            "mrhu2017web@gmail.com",
+            "2963555379@qq.com"
+        ],
+        "invitation_counting": 3,
+        "invitation_code_list": [
+            "J0eekQ3k8PbU"
+        ],
+        "last_login_time_in_10_numbers_timestamp_format": 1697350358
+    },
+    {
+        "id": "bernhardruimschoot@gmail.com",
+        "create_time_in_10_numbers_timestamp_format": 1680656630,
+        "email": "bernhardruimschoot@gmail.com",
+        "password": "lnmlbpo86132",
+        "jwt": "nxDtsOkbRbAbLWU8BbqoBpC2kKB4BKDHJ8UbgU==.nxDfsQGysKB4BKDbZVDwaOGxZTD8aQ8zX6tjs1CAZ68taQqwX69lBbqoBpDtseCjsJ9ziTDysekbRbAbQND6sQDjX6DZJMD9.28sn192igikik2ksaa15a46sn4702a0n",
+        "level": 1,
+        "parent_email": "yingshaoxo@gmail.com",
+        "children_email_list": [],
+        "invitation_counting": 0,
+        "invitation_code_list": [
+            "TeTzFsFXQNwu",
+            "bnKvtOE0bcS1"
+        ]
+    },
+    {
+        "id": "mrhu2017web@gmail.com",
+        "create_time_in_10_numbers_timestamp_format": 1681439410,
+        "email": "mrhu2017web@gmail.com",
+        "password": "861324",
+        "jwt": "nxDtsOkbRbAbLWU8BbqoBpC2kKB4BKDHJ8UbgU==.nxDfsQGysKB4BKDlket8EdAvP1ifXhSpsQGysK2ds60bFKAbkeGwZO9lV1P0kefwZxB4BKDyLhPNMzCaZTCeBp0=.g58kg9n39n9470i155gg63i755nn5130",
+        "level": 1,
+        "parent_email": "yingshaoxo@gmail.com",
+        "children_email_list": [],
+        "invitation_counting": 0,
+        "invitation_code_list": [
+            "haDEDwPbyXP2",
+            "6yeMizV67ZOi"
+        ]
+    },
+    {
+        "id": "2963555379@qq.com",
+        "create_time_in_10_numbers_timestamp_format": 1681440788,
+        "email": "2963555379@qq.com",
+        "password": "444444",
+        "jwt": "nxDtsOkbRbAbLWU8BbqoBpC2kKB4BKDHJ8UbgU==.nxDfsQGysKB4BKBxRLXzPLW8Ezk2UTGvFePjsMBmBKDxXQ2hs68gk1CxaQ2pBdroBdtxaGt8szZOE6UbgU==.484i6434kni3597s9na7239750i3sik1",
+        "level": 1,
+        "parent_email": "yingshaoxo@gmail.com",
+        "children_email_list": [],
+        "invitation_counting": 0,
+        "invitation_code_list": [
+            "TPkXtfST8l0Y",
+            "WmF2CyzNNuk2"
+        ]
+    }
+]
