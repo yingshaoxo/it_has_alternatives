@@ -1,4 +1,4 @@
 .pytest_cache/
 configs/mongodb_data/
 
-data_backup/
+poetry.lock
