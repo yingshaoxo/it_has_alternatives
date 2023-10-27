@@ -76,22 +76,22 @@ const interceptor_function = (data: any) => {
 }
 
 let get_host_url = (sub_domain: string) => {
-    return `https://${sub_domain}.ai-tools-online.xyz`
+    return `http://127.0.0.1:5551/${sub_domain}`
 }
 if (import.meta.env.DEV) {
     get_host_url = (sub_domain: string) => {
-        return `http://${sub_domain}.domain.local`
+        return `http://127.0.0.1:5551/${sub_domain}`
     }
 } else {
     get_host_url = (sub_domain: string) => {
-        return `https://${sub_domain}.ai-tools-online.xyz`
+        return `${window.location.protocol}//${window.location.host}/${sub_domain}`
     }
 }
 
 export var global_dict = reactive({
     router,
     visitor_client: new it_has_alternatives_rpc.Client_it_has_alternatives(
-            get_host_url("alternatives"),
+            get_host_url(""),
             {
             }, 
             (error_string: string)=>{
@@ -102,7 +102,7 @@ export var global_dict = reactive({
             }
     ),
     user_client: new it_has_alternatives_rpc.Client_it_has_alternatives(
-            get_host_url("user_alternatives"),
+            get_host_url("user"),
             {
                 "jwt": localStorage.getItem("jwt")??""
             }, 
@@ -115,7 +115,7 @@ export var global_dict = reactive({
     ),
     admin_client: computed(() => {
         var a_client = new it_has_alternatives_rpc.Client_it_has_alternatives(
-            get_host_url("admin_alternatives"),
+            get_host_url("admin"),
             {
                 "jwt": localStorage.getItem("jwt")??""
             }, 

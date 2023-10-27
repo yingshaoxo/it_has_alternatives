@@ -187,7 +187,8 @@ const _general_from_dict_function = (old_object: any, new_object: any): any => {
     return old_object
 }
 
-enum Sort_By {
+export enum Sort_By {
+    // yingshaoxo: I strongly recommend you use enum as a string type in other message data_model
     like = "like",
     dislike = "dislike",
 }
@@ -246,6 +247,22 @@ export class A_User {
         invitation_code_list: "invitation_code_list",
         last_login_time_in_10_numbers_timestamp_format: "last_login_time_in_10_numbers_timestamp_format",
     };
+
+    /*
+    constructor(id: string | null = null, create_time_in_10_numbers_timestamp_format: number | null = null, email: string | null = null, password: string | null = null, jwt: string | null = null, level: number | null = null, parent_email: string | null = null, children_email_list: string[] | null = null, invitation_counting: number | null = null, invitation_code_list: string[] | null = null, last_login_time_in_10_numbers_timestamp_format: number | null = null) {
+            this.id = id
+            this.create_time_in_10_numbers_timestamp_format = create_time_in_10_numbers_timestamp_format
+            this.email = email
+            this.password = password
+            this.jwt = jwt
+            this.level = level
+            this.parent_email = parent_email
+            this.children_email_list = children_email_list
+            this.invitation_counting = invitation_counting
+            this.invitation_code_list = invitation_code_list
+            this.last_login_time_in_10_numbers_timestamp_format = last_login_time_in_10_numbers_timestamp_format
+    }
+    */
 
     to_dict(): _A_User {
         return _general_to_dict_function(this);
@@ -320,6 +337,20 @@ export class An_Object {
         update_time_in_10_numbers_timestamp_format: "update_time_in_10_numbers_timestamp_format",
     };
 
+    /*
+    constructor(id: string | null = null, name: string | null = null, description: string | null = null, level: number | null = null, likes: number | null = null, dislikes: number | null = null, alternative_id_list: string[] | null = null, create_time_in_10_numbers_timestamp_format: number | null = null, update_time_in_10_numbers_timestamp_format: number | null = null) {
+            this.id = id
+            this.name = name
+            this.description = description
+            this.level = level
+            this.likes = likes
+            this.dislikes = dislikes
+            this.alternative_id_list = alternative_id_list
+            this.create_time_in_10_numbers_timestamp_format = create_time_in_10_numbers_timestamp_format
+            this.update_time_in_10_numbers_timestamp_format = update_time_in_10_numbers_timestamp_format
+    }
+    */
+
     to_dict(): _An_Object {
         return _general_to_dict_function(this);
     }
@@ -369,6 +400,14 @@ export class Get_Special_JWT_Request {
         invitation_code: "invitation_code",
     };
 
+    /*
+    constructor(email: string | null = null, password: string | null = null, invitation_code: string | null = null) {
+            this.email = email
+            this.password = password
+            this.invitation_code = invitation_code
+    }
+    */
+
     to_dict(): _Get_Special_JWT_Request {
         return _general_to_dict_function(this);
     }
@@ -414,6 +453,13 @@ export class Get_Special_JWT_Response {
         encrypted_jwt: "encrypted_jwt",
     };
 
+    /*
+    constructor(error: string | null = null, encrypted_jwt: string | null = null) {
+            this.error = error
+            this.encrypted_jwt = encrypted_jwt
+    }
+    */
+
     to_dict(): _Get_Special_JWT_Response {
         return _general_to_dict_function(this);
     }
@@ -454,6 +500,12 @@ export class is_JWT_ok_Request {
     _key_string_dict = {
         jwt: "jwt",
     };
+
+    /*
+    constructor(jwt: string | null = null) {
+            this.jwt = jwt
+    }
+    */
 
     to_dict(): _is_JWT_ok_Request {
         return _general_to_dict_function(this);
@@ -504,6 +556,14 @@ export class is_JWT_ok_Response {
         is_admin: "is_admin",
     };
 
+    /*
+    constructor(error: string | null = null, ok: boolean | null = null, is_admin: boolean | null = null) {
+            this.error = error
+            this.ok = ok
+            this.is_admin = is_admin
+    }
+    */
+
     to_dict(): _is_JWT_ok_Response {
         return _general_to_dict_function(this);
     }
@@ -544,6 +604,12 @@ export class Get_invitation_code_request {
     _key_string_dict = {
 
     };
+
+    /*
+    constructor() {
+
+    }
+    */
 
     to_dict(): _Get_invitation_code_request {
         return _general_to_dict_function(this);
@@ -589,6 +655,13 @@ export class Get_invitation_code_response {
         error: "error",
         invitation_code: "invitation_code",
     };
+
+    /*
+    constructor(error: string | null = null, invitation_code: string | null = null) {
+            this.error = error
+            this.invitation_code = invitation_code
+    }
+    */
 
     to_dict(): _Get_invitation_code_response {
         return _general_to_dict_function(this);
@@ -651,6 +724,17 @@ export class Search_Alternative_Request {
         page_number: "page_number",
     };
 
+    /*
+    constructor(key_words: string | null = null, keywords_of_name: string | null = null, keywords_of_description: string | null = null, sort_by: Sort_By | null = null, page_size: number | null = null, page_number: number | null = null) {
+            this.key_words = key_words
+            this.keywords_of_name = keywords_of_name
+            this.keywords_of_description = keywords_of_description
+            this.sort_by = sort_by
+            this.page_size = page_size
+            this.page_number = page_number
+    }
+    */
+
     to_dict(): _Search_Alternative_Request {
         return _general_to_dict_function(this);
     }
@@ -695,6 +779,13 @@ export class Search_Alternative_Response {
         error: "error",
         alternative_object_list: "alternative_object_list",
     };
+
+    /*
+    constructor(error: string | null = null, alternative_object_list: An_Object[] | null = null) {
+            this.error = error
+            this.alternative_object_list = alternative_object_list
+    }
+    */
 
     to_dict(): _Search_Alternative_Response {
         return _general_to_dict_function(this);
@@ -741,6 +832,13 @@ export class Get_an_object_Request {
         name: "name",
     };
 
+    /*
+    constructor(id: string | null = null, name: string | null = null) {
+            this.id = id
+            this.name = name
+    }
+    */
+
     to_dict(): _Get_an_object_Request {
         return _general_to_dict_function(this);
     }
@@ -786,6 +884,13 @@ export class Get_an_object_Response {
         an_object: "an_object",
     };
 
+    /*
+    constructor(error: string | null = null, an_object: An_Object | null = null) {
+            this.error = error
+            this.an_object = an_object
+    }
+    */
+
     to_dict(): _Get_an_object_Response {
         return _general_to_dict_function(this);
     }
@@ -826,6 +931,12 @@ export class Add_Object_Request {
     _key_string_dict = {
         an_object: "an_object",
     };
+
+    /*
+    constructor(an_object: An_Object | null = null) {
+            this.an_object = an_object
+    }
+    */
 
     to_dict(): _Add_Object_Request {
         return _general_to_dict_function(this);
@@ -872,6 +983,13 @@ export class Add_Object_Response {
         success: "success",
     };
 
+    /*
+    constructor(error: string | null = null, success: boolean | null = null) {
+            this.error = error
+            this.success = success
+    }
+    */
+
     to_dict(): _Add_Object_Response {
         return _general_to_dict_function(this);
     }
@@ -912,6 +1030,12 @@ export class Update_Object_Request {
     _key_string_dict = {
         an_object: "an_object",
     };
+
+    /*
+    constructor(an_object: An_Object | null = null) {
+            this.an_object = an_object
+    }
+    */
 
     to_dict(): _Update_Object_Request {
         return _general_to_dict_function(this);
@@ -958,6 +1082,13 @@ export class Update_Object_Response {
         success: "success",
     };
 
+    /*
+    constructor(error: string | null = null, success: boolean | null = null) {
+            this.error = error
+            this.success = success
+    }
+    */
+
     to_dict(): _Update_Object_Response {
         return _general_to_dict_function(this);
     }
@@ -998,6 +1129,12 @@ export class Delete_Object_Request {
     _key_string_dict = {
         an_object: "an_object",
     };
+
+    /*
+    constructor(an_object: An_Object | null = null) {
+            this.an_object = an_object
+    }
+    */
 
     to_dict(): _Delete_Object_Request {
         return _general_to_dict_function(this);
@@ -1044,6 +1181,13 @@ export class Delete_Object_Response {
         success: "success",
     };
 
+    /*
+    constructor(error: string | null = null, success: boolean | null = null) {
+            this.error = error
+            this.success = success
+    }
+    */
+
     to_dict(): _Delete_Object_Response {
         return _general_to_dict_function(this);
     }
@@ -1084,6 +1228,12 @@ export class Download_backup_data_request {
     _key_string_dict = {
 
     };
+
+    /*
+    constructor() {
+
+    }
+    */
 
     to_dict(): _Download_backup_data_request {
         return _general_to_dict_function(this);
@@ -1134,6 +1284,14 @@ export class Download_backup_data_response {
         file_bytes_in_base64_format: "file_bytes_in_base64_format",
     };
 
+    /*
+    constructor(error: string | null = null, file_name: string | null = null, file_bytes_in_base64_format: string | null = null) {
+            this.error = error
+            this.file_name = file_name
+            this.file_bytes_in_base64_format = file_bytes_in_base64_format
+    }
+    */
+
     to_dict(): _Download_backup_data_response {
         return _general_to_dict_function(this);
     }
@@ -1174,6 +1332,12 @@ export class Upload_backup_data_request {
     _key_string_dict = {
         file_bytes_in_base64_format: "file_bytes_in_base64_format",
     };
+
+    /*
+    constructor(file_bytes_in_base64_format: string | null = null) {
+            this.file_bytes_in_base64_format = file_bytes_in_base64_format
+    }
+    */
 
     to_dict(): _Upload_backup_data_request {
         return _general_to_dict_function(this);
@@ -1219,6 +1383,13 @@ export class Upload_backup_data_response {
         error: "error",
         success: "success",
     };
+
+    /*
+    constructor(error: string | null = null, success: boolean | null = null) {
+            this.error = error
+            this.success = success
+    }
+    */
 
     to_dict(): _Upload_backup_data_response {
         return _general_to_dict_function(this);

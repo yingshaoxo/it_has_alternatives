@@ -1,8 +1,10 @@
+from typing import Callable
+
 from .it_has_alternatives_objects import *
 from auto_everything.database import Database_Of_Yingshaoxo
 
 
-def _search_function(self: Any, item_filter: Any, page_number:int|None=None, page_size:int|None=None, start_from:int=0, reverse:bool=False):
+def _search_function(self: Any, item_filter: Any, page_number:int|None=None, page_size:int|None=None, start_from:int=0, reverse:bool=False) -> list[dict[str, Any]]:
     search_temp_dict = {}
     search_temp_dict["_raw_search_counting"] = 0
     search_temp_dict["_search_counting"] = 0
@@ -47,13 +49,44 @@ def _search_function(self: Any, item_filter: Any, page_number:int|None=None, pag
                 return None
             if search_temp_dict["_search_counting"] > search_temp_dict["_real_end"]:
                 return None
-        
+
         return final_result
 
     return self.database_of_yingshaoxo.search(one_row_dict_handler=one_row_dict_filter)
 
 
-def _delete(self, item_filter: Any):
+def _raw_search_function(self: Any, one_row_json_string_handler: Callable[[str], dict[str, Any] | None], page_number:int|None=None, page_size:int|None=None, start_from:int=0, reverse:bool=False):
+    search_temp_dict = {}
+    search_temp_dict["_raw_search_counting"] = 0
+    search_temp_dict["_search_counting"] = 0
+    if (page_number!=None and page_size != None and start_from != None):
+        search_temp_dict["_real_start"] = page_number * page_size
+        search_temp_dict["_real_end"] = search_temp_dict["_real_start"] + page_size
+
+    def new_one_row_json_string_handler(a_json_string: str):
+        search_temp_dict["_raw_search_counting"] += 1
+
+        if (page_number!=None and page_size != None and start_from != None):
+            if search_temp_dict["_raw_search_counting"] < start_from:
+                return None
+
+        result = one_row_json_string_handler(a_json_string)
+
+        if result != None:
+            search_temp_dict["_search_counting"] += 1
+
+        if (page_number!=None and page_size != None and start_from != None):
+            if search_temp_dict["_search_counting"] <= search_temp_dict["_real_start"]:
+                return None
+            if search_temp_dict["_search_counting"] > search_temp_dict["_real_end"]:
+                return None
+
+        return result
+
+    return list(self.database_of_yingshaoxo.raw_search(one_row_json_string_handler=new_one_row_json_string_handler))
+
+
+def _delete(self, item_filter: Any) -> None:
     item_dict = item_filter.to_dict()
     def one_row_dict_filter(a_dict_: dict[str, Any]):
         result = True
@@ -106,369 +139,57 @@ def _update(self, old_item_filter: Any, new_item: Any):
     self.database_of_yingshaoxo.update(one_row_dict_handler=one_row_dict_handler)
 
 
-class Yingshaoxo_Database_Get_Special_JWT_Response:
-    def __init__(self, database_base_folder: str) -> None:
-        self.database_of_yingshaoxo = Database_Of_Yingshaoxo(database_name="Get_Special_JWT_Response", database_base_folder=database_base_folder)
+class Yingshaoxo_Database_A_User:
+    def __init__(self, database_base_folder: str, use_sqlite: bool = False, global_multiprocessing_shared_dict: Any | None = None, auto_backup: bool = False) -> None:
+        self.database_of_yingshaoxo = Database_Of_Yingshaoxo(database_name="A_User", database_base_folder=database_base_folder, use_sqlite=use_sqlite, global_multiprocessing_shared_dict=global_multiprocessing_shared_dict, auto_backup=auto_backup)
 
-    def add(self, item: Get_Special_JWT_Response):
-        self.database_of_yingshaoxo.add(data=item.to_dict())
+    def add(self, item: A_User):
+        return self.database_of_yingshaoxo.add(data=item.to_dict())
 
-    def search(self, item_filter: Get_Special_JWT_Response, page_number:int|None=None, page_size:int|None=None, start_from:int=0, reverse:bool=False):
-        return _search_function(self=self, item_filter=item_filter, page_number=page_number, page_size=page_size, start_from=start_from, reverse=reverse)
+    def search(self, item_filter: A_User, page_number:int|None=None, page_size:int|None=None, start_from:int=0, reverse:bool=False) -> list[A_User]:
+        return [A_User().from_dict(one) for one in _search_function(self=self, item_filter=item_filter, page_number=page_number, page_size=page_size, start_from=start_from, reverse=reverse)]
 
-    def delete(self, item_filter: Get_Special_JWT_Response):
+    def raw_search(self, one_row_json_string_handler: Callable[[str], dict[str, Any] | None], page_number:int|None=None, page_size:int|None=None, start_from:int=0, reverse:bool=False) -> list[A_User]:
+        '''
+        one_row_json_string_handler: a_function to handle search process. If it returns None, we'll ignore it, otherwise, we'll add the return value into the result list.
+        '''
+        return [A_User().from_dict(one) for one in _raw_search_function(self=self, one_row_json_string_handler=one_row_json_string_handler, page_number=page_number, page_size=page_size, start_from=start_from, reverse=reverse)]
+
+    def delete(self, item_filter: A_User):
         return _delete(self=self, item_filter=item_filter)
-    
-    def update(self, old_item_filter: Get_Special_JWT_Response, new_item: Get_Special_JWT_Response):
+
+    def update(self, old_item_filter: A_User, new_item: A_User):
         return _update(self=self, old_item_filter=old_item_filter, new_item=new_item)
 
 
-class Yingshaoxo_Database_Get_Special_JWT_Request:
-    def __init__(self, database_base_folder: str) -> None:
-        self.database_of_yingshaoxo = Database_Of_Yingshaoxo(database_name="Get_Special_JWT_Request", database_base_folder=database_base_folder)
+class Yingshaoxo_Database_An_Object:
+    def __init__(self, database_base_folder: str, use_sqlite: bool = False, global_multiprocessing_shared_dict: Any | None = None, auto_backup: bool = False) -> None:
+        self.database_of_yingshaoxo = Database_Of_Yingshaoxo(database_name="An_Object", database_base_folder=database_base_folder, use_sqlite=use_sqlite, global_multiprocessing_shared_dict=global_multiprocessing_shared_dict, auto_backup=auto_backup)
 
-    def add(self, item: Get_Special_JWT_Request):
-        self.database_of_yingshaoxo.add(data=item.to_dict())
+    def add(self, item: An_Object):
+        return self.database_of_yingshaoxo.add(data=item.to_dict())
 
-    def search(self, item_filter: Get_Special_JWT_Request, page_number:int|None=None, page_size:int|None=None, start_from:int=0, reverse:bool=False):
-        return _search_function(self=self, item_filter=item_filter, page_number=page_number, page_size=page_size, start_from=start_from, reverse=reverse)
+    def search(self, item_filter: An_Object, page_number:int|None=None, page_size:int|None=None, start_from:int=0, reverse:bool=False) -> list[An_Object]:
+        return [An_Object().from_dict(one) for one in _search_function(self=self, item_filter=item_filter, page_number=page_number, page_size=page_size, start_from=start_from, reverse=reverse)]
 
-    def delete(self, item_filter: Get_Special_JWT_Request):
+    def raw_search(self, one_row_json_string_handler: Callable[[str], dict[str, Any] | None], page_number:int|None=None, page_size:int|None=None, start_from:int=0, reverse:bool=False) -> list[An_Object]:
+        '''
+        one_row_json_string_handler: a_function to handle search process. If it returns None, we'll ignore it, otherwise, we'll add the return value into the result list.
+        '''
+        return [An_Object().from_dict(one) for one in _raw_search_function(self=self, one_row_json_string_handler=one_row_json_string_handler, page_number=page_number, page_size=page_size, start_from=start_from, reverse=reverse)]
+
+    def delete(self, item_filter: An_Object):
         return _delete(self=self, item_filter=item_filter)
-    
-    def update(self, old_item_filter: Get_Special_JWT_Request, new_item: Get_Special_JWT_Request):
-        return _update(self=self, old_item_filter=old_item_filter, new_item=new_item)
 
-
-class Yingshaoxo_Database_is_JWT_ok_Response:
-    def __init__(self, database_base_folder: str) -> None:
-        self.database_of_yingshaoxo = Database_Of_Yingshaoxo(database_name="is_JWT_ok_Response", database_base_folder=database_base_folder)
-
-    def add(self, item: is_JWT_ok_Response):
-        self.database_of_yingshaoxo.add(data=item.to_dict())
-
-    def search(self, item_filter: is_JWT_ok_Response, page_number:int|None=None, page_size:int|None=None, start_from:int=0, reverse:bool=False):
-        return _search_function(self=self, item_filter=item_filter, page_number=page_number, page_size=page_size, start_from=start_from, reverse=reverse)
-
-    def delete(self, item_filter: is_JWT_ok_Response):
-        return _delete(self=self, item_filter=item_filter)
-    
-    def update(self, old_item_filter: is_JWT_ok_Response, new_item: is_JWT_ok_Response):
-        return _update(self=self, old_item_filter=old_item_filter, new_item=new_item)
-
-
-class Yingshaoxo_Database_is_JWT_ok_Request:
-    def __init__(self, database_base_folder: str) -> None:
-        self.database_of_yingshaoxo = Database_Of_Yingshaoxo(database_name="is_JWT_ok_Request", database_base_folder=database_base_folder)
-
-    def add(self, item: is_JWT_ok_Request):
-        self.database_of_yingshaoxo.add(data=item.to_dict())
-
-    def search(self, item_filter: is_JWT_ok_Request, page_number:int|None=None, page_size:int|None=None, start_from:int=0, reverse:bool=False):
-        return _search_function(self=self, item_filter=item_filter, page_number=page_number, page_size=page_size, start_from=start_from, reverse=reverse)
-
-    def delete(self, item_filter: is_JWT_ok_Request):
-        return _delete(self=self, item_filter=item_filter)
-    
-    def update(self, old_item_filter: is_JWT_ok_Request, new_item: is_JWT_ok_Request):
-        return _update(self=self, old_item_filter=old_item_filter, new_item=new_item)
-
-
-class Yingshaoxo_Database_Get_invitation_code_request:
-    def __init__(self, database_base_folder: str) -> None:
-        self.database_of_yingshaoxo = Database_Of_Yingshaoxo(database_name="Get_invitation_code_request", database_base_folder=database_base_folder)
-
-    def add(self, item: Get_invitation_code_request):
-        self.database_of_yingshaoxo.add(data=item.to_dict())
-
-    def search(self, item_filter: Get_invitation_code_request, page_number:int|None=None, page_size:int|None=None, start_from:int=0, reverse:bool=False):
-        return _search_function(self=self, item_filter=item_filter, page_number=page_number, page_size=page_size, start_from=start_from, reverse=reverse)
-
-    def delete(self, item_filter: Get_invitation_code_request):
-        return _delete(self=self, item_filter=item_filter)
-    
-    def update(self, old_item_filter: Get_invitation_code_request, new_item: Get_invitation_code_request):
-        return _update(self=self, old_item_filter=old_item_filter, new_item=new_item)
-
-
-class Yingshaoxo_Database_Get_invitation_code_response:
-    def __init__(self, database_base_folder: str) -> None:
-        self.database_of_yingshaoxo = Database_Of_Yingshaoxo(database_name="Get_invitation_code_response", database_base_folder=database_base_folder)
-
-    def add(self, item: Get_invitation_code_response):
-        self.database_of_yingshaoxo.add(data=item.to_dict())
-
-    def search(self, item_filter: Get_invitation_code_response, page_number:int|None=None, page_size:int|None=None, start_from:int=0, reverse:bool=False):
-        return _search_function(self=self, item_filter=item_filter, page_number=page_number, page_size=page_size, start_from=start_from, reverse=reverse)
-
-    def delete(self, item_filter: Get_invitation_code_response):
-        return _delete(self=self, item_filter=item_filter)
-    
-    def update(self, old_item_filter: Get_invitation_code_response, new_item: Get_invitation_code_response):
-        return _update(self=self, old_item_filter=old_item_filter, new_item=new_item)
-
-
-class Yingshaoxo_Database_Search_Alternative_Response:
-    def __init__(self, database_base_folder: str) -> None:
-        self.database_of_yingshaoxo = Database_Of_Yingshaoxo(database_name="Search_Alternative_Response", database_base_folder=database_base_folder)
-
-    def add(self, item: Search_Alternative_Response):
-        self.database_of_yingshaoxo.add(data=item.to_dict())
-
-    def search(self, item_filter: Search_Alternative_Response, page_number:int|None=None, page_size:int|None=None, start_from:int=0, reverse:bool=False):
-        return _search_function(self=self, item_filter=item_filter, page_number=page_number, page_size=page_size, start_from=start_from, reverse=reverse)
-
-    def delete(self, item_filter: Search_Alternative_Response):
-        return _delete(self=self, item_filter=item_filter)
-    
-    def update(self, old_item_filter: Search_Alternative_Response, new_item: Search_Alternative_Response):
-        return _update(self=self, old_item_filter=old_item_filter, new_item=new_item)
-
-
-class Yingshaoxo_Database_Search_Alternative_Request:
-    def __init__(self, database_base_folder: str) -> None:
-        self.database_of_yingshaoxo = Database_Of_Yingshaoxo(database_name="Search_Alternative_Request", database_base_folder=database_base_folder)
-
-    def add(self, item: Search_Alternative_Request):
-        self.database_of_yingshaoxo.add(data=item.to_dict())
-
-    def search(self, item_filter: Search_Alternative_Request, page_number:int|None=None, page_size:int|None=None, start_from:int=0, reverse:bool=False):
-        return _search_function(self=self, item_filter=item_filter, page_number=page_number, page_size=page_size, start_from=start_from, reverse=reverse)
-
-    def delete(self, item_filter: Search_Alternative_Request):
-        return _delete(self=self, item_filter=item_filter)
-    
-    def update(self, old_item_filter: Search_Alternative_Request, new_item: Search_Alternative_Request):
-        return _update(self=self, old_item_filter=old_item_filter, new_item=new_item)
-
-
-class Yingshaoxo_Database_Get_an_object_Request:
-    def __init__(self, database_base_folder: str) -> None:
-        self.database_of_yingshaoxo = Database_Of_Yingshaoxo(database_name="Get_an_object_Request", database_base_folder=database_base_folder)
-
-    def add(self, item: Get_an_object_Request):
-        self.database_of_yingshaoxo.add(data=item.to_dict())
-
-    def search(self, item_filter: Get_an_object_Request, page_number:int|None=None, page_size:int|None=None, start_from:int=0, reverse:bool=False):
-        return _search_function(self=self, item_filter=item_filter, page_number=page_number, page_size=page_size, start_from=start_from, reverse=reverse)
-
-    def delete(self, item_filter: Get_an_object_Request):
-        return _delete(self=self, item_filter=item_filter)
-    
-    def update(self, old_item_filter: Get_an_object_Request, new_item: Get_an_object_Request):
-        return _update(self=self, old_item_filter=old_item_filter, new_item=new_item)
-
-
-class Yingshaoxo_Database_Get_an_object_Response:
-    def __init__(self, database_base_folder: str) -> None:
-        self.database_of_yingshaoxo = Database_Of_Yingshaoxo(database_name="Get_an_object_Response", database_base_folder=database_base_folder)
-
-    def add(self, item: Get_an_object_Response):
-        self.database_of_yingshaoxo.add(data=item.to_dict())
-
-    def search(self, item_filter: Get_an_object_Response, page_number:int|None=None, page_size:int|None=None, start_from:int=0, reverse:bool=False):
-        return _search_function(self=self, item_filter=item_filter, page_number=page_number, page_size=page_size, start_from=start_from, reverse=reverse)
-
-    def delete(self, item_filter: Get_an_object_Response):
-        return _delete(self=self, item_filter=item_filter)
-    
-    def update(self, old_item_filter: Get_an_object_Response, new_item: Get_an_object_Response):
-        return _update(self=self, old_item_filter=old_item_filter, new_item=new_item)
-
-
-class Yingshaoxo_Database_Add_Object_Response:
-    def __init__(self, database_base_folder: str) -> None:
-        self.database_of_yingshaoxo = Database_Of_Yingshaoxo(database_name="Add_Object_Response", database_base_folder=database_base_folder)
-
-    def add(self, item: Add_Object_Response):
-        self.database_of_yingshaoxo.add(data=item.to_dict())
-
-    def search(self, item_filter: Add_Object_Response, page_number:int|None=None, page_size:int|None=None, start_from:int=0, reverse:bool=False):
-        return _search_function(self=self, item_filter=item_filter, page_number=page_number, page_size=page_size, start_from=start_from, reverse=reverse)
-
-    def delete(self, item_filter: Add_Object_Response):
-        return _delete(self=self, item_filter=item_filter)
-    
-    def update(self, old_item_filter: Add_Object_Response, new_item: Add_Object_Response):
-        return _update(self=self, old_item_filter=old_item_filter, new_item=new_item)
-
-
-class Yingshaoxo_Database_Add_Object_Request:
-    def __init__(self, database_base_folder: str) -> None:
-        self.database_of_yingshaoxo = Database_Of_Yingshaoxo(database_name="Add_Object_Request", database_base_folder=database_base_folder)
-
-    def add(self, item: Add_Object_Request):
-        self.database_of_yingshaoxo.add(data=item.to_dict())
-
-    def search(self, item_filter: Add_Object_Request, page_number:int|None=None, page_size:int|None=None, start_from:int=0, reverse:bool=False):
-        return _search_function(self=self, item_filter=item_filter, page_number=page_number, page_size=page_size, start_from=start_from, reverse=reverse)
-
-    def delete(self, item_filter: Add_Object_Request):
-        return _delete(self=self, item_filter=item_filter)
-    
-    def update(self, old_item_filter: Add_Object_Request, new_item: Add_Object_Request):
-        return _update(self=self, old_item_filter=old_item_filter, new_item=new_item)
-
-
-class Yingshaoxo_Database_Update_Object_Response:
-    def __init__(self, database_base_folder: str) -> None:
-        self.database_of_yingshaoxo = Database_Of_Yingshaoxo(database_name="Update_Object_Response", database_base_folder=database_base_folder)
-
-    def add(self, item: Update_Object_Response):
-        self.database_of_yingshaoxo.add(data=item.to_dict())
-
-    def search(self, item_filter: Update_Object_Response, page_number:int|None=None, page_size:int|None=None, start_from:int=0, reverse:bool=False):
-        return _search_function(self=self, item_filter=item_filter, page_number=page_number, page_size=page_size, start_from=start_from, reverse=reverse)
-
-    def delete(self, item_filter: Update_Object_Response):
-        return _delete(self=self, item_filter=item_filter)
-    
-    def update(self, old_item_filter: Update_Object_Response, new_item: Update_Object_Response):
-        return _update(self=self, old_item_filter=old_item_filter, new_item=new_item)
-
-
-class Yingshaoxo_Database_Update_Object_Request:
-    def __init__(self, database_base_folder: str) -> None:
-        self.database_of_yingshaoxo = Database_Of_Yingshaoxo(database_name="Update_Object_Request", database_base_folder=database_base_folder)
-
-    def add(self, item: Update_Object_Request):
-        self.database_of_yingshaoxo.add(data=item.to_dict())
-
-    def search(self, item_filter: Update_Object_Request, page_number:int|None=None, page_size:int|None=None, start_from:int=0, reverse:bool=False):
-        return _search_function(self=self, item_filter=item_filter, page_number=page_number, page_size=page_size, start_from=start_from, reverse=reverse)
-
-    def delete(self, item_filter: Update_Object_Request):
-        return _delete(self=self, item_filter=item_filter)
-    
-    def update(self, old_item_filter: Update_Object_Request, new_item: Update_Object_Request):
-        return _update(self=self, old_item_filter=old_item_filter, new_item=new_item)
-
-
-class Yingshaoxo_Database_Delete_Object_Response:
-    def __init__(self, database_base_folder: str) -> None:
-        self.database_of_yingshaoxo = Database_Of_Yingshaoxo(database_name="Delete_Object_Response", database_base_folder=database_base_folder)
-
-    def add(self, item: Delete_Object_Response):
-        self.database_of_yingshaoxo.add(data=item.to_dict())
-
-    def search(self, item_filter: Delete_Object_Response, page_number:int|None=None, page_size:int|None=None, start_from:int=0, reverse:bool=False):
-        return _search_function(self=self, item_filter=item_filter, page_number=page_number, page_size=page_size, start_from=start_from, reverse=reverse)
-
-    def delete(self, item_filter: Delete_Object_Response):
-        return _delete(self=self, item_filter=item_filter)
-    
-    def update(self, old_item_filter: Delete_Object_Response, new_item: Delete_Object_Response):
-        return _update(self=self, old_item_filter=old_item_filter, new_item=new_item)
-
-
-class Yingshaoxo_Database_Delete_Object_Request:
-    def __init__(self, database_base_folder: str) -> None:
-        self.database_of_yingshaoxo = Database_Of_Yingshaoxo(database_name="Delete_Object_Request", database_base_folder=database_base_folder)
-
-    def add(self, item: Delete_Object_Request):
-        self.database_of_yingshaoxo.add(data=item.to_dict())
-
-    def search(self, item_filter: Delete_Object_Request, page_number:int|None=None, page_size:int|None=None, start_from:int=0, reverse:bool=False):
-        return _search_function(self=self, item_filter=item_filter, page_number=page_number, page_size=page_size, start_from=start_from, reverse=reverse)
-
-    def delete(self, item_filter: Delete_Object_Request):
-        return _delete(self=self, item_filter=item_filter)
-    
-    def update(self, old_item_filter: Delete_Object_Request, new_item: Delete_Object_Request):
-        return _update(self=self, old_item_filter=old_item_filter, new_item=new_item)
-
-
-class Yingshaoxo_Database_Download_backup_data_response:
-    def __init__(self, database_base_folder: str) -> None:
-        self.database_of_yingshaoxo = Database_Of_Yingshaoxo(database_name="Download_backup_data_response", database_base_folder=database_base_folder)
-
-    def add(self, item: Download_backup_data_response):
-        self.database_of_yingshaoxo.add(data=item.to_dict())
-
-    def search(self, item_filter: Download_backup_data_response, page_number:int|None=None, page_size:int|None=None, start_from:int=0, reverse:bool=False):
-        return _search_function(self=self, item_filter=item_filter, page_number=page_number, page_size=page_size, start_from=start_from, reverse=reverse)
-
-    def delete(self, item_filter: Download_backup_data_response):
-        return _delete(self=self, item_filter=item_filter)
-    
-    def update(self, old_item_filter: Download_backup_data_response, new_item: Download_backup_data_response):
-        return _update(self=self, old_item_filter=old_item_filter, new_item=new_item)
-
-
-class Yingshaoxo_Database_Download_backup_data_request:
-    def __init__(self, database_base_folder: str) -> None:
-        self.database_of_yingshaoxo = Database_Of_Yingshaoxo(database_name="Download_backup_data_request", database_base_folder=database_base_folder)
-
-    def add(self, item: Download_backup_data_request):
-        self.database_of_yingshaoxo.add(data=item.to_dict())
-
-    def search(self, item_filter: Download_backup_data_request, page_number:int|None=None, page_size:int|None=None, start_from:int=0, reverse:bool=False):
-        return _search_function(self=self, item_filter=item_filter, page_number=page_number, page_size=page_size, start_from=start_from, reverse=reverse)
-
-    def delete(self, item_filter: Download_backup_data_request):
-        return _delete(self=self, item_filter=item_filter)
-    
-    def update(self, old_item_filter: Download_backup_data_request, new_item: Download_backup_data_request):
-        return _update(self=self, old_item_filter=old_item_filter, new_item=new_item)
-
-
-class Yingshaoxo_Database_Upload_backup_data_request:
-    def __init__(self, database_base_folder: str) -> None:
-        self.database_of_yingshaoxo = Database_Of_Yingshaoxo(database_name="Upload_backup_data_request", database_base_folder=database_base_folder)
-
-    def add(self, item: Upload_backup_data_request):
-        self.database_of_yingshaoxo.add(data=item.to_dict())
-
-    def search(self, item_filter: Upload_backup_data_request, page_number:int|None=None, page_size:int|None=None, start_from:int=0, reverse:bool=False):
-        return _search_function(self=self, item_filter=item_filter, page_number=page_number, page_size=page_size, start_from=start_from, reverse=reverse)
-
-    def delete(self, item_filter: Upload_backup_data_request):
-        return _delete(self=self, item_filter=item_filter)
-    
-    def update(self, old_item_filter: Upload_backup_data_request, new_item: Upload_backup_data_request):
-        return _update(self=self, old_item_filter=old_item_filter, new_item=new_item)
-
-
-class Yingshaoxo_Database_Upload_backup_data_response:
-    def __init__(self, database_base_folder: str) -> None:
-        self.database_of_yingshaoxo = Database_Of_Yingshaoxo(database_name="Upload_backup_data_response", database_base_folder=database_base_folder)
-
-    def add(self, item: Upload_backup_data_response):
-        self.database_of_yingshaoxo.add(data=item.to_dict())
-
-    def search(self, item_filter: Upload_backup_data_response, page_number:int|None=None, page_size:int|None=None, start_from:int=0, reverse:bool=False):
-        return _search_function(self=self, item_filter=item_filter, page_number=page_number, page_size=page_size, start_from=start_from, reverse=reverse)
-
-    def delete(self, item_filter: Upload_backup_data_response):
-        return _delete(self=self, item_filter=item_filter)
-    
-    def update(self, old_item_filter: Upload_backup_data_response, new_item: Upload_backup_data_response):
+    def update(self, old_item_filter: An_Object, new_item: An_Object):
         return _update(self=self, old_item_filter=old_item_filter, new_item=new_item)
 
 
 class Yingshaoxo_Database_Excutor_it_has_alternatives:
-    def __init__(self, database_base_folder: str):
+    def __init__(self, database_base_folder: str, use_sqlite: bool = False, global_multiprocessing_shared_dict: Any | None = None, auto_backup: bool = False):
         self._database_base_folder = database_base_folder
-        self.Get_Special_JWT_Response = Yingshaoxo_Database_Get_Special_JWT_Response(database_base_folder=self._database_base_folder)
-        self.Get_Special_JWT_Request = Yingshaoxo_Database_Get_Special_JWT_Request(database_base_folder=self._database_base_folder)
-        self.is_JWT_ok_Response = Yingshaoxo_Database_is_JWT_ok_Response(database_base_folder=self._database_base_folder)
-        self.is_JWT_ok_Request = Yingshaoxo_Database_is_JWT_ok_Request(database_base_folder=self._database_base_folder)
-        self.Get_invitation_code_request = Yingshaoxo_Database_Get_invitation_code_request(database_base_folder=self._database_base_folder)
-        self.Get_invitation_code_response = Yingshaoxo_Database_Get_invitation_code_response(database_base_folder=self._database_base_folder)
-        self.Search_Alternative_Response = Yingshaoxo_Database_Search_Alternative_Response(database_base_folder=self._database_base_folder)
-        self.Search_Alternative_Request = Yingshaoxo_Database_Search_Alternative_Request(database_base_folder=self._database_base_folder)
-        self.Get_an_object_Request = Yingshaoxo_Database_Get_an_object_Request(database_base_folder=self._database_base_folder)
-        self.Get_an_object_Response = Yingshaoxo_Database_Get_an_object_Response(database_base_folder=self._database_base_folder)
-        self.Add_Object_Response = Yingshaoxo_Database_Add_Object_Response(database_base_folder=self._database_base_folder)
-        self.Add_Object_Request = Yingshaoxo_Database_Add_Object_Request(database_base_folder=self._database_base_folder)
-        self.Update_Object_Response = Yingshaoxo_Database_Update_Object_Response(database_base_folder=self._database_base_folder)
-        self.Update_Object_Request = Yingshaoxo_Database_Update_Object_Request(database_base_folder=self._database_base_folder)
-        self.Delete_Object_Response = Yingshaoxo_Database_Delete_Object_Response(database_base_folder=self._database_base_folder)
-        self.Delete_Object_Request = Yingshaoxo_Database_Delete_Object_Request(database_base_folder=self._database_base_folder)
-        self.Download_backup_data_response = Yingshaoxo_Database_Download_backup_data_response(database_base_folder=self._database_base_folder)
-        self.Download_backup_data_request = Yingshaoxo_Database_Download_backup_data_request(database_base_folder=self._database_base_folder)
-        self.Upload_backup_data_request = Yingshaoxo_Database_Upload_backup_data_request(database_base_folder=self._database_base_folder)
-        self.Upload_backup_data_response = Yingshaoxo_Database_Upload_backup_data_response(database_base_folder=self._database_base_folder)
+        self.A_User = Yingshaoxo_Database_A_User(database_base_folder=self._database_base_folder, use_sqlite=use_sqlite, global_multiprocessing_shared_dict=global_multiprocessing_shared_dict, auto_backup=auto_backup)
+        self.An_Object = Yingshaoxo_Database_An_Object(database_base_folder=self._database_base_folder, use_sqlite=use_sqlite, global_multiprocessing_shared_dict=global_multiprocessing_shared_dict, auto_backup=auto_backup)
 
 
 if __name__ == "__main__":

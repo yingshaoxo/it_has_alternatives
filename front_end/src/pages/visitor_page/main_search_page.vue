@@ -194,9 +194,9 @@ onMounted(async () => {
 
   <div class="space_after_table"></div>
 
-  <help_card></help_card>
+  <!--help_card></help_card-->
 
-  <div class="page_bottom_space"></div>
+  <!--div class="page_bottom_space"></div-->
 
   <Language_switch_selection></Language_switch_selection>
 </template>

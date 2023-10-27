@@ -69,28 +69,10 @@ http:
         - web
         - websecure
       # rule: "(Host(`alternatives.ai-tools-online.xyz`) || Host(`alternatives.domain.local`)) && PathPrefix(`/it_has_alternatives/`)"
-      rule: "Host(`alternatives.ai-tools-online.xyz`) || Host(`alternatives.domain.local`)"
+      rule: "Host(`alternatives.ai-tools-online.xyz`)"
       middlewares:
         - cros_allow_all
       service: backend_service_for_visitor
-    its_alternative_router_for_users_operations:
-      entryPoints:
-        - web
-        - websecure
-      rule: "Host(`user_alternatives.ai-tools-online.xyz`) || Host(`user_alternatives.domain.local`)"
-      middlewares:
-        - cros_allow_all
-        - my_jwt_auth
-      service: backend_service_for_user
-    its_alternative_router_for_admin_operations:
-      entryPoints:
-        - web
-        - websecure
-      rule: "Host(`admin_alternatives.ai-tools-online.xyz`) || Host(`admin_alternatives.domain.local`)"
-      middlewares:
-        - cros_allow_all
-        - my_admin_jwt_auth
-      service: backend_service_for_admin
 
   middlewares:
     cros_allow_all:
@@ -104,18 +86,16 @@ http:
       grpcWeb:
         allowOrigins:
           - "*"
-    my_jwt_auth:
-        forwardAuth:
-          # address: "http://it_has_alternatives:5550/v1/jwt_auth_gateway/"
-          # address: http://host.docker.internal:5550/v1/jwt_auth_gateway/
-          address: "http://127.0.0.1:5550/v1/jwt_auth_gateway/"
-          authResponseHeaders:
-              - "email" # jwt_auth_gateway will put this header to the original request
-    my_admin_jwt_auth:
-        forwardAuth:
-          address: "http://127.0.0.1:5550/v1/admin_jwt_auth_gateway/"
-          authResponseHeaders:
-              - "email" # jwt_auth_gateway will put this header to the original request
+    #my_jwt_auth:
+    #    forwardAuth:
+    #      address: "http://127.0.0.1:5550/v1/jwt_auth_gateway/"
+    #      authResponseHeaders:
+    #          - "email" # jwt_auth_gateway will put this header to the original request
+    #my_admin_jwt_auth:
+    #    forwardAuth:
+    #      address: "http://127.0.0.1:5550/v1/admin_jwt_auth_gateway/"
+    #      authResponseHeaders:
+    #          - "email" # jwt_auth_gateway will put this header to the original request
 
   services:
     fuck_service:
@@ -148,14 +128,4 @@ http:
           # - url: http://it_has_alternatives:5551
           # - url: http://host.docker.internal:5551
           - url: http://127.0.0.1:5551
-        passHostHeader: true
-    backend_service_for_user:
-      loadBalancer:
-        servers:
-          - url: http://127.0.0.1:5552
-        passHostHeader: true
-    backend_service_for_admin:
-      loadBalancer:
-        servers:
-          - url: http://127.0.0.1:5553
         passHostHeader: true

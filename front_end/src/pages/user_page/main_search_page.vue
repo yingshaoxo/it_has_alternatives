@@ -355,7 +355,7 @@ onMounted(async () => {
 
   <div class="h-[200px]"></div>
 
-  <help_card></help_card>
+  <!--help_card></help_card-->
 
   <a-button @click="async ()=>{
     await functions.get_invitation_code()

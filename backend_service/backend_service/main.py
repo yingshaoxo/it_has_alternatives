@@ -1,5 +1,4 @@
 import sys
-
 sys.path.insert(0,'..')
 
 import multiprocessing
@@ -117,7 +116,7 @@ class Visitor_Service(it_has_alternatives_rpc.Service_it_has_alternatives):
                 if item.password.strip() == "":
                     default_response.error = "You should give me an valid password"
                     return default_response
-                
+
                 a_user: Any = user_collection.find_one({
                     it_has_alternatives_objects.A_User._key_string_dict.email: email,
                 })
@@ -153,12 +152,12 @@ class Visitor_Service(it_has_alternatives_rpc.Service_it_has_alternatives):
                         if item.invitation_code == None:
                             default_response.error = "Sorry, you need invitation code to do the register.\nYou can @yingshaoxo on twitter to get an invitation code if you think you are good enough to be an content leader."
                             return default_response
-                        
+
                         the_parent_user, code = decode_invitation_code(jwt_code=item.invitation_code)
                         if the_parent_user == None or code == None:
                             default_response.error = "Sorry, the one who invite you does not exists or he/she does not have any more invitation chance."
                             return default_response
-                        
+
                         if (the_parent_user.level == None):
                             the_parent_user.level = 0
 
@@ -210,7 +209,7 @@ class Visitor_Service(it_has_alternatives_rpc.Service_it_has_alternatives):
                     data={
                         it_has_alternatives_objects.A_User._key_string_dict.email: email,
                         "random_string": random_string
-                    }, 
+                    },
                     a_secret_string_for_integrity_verifying=configuration.SECRET_TEXT,
                     use_md5=True
                 )
@@ -256,7 +255,7 @@ class Visitor_Service(it_has_alternatives_rpc.Service_it_has_alternatives):
                 if (email is None):
                     default_response.error = "error: email do not exists, which shouldn't happen."
                     return default_response
-                elif email == configuration.ADMIN_EMAIL: 
+                elif email == configuration.ADMIN_EMAIL:
                     default_response.is_admin = True
                     default_response.ok = True
                     return default_response
@@ -278,7 +277,7 @@ class Visitor_Service(it_has_alternatives_rpc.Service_it_has_alternatives):
         try:
             result = object_collection.find(
                 {
-                    it_has_alternatives_objects.An_Object()._key_string_dict.name: 
+                    it_has_alternatives_objects.An_Object()._key_string_dict.name:
                         {
                             '$regex':f'(.*){re.escape(key_words)}(.*)',
                             "$options": "i"
@@ -300,7 +299,7 @@ class Visitor_Service(it_has_alternatives_rpc.Service_it_has_alternatives):
         try:
             result = object_collection.find(
                 {
-                    it_has_alternatives_objects.An_Object()._key_string_dict.id: 
+                    it_has_alternatives_objects.An_Object()._key_string_dict.id:
                         {
                             '$regex':f'^{item.id}$',
                             "$options": "i"
@@ -311,7 +310,7 @@ class Visitor_Service(it_has_alternatives_rpc.Service_it_has_alternatives):
             object_list = []
             for one in result: #type: ignore
                 object_list.append(it_has_alternatives_objects.An_Object().from_dict(one)) #type: ignore
-            
+
             if (len(object_list) > 0):
                 default_response.an_object = object_list[0]
         except Exception as e:
@@ -327,17 +326,17 @@ class User_Service(Visitor_Service):
         if email == None:
             default_response.error = "You should put jwt into the header."
             return default_response
-        
+
         a_user = user_collection.find_one({
             it_has_alternatives_objects.A_User._key_string_dict.email: email,
         })
         if a_user == None:
             default_response.error = "You don't exists, sorry."
             return default_response
-        
+
         the_dict = mongodb_item_to_dict(a_user)
         a_user = it_has_alternatives_objects.A_User(**the_dict)
-        
+
         if a_user.invitation_code_list == None:
             a_user.invitation_code_list = []
         if len(a_user.invitation_code_list) <= 0:
@@ -357,7 +356,7 @@ class User_Service(Visitor_Service):
             else:
                 default_response.error = "You don't have any more invitation chance, sorry."
                 return default_response
-        
+
         code = a_user.invitation_code_list[0]
         invitation_code = get_invitation_code(email=email, code=code)
         default_response.invitation_code = invitation_code
@@ -375,7 +374,7 @@ class User_Service(Visitor_Service):
             if (item.an_object == None or item.an_object.name == None or item.an_object.description == None):
                 default_response.error = "name and description should have values."
                 return default_response
-            
+
             from_user = get_a_user_by_email(email=email)
             if (from_user == None):
                 default_response.error = f"Sorry, user '{email}' does not exists."
@@ -423,7 +422,7 @@ class User_Service(Visitor_Service):
             if (item.an_object == None or item.an_object.name == None or item.an_object.description == None):
                 default_response.error = "name and description should have values."
                 return default_response
-            
+
             from_user = get_a_user_by_email(email=email)
             if (from_user == None):
                 default_response.error = f"Sorry, user '{email}' does not exists."
@@ -436,11 +435,11 @@ class User_Service(Visitor_Service):
             if (item.an_object == None or item.an_object.id == None or item.an_object.name == None):
                 default_response.error = "You should give me an id and a name for that object"
                 return default_response
-            
+
             old_object = object_collection.find_one(
                 filter={
                     it_has_alternatives_objects.An_Object()._key_string_dict.id: item.an_object.id,
-                }, 
+                },
             )
             if (old_object == None):
                 default_response.error = "Sorry, the item you want to edit is not exists."
@@ -453,14 +452,14 @@ class User_Service(Visitor_Service):
             if (old_object.level < user_level):
                 default_response.error = f"Sorry, you don't have enough permission to edit this object. It has level of {old_object.level}, your level is {user_level}."
                 return default_response
-            
+
             item.an_object.update_time_in_10_numbers_timestamp_format = time_.get_current_timestamp_in_10_digits_format()
             new_object = item.an_object.to_dict()
             del new_object[it_has_alternatives_objects.An_Object()._key_string_dict.level]
             object_collection.update_one(
                 filter={
                     it_has_alternatives_objects.An_Object()._key_string_dict.id: item.an_object.id,
-                }, 
+                },
                 update={
                     "$set": {
                         **new_object
@@ -485,7 +484,7 @@ class User_Service(Visitor_Service):
             if (item.an_object == None or item.an_object.name == None or item.an_object.description == None):
                 default_response.error = "name and description should have values."
                 return default_response
-            
+
             from_user = get_a_user_by_email(email=email)
             if (from_user == None):
                 default_response.error = f"Sorry, user '{email}' does not exists."
@@ -498,11 +497,11 @@ class User_Service(Visitor_Service):
             if (item.an_object == None or item.an_object.id == None or item.an_object.name == None):
                 default_response.error = "You should give me an id and a name for that object"
                 return default_response
-            
+
             old_object = object_collection.find_one(
                 filter={
                     it_has_alternatives_objects.An_Object()._key_string_dict.id: item.an_object.id,
-                }, 
+                },
             )
             if (old_object == None):
                 default_response.error = "Sorry, the item you want to edit is not exists."
@@ -515,11 +514,11 @@ class User_Service(Visitor_Service):
             if (old_object.level < user_level):
                 default_response.error = f"Sorry, you don't have enough permission to edit this object. It has level of {old_object.level}, your level is {user_level}"
                 return default_response
-            
+
             object_collection.delete_one(
                 filter={
                     it_has_alternatives_objects.An_Object()._key_string_dict.id: item.an_object.id,
-                }, 
+                },
             )
         except Exception as e:
             default_response.error = str(e)
@@ -580,36 +579,13 @@ class Admin_Service(User_Service):
         return default_response
 
 
-def run_visitor_grpc_service(port: str):
-    if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
-        #print('running in a PyInstaller bundle')
-        def resource_path(relative_path: str) -> str:
-            if hasattr(sys, '_MEIPASS'):
-                return os.path.join(sys._MEIPASS, relative_path) #type: ignore
-            return os.path.join(os.path.abspath("."), relative_path)
-        vue_html_file_folder = resource_path("./vue") 
-    else:
-        #print('running in a normal Python process')
-        vue_html_file_folder = disk.join_paths(disk.get_directory_path(__file__), "./vue")  
-
-    service_instance = Visitor_Service()
-    it_has_alternatives_rpc.run(service_instance, port=port, html_folder_path=vue_html_file_folder)
-
-def run_user_grpc_service(port: str):
-    service_instance = User_Service()
-    it_has_alternatives_rpc.run(service_instance, port=port)
-
-def run_admin_grpc_service(port: str):
-    service_instance = Admin_Service()
-    it_has_alternatives_rpc.run(service_instance, port=port)
-
-
-def run_restful_service(port: str):
+def run_main_service(port: str):
     from fastapi import FastAPI
     from fastapi import Request, Response, status
-    from starlette.responses import FileResponse 
+    from starlette.responses import FileResponse
     from fastapi.middleware.cors import CORSMiddleware
     from fastapi.staticfiles import StaticFiles
+    from starlette.datastructures import MutableHeaders
     import uvicorn
 
     app = FastAPI()
@@ -621,79 +597,136 @@ def run_restful_service(port: str):
         allow_headers=["*"],
     )
 
-    @app.get("/v1/jwt_auth_gateway/", response_model=str)
-    async def v1_jwt_auth_gateway(request: Request, response: Response):
+    if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
+        #print('running in a PyInstaller bundle')
+        def resource_path(relative_path: str) -> str:
+            if hasattr(sys, '_MEIPASS'):
+                return os.path.join(sys._MEIPASS, relative_path) #type: ignore
+            return os.path.join(os.path.abspath("."), relative_path)
+        vue_html_file_folder = resource_path("./vue")
+    else:
+        #print('running in a normal Python process')
+        vue_html_file_folder = disk.join_paths(disk.get_directory_path(__file__), "./vue")
+
+    visitor_service = it_has_alternatives_rpc.run(Visitor_Service(), "666", only_return_app=True, html_folder_path=vue_html_file_folder)
+    user_service = it_has_alternatives_rpc.run(User_Service(), "666", only_return_app=True)
+    admin_service = it_has_alternatives_rpc.run(Admin_Service(), "666", only_return_app=True)
+
+    @user_service.middleware("http")
+    async def user_auth_middleware(request: Request, call_next):
         raw_jwt_string = request.headers.get("jwt", None)
         if raw_jwt_string == None:
-            response.status_code = status.HTTP_401_UNAUTHORIZED
-            return "error"
+            return Response(
+                content="error",
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                headers={"Content-Type": "text/plain"},
+            )
+        else:
+            user: Any = user_collection.find_one({
+                "jwt": raw_jwt_string
+            })
+            if user == None:
+                return Response(
+                    content="error",
+                    status_code=status.HTTP_401_UNAUTHORIZED,
+                    headers={"Content-Type": "text/plain"},
+                )
+
+            email = user.get("email")
+            if (email is None):
+                return Response(
+                    content="error: email do not exists, which shouldn't happen",
+                    status_code=status.HTTP_401_UNAUTHORIZED,
+                    headers={"Content-Type": "text/plain"},
+                )
+            else:
+                update_last_login_time_for_a_user(user_email=email)
+
+                #request.headers["email"] = email
+                new_header = MutableHeaders(request._headers)
+                new_header["email"] = email
+                request._headers = new_header
+                request.scope.update(headers=request.headers.raw)
+
+                response = await call_next(request)
+
+                return response
+
+        return Response(
+            content="unknow error",
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            headers={"Content-Type": "text/plain"},
+        )
+
+    @admin_service.middleware("http")
+    async def admin_auth_middleware(request: Request, call_next):
+        raw_jwt_string = request.headers.get("jwt", None)
+        if raw_jwt_string == None:
+            return Response(
+                content="error",
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                headers={"Content-Type": "text/plain"},
+            )
         else:
             user: Any = user_collection.find_one({
                 "jwt": raw_jwt_string
             })
 
             if user == None:
-                response.status_code = status.HTTP_401_UNAUTHORIZED
-                return "error"
+                return Response(
+                    content="error",
+                    status_code=status.HTTP_401_UNAUTHORIZED,
+                    headers={"Content-Type": "text/plain"},
+                )
 
             email = user.get("email")
             if (email is None):
-                response.status_code = status.HTTP_401_UNAUTHORIZED
-                return "error: email do not exists, which shouldn't happen"
-            else:
-                response.headers.update({
-                    "email": email
-                })
-                response.status_code = status.HTTP_202_ACCEPTED
+                return Response(
+                    content="error: email do not exists, which shouldn't happen",
+                    status_code=status.HTTP_401_UNAUTHORIZED,
+                    headers={"Content-Type": "text/plain"},
+                )
+            elif email == configuration.ADMIN_EMAIL:
                 update_last_login_time_for_a_user(user_email=email)
-                return "ok"
+                #request.headers["email"] = email
 
-    @app.get("/v1/admin_jwt_auth_gateway/", response_model=str)
-    async def v1_admin_jwt_auth_gateway(request: Request, response: Response):
-        raw_jwt_string = request.headers.get("jwt", None)
-        if raw_jwt_string == None:
-            response.status_code = status.HTTP_401_UNAUTHORIZED
-            return "error"
-        else:
-            user: Any = user_collection.find_one({
-                "jwt": raw_jwt_string
-            })
+                new_header = MutableHeaders(request._headers)
+                new_header["email"] = email
+                request._headers = new_header
+                request.scope.update(headers=request.headers.raw)
 
-            if user == None:
-                response.status_code = status.HTTP_401_UNAUTHORIZED
-                return "error"
-
-            email = user.get("email")
-            if (email is None):
-                response.status_code = status.HTTP_401_UNAUTHORIZED
-                return "error: email do not exists, which shouldn't happen"
-            elif email == configuration.ADMIN_EMAIL: 
-                response.headers.update({
-                    "email": email
-                })
-                response.status_code = status.HTTP_202_ACCEPTED
-                update_last_login_time_for_a_user(user_email=email)
-                return 'ok'
+                response = await call_next(request)
+                return response
             else:
-                response.status_code = status.HTTP_401_UNAUTHORIZED
-                return "sorry, you are not admin"
+                return Response(
+                    content="sorry, you are not admin",
+                    status_code=status.HTTP_401_UNAUTHORIZED,
+                    headers={"Content-Type": "text/plain"},
+                )
+
+        return Response(
+            content="error",
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            headers={"Content-Type": "text/plain"},
+        )
+
+    app.mount("/admin", admin_service)
+    app.mount("/user", user_service)
+    app.mount("/", visitor_service)
 
     uvicorn.run(app=app, # type: ignore #"src.main:app", 
                 host="0.0.0.0",
-                port=int(port)) 
+                port=int(port))
 
 
 def start():
-    process_list = [ 
-        multiprocessing.Process(target=run_restful_service, args=("5550",)),
-        multiprocessing.Process(target=run_visitor_grpc_service, args=("5551",)),
-        multiprocessing.Process(target=run_user_grpc_service, args=("5552",)),
-        multiprocessing.Process(target=run_admin_grpc_service, args=("5553",)),
+    process_list = [
+        multiprocessing.Process(target=run_main_service, args=("5551",)),
     ]
 
     for process in process_list:
         process.start()
-    
+
     print("\n\nWhat is the yingshaoxo@gmail.com password? What you type at the first login is what the password is.\n\n")
 
     while all([

@@ -91,6 +91,8 @@ class YRPC_OBJECT_BASE_CLASS:
 
 
 class Sort_By(Enum):
+    # yingshaoxo: I strongly recommend you use enum as a string type in other message data_model
+    # for example, `Sort_By.dislike.value`
     like = "like"
     dislike = "dislike"
 
