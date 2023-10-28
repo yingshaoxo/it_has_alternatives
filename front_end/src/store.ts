@@ -110,7 +110,7 @@ export var global_dict = reactive({
             }
     ),
     user_client: new it_has_alternatives_rpc.Client_it_has_alternatives(
-            get_host_url("user"),
+            get_host_url("_user"),
             {
                 "jwt": localStorage.getItem("jwt")??""
             }, 
@@ -125,7 +125,7 @@ export var global_dict = reactive({
     ),
     admin_client: computed(() => {
         var a_client = new it_has_alternatives_rpc.Client_it_has_alternatives(
-            get_host_url("admin"),
+            get_host_url("_admin"),
             {
                 "jwt": localStorage.getItem("jwt")??""
             }, 

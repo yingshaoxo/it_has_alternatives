@@ -721,8 +721,8 @@ def run_main_service(port: str):
             headers={"Content-Type": "text/plain"},
         )
 
-    app.mount("/admin", admin_service)
-    app.mount("/user", user_service)
+    app.mount("/_admin", admin_service)
+    app.mount("/_user", user_service)
     app.mount("/", visitor_service)
 
     uvicorn.run(app=app, # type: ignore #"src.main:app", 
