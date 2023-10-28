@@ -75,6 +75,14 @@ const interceptor_function = (data: any) => {
     }
 }
 
+const before_request_function = () => {
+    global_dict.show_global_loading = true
+}
+
+const after_request_function = () => {
+    global_dict.show_global_loading = false
+}
+
 let get_host_url = (sub_domain: string) => {
     return `http://127.0.0.1:5551/${sub_domain}`
 }
@@ -111,7 +119,9 @@ export var global_dict = reactive({
             },
             (data: any)=>{
                 interceptor_function(data)
-            }
+            },
+            before_request_function,
+            after_request_function,
     ),
     admin_client: computed(() => {
         var a_client = new it_has_alternatives_rpc.Client_it_has_alternatives(
@@ -124,7 +134,9 @@ export var global_dict = reactive({
             },
             (data: any)=>{
                 interceptor_function(data)
-            }
+            },
+            before_request_function,
+            after_request_function,
         )
         return a_client
     }),
@@ -140,6 +152,7 @@ export var global_dict = reactive({
     special_secret_dict: it_has_alternatives_objects.get_secret_alphabet_dict_("Asking is not a bad thing if the person you ask are comfortable with it."),
     login_dialog_visible: false,
     login_request: new it_has_alternatives_objects.Get_Special_JWT_Request(),
+    show_global_loading: false
 })
 
 export var global_functions = {

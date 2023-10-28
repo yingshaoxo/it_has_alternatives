@@ -34,10 +34,18 @@ onMounted(()=>{
 </script>
 
 <template>
-  <a-config-provider :locale="global_dict.ant_design_locale">
-    <router-view></router-view>
+  <div class="global_loading" v-if="global_dict.show_global_loading">
+    <a-spin size="large" />
+  </div>
+
+  <a-config-provider :locale="global_dict.ant_design_locale"
+  >
+    <router-view
+        v-if="!global_dict.show_global_loading"
+    ></router-view>
 
     <a-modal
+        v-if="!global_dict.show_global_loading"
         v-model:visible="global_dict.login_dialog_visible"
         :title="global_dict.t(`Login`) + '/' + global_dict.t(`Register`)"
         :cancelText="global_dict.t('Cancel')"
@@ -73,6 +81,29 @@ onMounted(()=>{
 <style>
 .ant-notification .ant-notification-notice .ant-notification-notice-closable {
   z-index: 999;
+}
+
+.global_loading {
+  z-index: 666;
+  position: absolute;
+  margin: 0;
+  padding: 0;
+  left: 0;
+  top: 0;
+  
+  width: 100vw;
+  height: 100%;
+  min-height: 100vh;
+  /*
+  background-color: rgba(0, 0, 0, 0.6);
+  */
+  background-color: rgba(255, 255, 255, 1);
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  align-content: center;
 }
 
 /* 
