@@ -213,6 +213,7 @@ export var global_functions = {
     },
     refresh: () => {
         window.location.reload();
+        window.scrollTo(0, 0);
     },
     reload_when_url_change: () => {
         return;

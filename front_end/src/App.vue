@@ -43,7 +43,6 @@ onMounted(()=>{
     <router-view></router-view>
 
     <a-modal
-        v-if="!global_dict.show_global_loading"
         v-model:visible="global_dict.login_dialog_visible"
         :title="global_dict.t(`Login`) + '/' + global_dict.t(`Register`)"
         :cancelText="global_dict.t('Cancel')"
