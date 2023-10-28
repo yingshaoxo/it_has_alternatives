@@ -88,7 +88,7 @@ const functions = {
       dict.selected_row_keys = selected_row_keys
   },
   add_as_an_alternative_to_the_topest_object: async (object_id_list: string[]) => {
-    console.log(object_id_list)
+    //console.log(object_id_list)
     var the_master_object = clone_object(properties.master_object)
 
     if (the_master_object.alternative_id_list == null) {

@@ -297,15 +297,25 @@ class Visitor_Service(it_has_alternatives_rpc.Service_it_has_alternatives):
     async def get_an_object(self, headers: dict[str, str], item: it_has_alternatives_objects.Get_an_object_Request) -> it_has_alternatives_objects.Get_an_object_Response:
         default_response = it_has_alternatives_objects.Get_an_object_Response()
         try:
-            result = object_collection.find(
-                {
-                    it_has_alternatives_objects.An_Object()._key_string_dict.id:
-                        {
-                            '$regex':f'^{item.id}$',
-                            "$options": "i"
-                        }
-                }
-            )
+            if item.id != None:
+                result = object_collection.find(
+                    {
+                        it_has_alternatives_objects.An_Object()._key_string_dict.id:
+                            {
+                                '$regex':f'^{item.id}$',
+                                "$options": "i"
+                            }
+                    }
+                )
+            elif item.name != None:
+                result = object_collection.find(
+                    {
+                        it_has_alternatives_objects.An_Object()._key_string_dict.name: item.name
+                    }
+                )
+            else:
+                default_response.error = "You should give id or name"
+                return default_response
 
             object_list = []
             for one in result: #type: ignore
@@ -313,6 +323,7 @@ class Visitor_Service(it_has_alternatives_rpc.Service_it_has_alternatives):
 
             if (len(object_list) > 0):
                 default_response.an_object = object_list[0]
+
         except Exception as e:
             default_response.error = str(e)
         return default_response

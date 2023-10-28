@@ -66,16 +66,13 @@ const dict = reactive({
 
 const functions = {
   get_one_object: async (object_name: string): Promise<it_has_alternatives_objects.An_Object | null> => {
-    var request = new it_has_alternatives_objects.Search_Alternative_Request()
-    request.key_words = object_name
-    request.page_number = 0
-  request.page_size = 3
-    var result = await global_dict.visitor_client.search_alternatives(
+    var request = new it_has_alternatives_objects.Get_an_object_Request()
+    request.name = object_name
+    var result = await global_dict.visitor_client.get_an_object(
       request
     )
-    var result_object_list = result?.alternative_object_list ?? []
-    if (result_object_list.length > 0) {
-      return result_object_list[0]
+    if (result?.an_object != null) {
+      return result?.an_object
     } else {
       return null
     }
