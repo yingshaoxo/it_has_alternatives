@@ -34,15 +34,13 @@ onMounted(()=>{
 </script>
 
 <template>
-  <div class="global_loading" v-if="global_dict.show_global_loading">
+  <div class="global_loading" v-show="global_dict.show_global_loading">
     <a-spin size="large" />
   </div>
 
   <a-config-provider :locale="global_dict.ant_design_locale"
   >
-    <router-view
-        v-if="!global_dict.show_global_loading"
-    ></router-view>
+    <router-view></router-view>
 
     <a-modal
         v-if="!global_dict.show_global_loading"
@@ -84,7 +82,7 @@ onMounted(()=>{
 }
 
 .global_loading {
-  z-index: 666;
+  z-index: 1998;
   position: absolute;
   margin: 0;
   padding: 0;
@@ -94,10 +92,10 @@ onMounted(()=>{
   width: 100vw;
   height: 100%;
   min-height: 100vh;
-  /*
   background-color: rgba(0, 0, 0, 0.6);
-  */
+  /*
   background-color: rgba(255, 255, 255, 1);
+  */
 
   display: flex;
   flex-direction: column;
