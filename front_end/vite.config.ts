@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
-import { babel } from "@rollup/plugin-babel";
+
+import legacy from '@vitejs/plugin-legacy'
 
 import { resolve } from 'path'
 const pathResolve = (dir: string): any => resolve(__dirname, '.', dir)
@@ -9,24 +10,14 @@ export default defineConfig({
   base: '/',
   plugins: [
     vue(),
-    babel({
-      include: "src/prismjs.ts",
-      plugins: [
-        [
-          "prismjs",
-          {
-            languages: "all",
-            theme: "default",
-            css: true,
-          },
-        ],
+    legacy({
+      targets: [
+        "ie >= 0",
+        '> 0%'
       ],
-      babelHelpers: "bundled",
-      extensions: [".js", ".jsx", ".es6", ".es", ".mjs", ".ts", "*.tsx"],
+      additionalLegacyPolyfills: ["regenerator-runtime/runtime"],
+      polyfills: true
     }),
-    // Components({
-    //   resolvers: [AntDesignVueResolver()],
-    // }),
   ],
   css: {
     preprocessorOptions: {
