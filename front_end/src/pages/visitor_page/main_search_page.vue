@@ -90,6 +90,22 @@ const functions = {
       }
     }, 300)
   },
+  download_base64_file: (base64Data: string, fileName: string) => {
+     const linkSource = `data:application/octet-stream;base64,${base64Data}`;
+     const downloadLink = document.createElement("a");
+     downloadLink.href = linkSource;
+     downloadLink.download = fileName;
+     downloadLink.click();
+  },
+  download_backup_zip_file: async () => {
+    var request = new it_has_alternatives_objects.Download_backup_data_request()
+    var result = await global_dict.visitor_client.download_backup_data(
+      request
+    )
+    if (result?.file_bytes_in_base64_format) {
+      functions.download_base64_file(result?.file_bytes_in_base64_format, result?.file_name??'backup.zip')
+    }
+  },
 }
 
 onMounted(async () => {
@@ -186,11 +202,20 @@ onMounted(async () => {
 
   <div class="space_after_table"></div>
 
-  <a-button type="primary" ghost class="opacity-[0.7]"
-    @click="async () => {
-      await global_dict.router.push(`/user`)
-    }"
-  >Login/Register</a-button>
+  <div class="Rows">
+    <a-button type="primary" ghost class="opacity-[0.7]"
+      @click="async () => {
+        await global_dict.router.push(`/user`)
+      }"
+    >Login/Register</a-button>
+
+    <a-button type="primary" ghost class="opacity-[0.7]"
+      style="margin-top: 20px;"
+      @click="async () => {
+        await functions.download_backup_zip_file()
+      }"
+    >Download Website Data</a-button>
+  </div>
 
   <div class="space_after_table"></div>
 

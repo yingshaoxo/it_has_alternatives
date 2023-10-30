@@ -328,6 +328,32 @@ class Visitor_Service(it_has_alternatives_rpc.Service_it_has_alternatives):
             default_response.error = str(e)
         return default_response
 
+    async def download_backup_data(self, headers: dict[str, str], item: it_has_alternatives_objects.Download_backup_data_request) -> it_has_alternatives_objects.Download_backup_data_response:
+        default_response = it_has_alternatives_objects.Download_backup_data_response()
+
+        try:
+            temp_saving_folder: str = disk.join_paths(disk.get_the_temp_dir(), "it_has_alternatives_mongodb_backup")
+            if not disk.exists(temp_saving_folder):
+                disk.create_a_folder(temp_saving_folder)
+
+            mongoDB.backup_mongodb(temp_saving_folder, use_time_as_sub_folder_name=False)
+
+            backup_zip_file = disk.get_a_temp_file_path('backup.zip')
+            disk.compress(temp_saving_folder, backup_zip_file)
+
+            the_backup_zip_file_bytes_io = disk.get_bytesio_from_a_file(backup_zip_file)
+            base64_string = disk.bytesio_to_base64(bytes_io=the_backup_zip_file_bytes_io)
+
+            default_response.file_name = f"backup_{str(datetime.now())}.zip"
+            default_response.file_bytes_in_base64_format = base64_string
+
+            disk.delete_a_file(backup_zip_file)
+        except Exception as e:
+            print(e)
+            default_response.error = str(e)
+
+        return default_response
+
 
 class User_Service(Visitor_Service):
     async def get_invitation_code(self, headers: dict[str, str], item: it_has_alternatives_objects.Get_invitation_code_request) -> it_has_alternatives_objects.Get_invitation_code_response:
@@ -557,6 +583,8 @@ class Admin_Service(User_Service):
 
             default_response.file_name = f"backup_{str(datetime.now())}.zip"
             default_response.file_bytes_in_base64_format = base64_string
+
+            disk.delete_a_file(backup_zip_file)
         except Exception as e:
             print(e)
             default_response.error = str(e)
