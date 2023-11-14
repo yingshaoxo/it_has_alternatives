@@ -73,6 +73,14 @@ http:
       middlewares:
         - cros_allow_all
       service: backend_service_for_visitor
+    yppm_community_router:
+      entryPoints:
+        - web
+        - websecure
+      rule: "Host(`ask.ai-tools-online.xyz`)"
+      middlewares:
+        - cros_allow_all
+      service: yppm_community_service
 
   middlewares:
     cros_allow_all:
@@ -128,4 +136,9 @@ http:
           # - url: http://it_has_alternatives:5551
           # - url: http://host.docker.internal:5551
           - url: http://127.0.0.1:5551
+        passHostHeader: true
+    yppm_community_service:
+      loadBalancer:
+        servers:
+          - url: http://127.0.0.1:54321
         passHostHeader: true
