@@ -81,6 +81,14 @@ http:
       middlewares:
         - cros_allow_all
       service: yppm_community_service
+    yppm_ytorrent_router:
+      entryPoints:
+        - web
+        - websecure
+      rule: "Host(`ytorrent.ai-tools-online.xyz`)"
+      middlewares:
+        - cros_allow_all
+      service: yppm_ytorrent_service
 
   middlewares:
     cros_allow_all:
@@ -141,4 +149,9 @@ http:
       loadBalancer:
         servers:
           - url: http://127.0.0.1:54321
+        passHostHeader: true
+    yppm_ytorrent_service:
+      loadBalancer:
+        servers:
+          - url: http://127.0.0.1:1111
         passHostHeader: true
