@@ -89,8 +89,30 @@ http:
       middlewares:
         - cros_allow_all
       service: yppm_ytorrent_service
+    vpn_router:
+      entryPoints:
+        - web
+        - websecure
+      rule: "Host(`vpn.ai-tools-online.xyz`)"
+      middlewares:
+        - localhost
+        - cros_allow_all
+      service: vpn_service
+    lab_router:
+      entryPoints:
+        - web
+        - websecure
+      rule: "Host(`lab.ai-tools-online.xyz`)"
+      middlewares:
+        - localhost
+        - cros_allow_all
+      service: lab_service
 
   middlewares:
+    localhost:
+      headers:
+        customRequestHeaders:
+          X-Real-IP: "127.0.0.1"
     cros_allow_all:
       headers:
         accessControlAllowMethods: "*"
@@ -155,3 +177,14 @@ http:
         servers:
           - url: http://127.0.0.1:1111
         passHostHeader: true
+    vpn_service:
+      loadBalancer:
+        servers:
+          - url: http://127.0.0.1:14141
+        passHostHeader: true
+    lab_service:
+      loadBalancer:
+        servers:
+          - url: http://localhost:19998
+        passHostHeader: true
+
