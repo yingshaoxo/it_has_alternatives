@@ -3,12 +3,14 @@ version: "3.9"
 services:
   ferretdb:
     # ./ferretdb-linux-amd64 --sqlite-url="file:data/"
-    #image: ghcr.io/ferretdb/ferretdb:1.23.0 # has bugs
-    image: ghcr.io/ferretdb/all-in-one:1.23.0
+    #image: ghcr.io/ferretdb/ferretdb:1.23.0 # has bugs, because they use no root
+    image: ghcr.io/ferretdb/ferretdb:1.21.0
+    #image: ghcr.io/ferretdb/all-in-one:1.23.0
     network_mode: "host"        
     environment:
       - FERRETDB_HANDLER=sqlite
       - FERRETDB_SQLITE_URL=file:/data/
+      - FERRETDB_DEBUG_ADDR=127.0.0.1:21239
     volumes:
       - ./configs/ferretdb_data:/data/
     restart: always
