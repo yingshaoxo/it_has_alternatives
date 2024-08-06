@@ -19,5 +19,5 @@ services:
     #   - "5553:5553"
     environment:
       - ADMIN_EMAIL=yingshaoxo@gmail.com
-      - MONGO_DB_URL=mongodb://yingshaoxo:yingshaoxo@127.0.0.1:27017/
+      - MONGO_DB_URL=mongodb://yingshaoxo:yingshaoxo@127.0.0.1:27017/?authMechanism=PLAIN
     restart: unless-stopped
