@@ -2,5 +2,5 @@
 
 ## How to run
 ```bash
-poetry run app
+poetry run service
 ```

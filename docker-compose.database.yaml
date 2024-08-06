@@ -1,19 +1,31 @@
 version: "3.9"
 
 services:
-  my_mongo:
-    image: mongo:6.0.4-jammy
+  ferretdb:
+    # ./ferretdb-linux-amd64 --sqlite-url="file:data/"
+    image: ghcr.io/ferretdb/ferretdb:1.23.0
     network_mode: "host"        
-    # expose:
-    #   - "27017:27017"
-    # ports:
-    #   - '27017:27017'
+    ports:
+      - 27017:27017
     environment:
-      - MONGO_INITDB_ROOT_USERNAME=yingshaoxo
-      - MONGO_INITDB_ROOT_PASSWORD=yingshaoxo
+      - FERRETDB_HANDLER=sqlite
     volumes:
-      - "./configs/mongodb_data:/data/db"
+      - ./configs/mongodb_data:/state
     restart: always
+
+  #my_mongo:
+  #  image: mongo:6.0.4-jammy
+  #  network_mode: "host"        
+  #  # expose:
+  #  #   - "27017:27017"
+  #  # ports:
+  #  #   - '27017:27017'
+  #  environment:
+  #    - MONGO_INITDB_ROOT_USERNAME=yingshaoxo
+  #    - MONGO_INITDB_ROOT_PASSWORD=yingshaoxo
+  #  volumes:
+  #    - "./configs/mongodb_data:/data/db"
+  #  restart: always
 
   # redis: 
   #   image: redis:7.0

@@ -1,4 +1,4 @@
-MONGO_DB_URL = "mongodb://yingshaoxo:yingshaoxo@127.0.0.1:27017/"
+MONGO_DB_URL = "mongodb://yingshaoxo:yingshaoxo@127.0.0.1:27017/?authMechanism=PLAIN"
 
 SECRET_TEXT = "Asking is not a bad thing if the person you ask are comfortable with it."
 
