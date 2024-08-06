@@ -5,12 +5,11 @@ services:
     # ./ferretdb-linux-amd64 --sqlite-url="file:data/"
     image: ghcr.io/ferretdb/ferretdb:1.23.0
     network_mode: "host"        
-    ports:
-      - 27017:27017
     environment:
       - FERRETDB_HANDLER=sqlite
+      - FERRETDB_SQLITE_URL=file:/the_data/
     volumes:
-      - ./configs/mongodb_data:/state
+      - ./configs/ferretdb_data:/the_data
     restart: always
 
   #my_mongo:
