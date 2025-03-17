@@ -17,7 +17,7 @@ FROM python:3.10-bullseye as building_stage
 
 WORKDIR /code
 
-RUN pip install poetry
+RUN pip install poetry==1.8.5
 
 COPY ./backend_service/pyproject.toml ./backend_service/poetry.lock* /code/
 
