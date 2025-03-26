@@ -107,6 +107,24 @@ http:
         - localhost
         - cros_allow_all
       service: lab_service
+    bbs_router:
+      entryPoints:
+        - web
+        - websecure
+      rule: "Host(`bbs.ai-tools-online.xyz`)"
+      middlewares:
+        - localhost
+        - cros_allow_all
+      service: bbs_service
+    message_router:
+      entryPoints:
+        - web
+        - websecure
+      rule: "Host(`message.ai-tools-online.xyz`)"
+      middlewares:
+        - localhost
+        - cros_allow_all
+      service: message_service
 
   middlewares:
     localhost:
@@ -187,4 +205,13 @@ http:
         servers:
           - url: http://localhost:19998
         passHostHeader: true
-
+    bbs_service:
+      loadBalancer:
+        servers:
+          - url: http://localhost:7071
+        passHostHeader: true
+    message_service:
+      loadBalancer:
+        servers:
+          - url: http://localhost:8899
+        passHostHeader: true
