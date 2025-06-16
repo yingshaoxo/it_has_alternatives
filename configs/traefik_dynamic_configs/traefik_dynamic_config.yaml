@@ -125,6 +125,15 @@ http:
         - localhost
         - cros_allow_all
       service: message_service
+    chat_router:
+      entryPoints:
+        - web
+        - websecure
+      rule: "Host(`chat.ai-tools-online.xyz`)"
+      middlewares:
+        - localhost
+        - cros_allow_all
+      service: chat_service
 
   middlewares:
     localhost:
@@ -214,4 +223,9 @@ http:
       loadBalancer:
         servers:
           - url: http://localhost:8899
+        passHostHeader: true
+    chat_service:
+      loadBalancer:
+        servers:
+          - url: http://127.0.0.1:8991
         passHostHeader: true
