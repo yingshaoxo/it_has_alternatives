@@ -48,6 +48,15 @@ http:
         - websecure
       rule: "HostRegexp(`(.*)style_shop(.*)`)"
       service: next_traefik_service_for_style_shop
+    yingshaoxo_chat_router:
+      entryPoints:
+        - web
+        - websecure
+      rule: "Host(`chat.yingshaoxo.xyz`)"
+      middlewares:
+        - localhost
+        - cros_allow_all
+      service: chat_service
     next_traefik_router_for_play_with_css:
       entryPoints:
         - web
@@ -130,6 +139,15 @@ http:
         - web
         - websecure
       rule: "Host(`chat.ai-tools-online.xyz`)"
+      middlewares:
+        - localhost
+        - cros_allow_all
+      service: chat_service
+    ai_tools_chat_router:
+      entryPoints:
+        - web
+        - websecure
+      rule: "Host(`chat.ai-tools.xyz`)"
       middlewares:
         - localhost
         - cros_allow_all
