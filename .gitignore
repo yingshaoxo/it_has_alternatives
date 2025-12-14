@@ -1,5 +1,5 @@
 configs/ferretdb_data/
-.pytest_cache/
 configs/mongodb_data/
+.pytest_cache/
 
 poetry.lock
